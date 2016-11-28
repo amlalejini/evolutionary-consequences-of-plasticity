@@ -223,10 +223,13 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   cHardwareManager::SetupPropertyMap(props, inst_set_name);
 
   OEE_stats.SetDefaultFitnessFun([this, hw_type](const Avida::InstructionSequence* seq){
-      Avida::Genome gen(hw_type, this->props, GeneticRepresentationPtr(new InstructionSequence((const char*)seq)));
+    //   std::cout << "starting fit " <<std::endl;
+      Avida::Genome gen(hw_type, this->props, GeneticRepresentationPtr(new InstructionSequence(*seq)));
       cAnalyzeGenotype genotype(this, gen);
       genotype.Recalculate(*m_ctx);
-      return genotype.GetFitness();
+      double fit = genotype.GetFitness();
+    //   std::cout << " ending fit " << fit <<std::endl;
+      return fit;
   });
   std::cout << "initialized" << std::endl;
 

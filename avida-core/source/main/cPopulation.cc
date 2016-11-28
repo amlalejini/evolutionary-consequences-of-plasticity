@@ -7359,6 +7359,11 @@ void cPopulation::InjectGenome(int cell_id, Systematics::Source src, const Genom
   new_organism->MutationRates().Copy(cell_array[cell_id].MutationRates());
   new_organism->SetLineageLabel(lineage_label);
 
+  // Because there aren't actually separate paths for adding org via injection vs. birth
+  // so we can't just use signals like we should
+  m_world->lineageM.inject = true;
+  m_world->lineageM.next_parent_id = 0;
+
   // Activate the organism in the population...
   if (assign_group) ActivateOrganism(ctx, new_organism, cell_array[cell_id], true, true);
   else ActivateOrganism(ctx, new_organism, cell_array[cell_id], false, true);
