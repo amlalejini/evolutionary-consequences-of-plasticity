@@ -25,7 +25,7 @@
 #include "cTestCPU.h"
 
 
-bool cTestCPUInterface::Divide(cAvidaContext&, cOrganism* parent, const Genome&)
+bool cTestCPUInterface::Divide(cAvidaContext&, cOrganism* parent, Genome&)
 {
   ConstInstructionSequencePtr seq;
   seq.DynamicCastFrom(parent->UnitGenome().Representation());
@@ -45,8 +45,8 @@ int cTestCPUInterface::GetInputAt(int& input_pointer)
 }
 
 void cTestCPUInterface::ResetInputs(cAvidaContext& ctx)
-{ 
-  m_testcpu->ResetInputs(ctx); 
+{
+  m_testcpu->ResetInputs(ctx);
 }
 
 const Apto::Array<int>& cTestCPUInterface::GetInputs() const
@@ -56,7 +56,7 @@ const Apto::Array<int>& cTestCPUInterface::GetInputs() const
 
 const Apto::Array<double>& cTestCPUInterface::GetResources(cAvidaContext& ctx)
 {
-  return m_testcpu->GetResources(ctx); 
+  return m_testcpu->GetResources(ctx);
 }
 
 double cTestCPUInterface::GetResourceVal(cAvidaContext& ctx, int res_id)
@@ -66,7 +66,7 @@ double cTestCPUInterface::GetResourceVal(cAvidaContext& ctx, int res_id)
 
 const Apto::Array<double>& cTestCPUInterface::GetFacedCellResources(cAvidaContext& ctx)
 {
-  return m_testcpu->GetFacedCellResources(ctx); 
+  return m_testcpu->GetFacedCellResources(ctx);
 }
 
 double cTestCPUInterface::GetFacedResourceVal(cAvidaContext& ctx, int res_id)
@@ -76,17 +76,17 @@ double cTestCPUInterface::GetFacedResourceVal(cAvidaContext& ctx, int res_id)
 
 const Apto::Array<double>& cTestCPUInterface::GetDemeResources(int deme_id, cAvidaContext& ctx)
 {
-  return m_testcpu->GetDemeResources(deme_id, ctx); 
+  return m_testcpu->GetDemeResources(deme_id, ctx);
 }
 
 const Apto::Array<double>& cTestCPUInterface::GetCellResources(int cell_id, cAvidaContext& ctx)
 {
-  return m_testcpu->GetCellResources(cell_id, ctx); 
+  return m_testcpu->GetCellResources(cell_id, ctx);
 }
 
 const Apto::Array<double>& cTestCPUInterface::GetFrozenResources(cAvidaContext& ctx, int cell_id)
 {
-  return m_testcpu->GetFrozenResources(ctx, cell_id); 
+  return m_testcpu->GetFrozenResources(ctx, cell_id);
 }
 
 double cTestCPUInterface::GetFrozenCellResVal(cAvidaContext& ctx, int cell_id, int res_id)

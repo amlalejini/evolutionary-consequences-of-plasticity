@@ -55,7 +55,7 @@ class cOrgInterface
 private:
   cOrgInterface(const cOrgInterface&); // @not_implemented
   cOrgInterface& operator=(const cOrgInterface&); // @not_implemented
-  
+
 public:
   cOrgInterface() { ; }
   virtual ~cOrgInterface() { ; }
@@ -70,7 +70,7 @@ public:
   virtual void SetDemeID(int in_id) = 0;
   virtual int GetCellXPosition() = 0;
   virtual int GetCellYPosition() = 0;
-  
+
   virtual int GetCellData() = 0;
   virtual int GetCellDataOrgID() = 0;
   virtual int GetCellDataUpdate() = 0;
@@ -81,7 +81,7 @@ public:
   virtual int GetFacedCellDataOrgID() = 0;
   virtual int GetFacedCellDataUpdate() = 0;
   virtual int GetFacedCellDataTerritory() = 0;
-    
+
   virtual int GetPrevSeenCellID() = 0;
   virtual int GetPrevTaskCellID() = 0;
   virtual int GetNumTaskCellsReached() = 0;
@@ -89,8 +89,8 @@ public:
   virtual void SetPrevSeenCellID(int in_id) = 0;
   virtual void SetPrevTaskCellID(int in_id) = 0;
 
-  virtual bool Divide(cAvidaContext& ctx, cOrganism* parent, const Genome& offspring_genome) = 0;
-  
+  virtual bool Divide(cAvidaContext& ctx, cOrganism* parent, Genome& offspring_genome) = 0;
+
   virtual cOrganism* GetNeighbor() = 0;
   virtual bool IsNeighborCellOccupied() = 0;
   virtual int GetNumNeighbors() = 0;
@@ -102,35 +102,35 @@ public:
   virtual int GetFacedDir() = 0; // Returns the human interpretable facing of this org.
   virtual int GetNeighborCellContents() = 0;
   virtual void Rotate(cAvidaContext& ctx, int direction = 1) = 0;
-  
+
   virtual bool GetLGTFragment(cAvidaContext& ctx, int region, const Genome& dest_genome, InstructionSequence& seq) = 0;
-  
+
   virtual int GetInputAt(int& input_pointer) = 0;
   virtual void ResetInputs(cAvidaContext& ctx) = 0;
   virtual const Apto::Array<int>& GetInputs() const = 0;
-  virtual const Apto::Array<double>& GetResources(cAvidaContext& ctx) = 0; 
+  virtual const Apto::Array<double>& GetResources(cAvidaContext& ctx) = 0;
   virtual double GetResourceVal(cAvidaContext& ctx, int res_id) = 0;
-  virtual const Apto::Array<double>& GetFacedCellResources(cAvidaContext& ctx) = 0; 
+  virtual const Apto::Array<double>& GetFacedCellResources(cAvidaContext& ctx) = 0;
   virtual double GetFacedResourceVal(cAvidaContext& ctx, int res_id) = 0;
-  virtual const Apto::Array<double>& GetDemeResources(int deme_id, cAvidaContext& ctx) = 0; 
-  virtual const Apto::Array<double>& GetCellResources(int cell_id, cAvidaContext& ctx) = 0; 
+  virtual const Apto::Array<double>& GetDemeResources(int deme_id, cAvidaContext& ctx) = 0;
+  virtual const Apto::Array<double>& GetCellResources(int cell_id, cAvidaContext& ctx) = 0;
   virtual double GetFrozenCellResVal(cAvidaContext& ctx, int cell_id, int res_id) = 0;
   virtual double GetCellResVal(cAvidaContext& ctx, int cell_id, int res_id) = 0;
   virtual const Apto::Array<double>& GetFrozenResources(cAvidaContext& ctx, int cell_id) = 0;
-  virtual const Apto::Array< Apto::Array<int> >& GetCellIdLists() = 0; 
+  virtual const Apto::Array< Apto::Array<int> >& GetCellIdLists() = 0;
 
   virtual int GetCurrPeakX(cAvidaContext& ctx, int res_id) = 0;
   virtual int GetCurrPeakY(cAvidaContext& ctx, int res_id) = 0;
-  virtual int GetFrozenPeakX(cAvidaContext& ctx, int res_id) = 0; 
+  virtual int GetFrozenPeakX(cAvidaContext& ctx, int res_id) = 0;
   virtual int GetFrozenPeakY(cAvidaContext& ctx, int res_id) = 0;
   virtual cResourceCount* GetResourceCount() = 0;
   virtual void TriggerDoUpdates(cAvidaContext& ctx) = 0;
   virtual void UpdateResources(cAvidaContext& ctx, const Apto::Array<double>& res_change) = 0;
   virtual void UpdateDemeResources(cAvidaContext& ctx, const Apto::Array<double>& res_change) = 0;
-  virtual void Die(cAvidaContext& ctx) = 0; 
-  virtual void KillCellID(int target, cAvidaContext& ctx) = 0; 
-  virtual void Kaboom(int distance, cAvidaContext& ctx) = 0; 
-  virtual void SpawnDeme(cAvidaContext& ctx) = 0; 
+  virtual void Die(cAvidaContext& ctx) = 0;
+  virtual void KillCellID(int target, cAvidaContext& ctx) = 0;
+  virtual void Kaboom(int distance, cAvidaContext& ctx) = 0;
+  virtual void SpawnDeme(cAvidaContext& ctx) = 0;
   virtual int ReceiveValue() = 0;
   virtual bool InjectParasite(cOrganism* host, Systematics::UnitPtr parent, const cString& label, const InstructionSequence& injected_code) = 0;
   virtual bool UpdateMerit(cAvidaContext& ctx, double new_merit) = 0;
@@ -144,7 +144,7 @@ public:
   virtual int GetStateGridID(cAvidaContext& ctx) = 0;
   virtual void RotateToGreatestReputation() =0;
   virtual void RotateToGreatestReputationWithDifferentTag(int tag) =0;
-  virtual void RotateToGreatestReputationWithDifferentLineage(int line) =0;	
+  virtual void RotateToGreatestReputationWithDifferentLineage(int line) =0;
 
   virtual void CreateLinkByFacing(double weight=1.0) = 0;
   virtual void CreateLinkByXY(int x, int y, double weight=1.0) = 0;
@@ -162,12 +162,12 @@ public:
   virtual void DoHGTConjugation(cAvidaContext& ctx) = 0;
   virtual void DoHGTMutation(cAvidaContext& ctx, Genome& offspring) = 0;
   virtual void ReceiveHGTDonation(const InstructionSequence& fragment) = 0;
-  
+
   virtual bool Move(cAvidaContext& ctx, int src_id, int dest_id) = 0;
 
   virtual void AddLiveOrg() = 0;
   virtual void RemoveLiveOrg() = 0;
-  
+
   virtual bool HasOpinion(cOrganism* in_organism) = 0;
   virtual void SetOpinion(int opinion, cOrganism* in_organism) = 0;
   virtual void ClearOpinion(cOrganism* in_organism) = 0;
@@ -179,8 +179,8 @@ public:
   virtual int NumberGroupFemales(int group_id) = 0;
   virtual int NumberGroupMales(int group_id) = 0;
   virtual int NumberGroupJuvs(int group_id) = 0;
-  virtual void ChangeGroupMatingTypes(cOrganism* org, int group_id, int old_type, int new_type) = 0;  
-  
+  virtual void ChangeGroupMatingTypes(cOrganism* org, int group_id, int old_type, int new_type) = 0;
+
   virtual int IncTolerance(int toleranceType, cAvidaContext &ctx) = 0;
   virtual int DecTolerance(int toleranceType, cAvidaContext &ctx) = 0;
   virtual int CalcGroupToleranceImmigrants(int target_group_id, int mating_type) = 0;
@@ -189,9 +189,9 @@ public:
   virtual double CalcGroupOddsOffspring(cOrganism* parent) = 0;
   virtual double CalcGroupOddsOffspring(int group_id) = 0;
   virtual bool AttemptImmigrateGroup(cAvidaContext& ctx, int group_id, cOrganism* org) = 0;
-  virtual void PushToleranceInstExe(int tol_inst, cAvidaContext& ctx) = 0; 
+  virtual void PushToleranceInstExe(int tol_inst, cAvidaContext& ctx) = 0;
   virtual int& GetGroupIntolerances(int group_id, int tol_num, int mating_type) = 0;
-  
+
   virtual void TryWriteGroupAttackBits(unsigned char raw_bits) = 0;
   virtual void TryWriteGroupAttackString(cString& string) = 0;
   virtual void DecNumPreyOrganisms() = 0;
@@ -201,7 +201,7 @@ public:
   virtual void IncNumPredOrganisms() = 0;
   virtual void IncNumTopPredOrganisms() = 0;
   virtual void AttackFacedOrg(cAvidaContext& ctx, int loser) = 0;
-  
+
   virtual void TryWriteBirthLocData(int org_idx) = 0;
   virtual void InjectPreyClone(cAvidaContext& ctx, int gen_id) = 0;
   virtual void KillRandPred(cAvidaContext& ctx, cOrganism* org) = 0;
@@ -210,7 +210,7 @@ public:
   virtual void TryWriteLookOutput(cString& string) = 0;
   virtual void TryWriteLookEXOutput(cString& string) = 0;
   virtual Apto::Array<int> GetFormedGroupArray() = 0;
- 
+
   virtual bool HasOutputAV(int av_num = 0) = 0;
   virtual bool FacedHasOutputAV(int av_num = 0) = 0;
   virtual bool FacedHasAV(int av_num = 0) = 0;

@@ -37,7 +37,7 @@
 #include "cEnvironment.h"
 #include "cEventList.h"
 #include "cHardwareManager.h"
-#include "cMigrationMatrix.h"  
+#include "cMigrationMatrix.h"
 #include "cInstSet.h"
 #include "cPopulation.h"
 #include "cStats.h"
@@ -46,14 +46,19 @@
 
 #include <cassert>
 
+
 using namespace AvidaTools;
 
 
 cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
   : m_working_dir(wd), m_analyze(NULL), m_conf(cfg), m_ctx(NULL)
   , m_env(NULL), m_event_list(NULL), m_hw_mgr(NULL), m_pop(NULL), m_stats(NULL), m_mig_mat(NULL), m_driver(NULL), m_data_mgr(NULL)
-  , m_own_driver(false)
+  , m_own_driver(false), lineageM(false), before_repro_sig("before-repro")
+  , offspring_ready_sig("offspring-ready"), inject_ready_sig("inject-ready")
+  , org_placement_sig("org-placement"), on_update_sig("on-update")
+  , org_death_sig("on-death")
 {
+    // OnUpdate([](int update){std::cout << update << " it works!" << std::endl;});
 }
 
 cWorld* cWorld::Initialize(cAvidaConfig* cfg, const cString& working_dir, World* new_world, cUserFeedback* feedback, const Apto::Map<Apto::String, Apto::String>* mappings)
@@ -69,25 +74,25 @@ cWorld* cWorld::Initialize(cAvidaConfig* cfg, const cString& working_dir, World*
 cWorld::~cWorld()
 {
   // m_actlib is not owned by cWorld, DO NOT DELETE
-  
+
   // These must be deleted first
   delete m_analyze; m_analyze = NULL;
-  
+
   // Forcefully clean up population before classification manager
   m_pop = Apto::SmartPtr<cPopulation, Apto::InternalRCObject>();
-  
+
   delete m_env; m_env = NULL;
   delete m_event_list; m_event_list = NULL;
   delete m_hw_mgr; m_hw_mgr = NULL;
 
-  delete m_mig_mat; 
-  
+  delete m_mig_mat;
+
   // Delete Last
   delete m_conf; m_conf = NULL;
 
   // cleanup driver object, if needed
   if (m_own_driver) { delete m_driver; m_driver = NULL; }
-  
+
   delete m_ctx;
   delete m_new_world;
 }
@@ -96,63 +101,63 @@ cWorld::~cWorld()
 bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Apto::String, Apto::String>* defs)
 {
   m_new_world = new_world;
-  
+
   bool success = true;
-  
+
   // Setup Random Number Generator
   m_rng.ResetSeed(m_conf->RANDOM_SEED.Get());
   m_ctx = new cAvidaContext(NULL, m_rng);
-  
+
   // Initialize new API-based data structures here for now
   {
     // Data Manager
     m_data_mgr = Data::ManagerPtr(new Data::Manager);
     m_data_mgr->AttachTo(new_world);
-    
+
     // Environment
     Environment::ManagerPtr(new Environment::Manager)->AttachTo(new_world);
-    
+
     // Output Manager
     Apto::String opath = Apto::FileSystem::GetAbsolutePath(Apto::String(m_conf->DATA_DIR.Get()), Apto::String(m_working_dir));
     Output::ManagerPtr(new Output::Manager(opath))->AttachTo(new_world);
   }
-  
+
 
   m_env = new cEnvironment(this);
-    
-  m_mig_mat = new cMigrationMatrix(); 
-  
-  
+
+  m_mig_mat = new cMigrationMatrix();
+
+
   // Initialize the default environment...
   // This must be after the HardwareManager in case REACTIONS that trigger instructions are used.
   if (!m_env->Load(m_conf->ENVIRONMENT_FILE.Get(), m_working_dir, *feedback, defs)) {
     success = false;
   }
-    
-  if(m_conf->DEMES_MIGRATION_METHOD.Get() == 4){     
+
+  if(m_conf->DEMES_MIGRATION_METHOD.Get() == 4){
     bool count_parasites = false;
     bool count_offspring = false;
     if(m_conf->DEMES_PARASITE_MIGRATION_RATE.Get() > 0.0)
       count_parasites = true;
     if(m_conf->DEMES_MIGRATION_RATE.Get() > 0.0)
       count_offspring = true;
-    
+
     if(!m_mig_mat->Load(m_conf->NUM_DEMES.AsString().AsInt(), m_conf->MIGRATION_FILE.Get(), m_working_dir,count_parasites,count_offspring,false,*feedback))
       success = false;
   }
-  
-  
+
+
   // Systematics
   Systematics::ManagerPtr systematics(new Systematics::Manager);
   systematics->AttachTo(new_world);
   systematics->RegisterArbiter(Systematics::ArbiterPtr(new Systematics::GenotypeArbiter(new_world, "genotype", m_conf->THRESHOLD.Get(), m_conf->DISABLE_GENOTYPE_CLASSIFICATION.Get())));
 
-  
+
   // Setup Stats Object
   m_stats = Apto::SmartPtr<cStats, Apto::InternalRCObject>(new cStats(this));
   Data::Manager::Of(m_new_world)->AttachRecorder(m_stats);
 
-  
+
   // Initialize the hardware manager, loading all of the instruction sets
   m_hw_mgr = new cHardwareManager(this);
   if (m_conf->INST_SET_LOAD_LEGACY.Get()) {
@@ -168,15 +173,15 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     }
     success = false;
   }
-  
+
   // If there were errors loading at this point, it is perilous to try to go further (pop depends on an instruction set)
   if (!success) return success;
-  
-  
+
+
   // @MRR CClade Tracking
 //	if (m_conf->TRACK_CCLADES.Get() > 0)
 //		m_class_mgr->LoadCCladeFounders(m_conf->TRACK_CCLADES_IDS.Get());
-  
+
   const bool revert_fatal = m_conf->REVERT_FATAL.Get() > 0.0;
   const bool revert_neg = m_conf->REVERT_DETRIMENTAL.Get() > 0.0;
   const bool revert_neut = m_conf->REVERT_NEUTRAL.Get() > 0.0;
@@ -185,7 +190,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   const bool revert_equals = m_conf->REVERT_EQUALS.Get() > 0.0;
   const bool sterilize_unstable = m_conf->STERILIZE_UNSTABLE.Get() > 0;
   m_test_on_div = (revert_fatal || revert_neg || revert_neut || revert_pos || revert_taskloss || revert_equals || sterilize_unstable);
-  
+
   const bool sterilize_fatal = m_conf->STERILIZE_FATAL.Get() > 0.0;
   const bool sterilize_neg = m_conf->STERILIZE_DETRIMENTAL.Get() > 0.0;
   const bool sterilize_neut = m_conf->STERILIZE_NEUTRAL.Get() > 0.0;
@@ -194,20 +199,44 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   m_test_sterilize = (sterilize_fatal || sterilize_neg || sterilize_neut || sterilize_pos || sterilize_taskloss);
 
   m_pop = Apto::SmartPtr<cPopulation, Apto::InternalRCObject>(new cPopulation(this));
-  
+
   // Setup Event List
   m_event_list = new cEventList(this);
   if (!m_event_list->LoadEventFile(m_conf->EVENT_FILE.Get(), m_working_dir, *feedback, defs)) {
     if (feedback) feedback->Error("unable to load event file");
     success = false;
   }
-  
+
+  std::cout << "startging setup" << std::endl;
+  lineageM.Setup(this);
+  std::cout << "lineage setup" << std::endl;
+  OEE_stats.Setup(this);
+  std::cout << "Stats set up" << std::endl;
+  std::cout << this->GetHardwareManager().GetNumInstSets() << std::endl;
+  std::cout << "test" << std::endl;
+  cInstSet is = *(this->GetHardwareManager().m_inst_sets[0]);
+  std::cout << "Got hardware manager" << std::endl;
+  OEE_stats.NULL_VAL = is.ActivateNullInst();
+  std::cout << "Null set" << std::endl;
+  const char * inst_set_name = (const char*)is.GetInstSetName();
+  HardwareTypeID hw_type = is.GetHardwareType();
+  cHardwareManager::SetupPropertyMap(props, inst_set_name);
+
+  OEE_stats.SetDefaultFitnessFun([this, hw_type](const Avida::InstructionSequence* seq){
+      Avida::Genome gen(hw_type, this->props, GeneticRepresentationPtr(new InstructionSequence((const char*)seq)));
+      cAnalyzeGenotype genotype(this, gen);
+      genotype.Recalculate(*m_ctx);
+      return genotype.GetFitness();
+  });
+  std::cout << "initialized" << std::endl;
+
   return success;
 }
 
 Data::ProviderPtr cWorld::GetStatsProvider(World*) { return m_stats; }
 Data::ArgumentedProviderPtr cWorld::GetPopulationProvider(World*) { return m_pop; }
 
+void cWorld::ProcessPostUpdate(cAvidaContext&) {on_update_sig.Trigger(GetStats().GetUpdate()); }
 
 cAnalyze& cWorld::GetAnalyze()
 {
@@ -216,7 +245,7 @@ cAnalyze& cWorld::GetAnalyze()
 }
 
 void cWorld::GetEvents(cAvidaContext& ctx)
-{  
+{
   if (m_pop->GetSyncEvents() == true) {
     m_event_list->Sync();
     m_pop->SetSyncEvents(false);
@@ -236,7 +265,7 @@ void cWorld::SetDriver(WorldDriver* driver, bool take_ownership)
   if (m_own_driver) delete m_driver;
   if (m_ctx) delete m_ctx;
   m_ctx = new cAvidaContext(driver, m_rng);
-  
+
   // store new driver information
   m_driver = driver;
   m_own_driver = take_ownership;

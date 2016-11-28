@@ -24,11 +24,18 @@
 
 #include "avida/core/Types.h"
 #include "avida/data/Types.h"
+#include <functional>
 
 #include "apto/rng.h"
 
 #include "cAvidaConfig.h"
 #include "cAvidaContext.h"
+#include "avida/core/InstructionSequence.h"
+#include "avida/core/Genome.h"
+
+#include "../../../../Empirical/evo/LineageTracker.h"
+#include "../../../../Empirical/evo/OEE.h"
+#include "../../../../Empirical/tools/signal.h"
 
 #include <cassert>
 
@@ -37,7 +44,7 @@ class cAnalyzeGenotype;
 class cEnvironment;
 class cEventList;
 class cHardwareManager;
-class cMigrationMatrix; 
+class cMigrationMatrix;
 class cOrganism;
 class cPopulation;
 class cMerit;
@@ -47,6 +54,49 @@ class cTestCPU;
 class cUserFeedback;
 template<class T> class tDataEntry;
 
+namespace std
+{
+    //from fredoverflow's answer to
+    //http://stackoverflow.com/questions/8026890/c-how-to-insert-array-into-hash-set
+    template <> struct hash<Avida::InstructionSequence>
+    {
+        typedef Avida::InstructionSequence argument_type;
+        typedef unsigned int result_type;
+        result_type operator()(argument_type const& genome) const
+        {
+            unsigned int total = 0;
+
+            for (int i = 0; i < genome.GetSize(); i++) {
+              total += (genome[i].GetOp() + 3) * i;
+            }
+
+            return total % 3203;
+        }
+    };
+
+    //From http://stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
+    template <> struct hash<emp::vector<Avida::Instruction> >
+    {
+        std::size_t operator()(emp::vector<Avida::Instruction> const& vec) const {
+          std::size_t seed = vec.size();
+          for(std::size_t i=0; i < vec.size(); i++) {
+            seed ^= vec[i].GetOp() + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+          }
+          return seed;
+        }
+    };
+
+    //From http://stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
+    template <> struct hash<Avida::Instruction>
+    {
+        std::size_t operator()(Avida::Instruction const& inst) const {
+          std::hash<int> int_hash;
+          return int_hash(inst.GetOp());
+        }
+    };
+
+}
+
 using namespace Avida;
 
 
@@ -55,7 +105,7 @@ class cWorld
 protected:
   World* m_new_world;
   cString m_working_dir;
-  
+
   cAnalyze* m_analyze;
   cAvidaConfig* m_conf;
   cAvidaContext* m_ctx;
@@ -64,29 +114,48 @@ protected:
   cHardwareManager* m_hw_mgr;
   Apto::SmartPtr<cPopulation, Apto::InternalRCObject> m_pop;
   Apto::SmartPtr<cStats, Apto::InternalRCObject> m_stats;
-  cMigrationMatrix* m_mig_mat;  
+  cMigrationMatrix* m_mig_mat;
   WorldDriver* m_driver;
-  
+
+  HashPropertyMap props;
+
   Data::ManagerPtr m_data_mgr;
 
   Apto::RNG::AvidaRNG m_rng;
-  
+
   bool m_test_on_div;     // flag derived from a collection of configuration settings
   bool m_test_sterilize;  // flag derived from a collection of configuration settings
-  
+
   bool m_own_driver;      // specifies whether this world object should manage its driver object
 
   cWorld(cAvidaConfig* cfg, const cString& wd);
-  
-  
+
+
 public:
   static cWorld* Initialize(cAvidaConfig* cfg, const cString& working_dir, World* new_world, cUserFeedback* feedback = NULL, const Apto::Map<Apto::String, Apto::String>* mappings = NULL);
   virtual ~cWorld();
-  
+
+  // Signals triggered by the world.
+  emp::Signal<int> before_repro_sig;       // Trigger: Immediately prior to producing offspring
+  emp::Signal<const Avida::InstructionSequence*> offspring_ready_sig;  // Trigger: Offspring about to enter population
+  emp::Signal<const Avida::InstructionSequence*> inject_ready_sig;     // Trigger: New org about to be added to population
+  emp::Signal<int> org_placement_sig;      // Trigger: Organism has been added to population
+  emp::Signal<int> org_death_sig;      // Trigger: Organism has been added to population
+  emp::Signal<int> on_update_sig;          // Trigger: New update is starting.
+
+  Avida::InstructionSequence non_const_seq;
+
+  emp::LinkKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
+  emp::LinkKey OnOffspringReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return offspring_ready_sig.AddAction(fun); }
+  emp::LinkKey OnOrgPlacement(const std::function<void(int)> & fun) { return org_placement_sig.AddAction(fun); }
+  emp::LinkKey OnOrgDeath(const std::function<void(int)> & fun) { return org_death_sig.AddAction(fun); }
+  emp::LinkKey OnUpdate(const std::function<void(int)> & fun) { return on_update_sig.AddAction(fun); }
+  emp::LinkKey OnInjectReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return inject_ready_sig.AddAction(fun); }
+
   void SetDriver(WorldDriver* driver, bool take_ownership = false);
-  
+
   const cString& GetWorkingDir() const { return m_working_dir; }
-  
+
   // General Object Accessors
   cAnalyze& GetAnalyze();
   cAvidaConfig& GetConfig() { return *m_conf; }
@@ -99,23 +168,27 @@ public:
   cStats& GetStats() { return *m_stats; }
   WorldDriver& GetDriver() { return *m_driver; }
   World* GetNewWorld() { return m_new_world; }
-  
+
+  emp::evo::LineageTracker_Standalone<Avida::InstructionSequence> lineageM;
+  // If there are multiple instruction ets this could be a problem
+  emp::evo::OEEStatsManager<emp::evo::PopulationManager_Base<InstructionSequence> > OEE_stats;
+
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }
-  
+
   Data::ProviderPtr GetStatsProvider(World*);
   Data::ArgumentedProviderPtr GetPopulationProvider(World*);
-  
+
   // Config Dependent Modes
   bool GetTestOnDivide() const { return m_test_on_div; }
   bool GetTestSterilize() const { return m_test_sterilize; }
-  
+
   // Convenience Accessors
   int GetNumResources();
   inline int GetVerbosity() { return m_conf->VERBOSITY.Get(); }
   inline void SetVerbosity(int v) { m_conf->VERBOSITY.Set(v); }
 
   void GetEvents(cAvidaContext& ctx);
-	
+
 	cEventList* GetEventsList() { return m_event_list; }
 
 	//! Migrate this organism to a different world (does nothing here; see cMultiProcessWorld).
@@ -123,19 +196,19 @@ public:
 
 	//! Returns true if an organism should be migrated to a different world.
 	virtual bool TestForMigration() { return false; }
-		
+
 	//! Returns true if the given cell is on the boundary of the world, false otherwise.
 	virtual bool IsWorldBoundary(const cPopulationCell& cell);
-	
+
 	//! Process post-update events.
-	virtual void ProcessPostUpdate(cAvidaContext&) { }
-	
+	virtual void ProcessPostUpdate(cAvidaContext&);
+
 	//! Returns true if this world allows early exits, e.g., when the population reaches 0.
 	virtual bool AllowsEarlyExit() const { return true; }
-	
+
 	//! Calculate the size (in virtual CPU cycles) of the current update.
 	virtual int CalculateUpdateSize();
-  
+
 protected:
   // Internal Methods
   bool setup(World* new_world, cUserFeedback* errors,  const Apto::Map<Apto::String, Apto::String>* mappings);

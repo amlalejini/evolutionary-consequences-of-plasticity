@@ -42,13 +42,13 @@ private:
   cCPUTestInfo& m_test_info;
   int m_cur_depth;
   Apto::Array<cOrganism*, Apto::Smart> m_empty_live_org_list;
-  
+
 public:
   cTestCPUInterface(cTestCPU* testcpu, cCPUTestInfo& test_info, int cur_depth)
     : m_testcpu(testcpu), m_test_info(test_info), m_cur_depth(cur_depth) { ; }
   virtual ~cTestCPUInterface() { ; }
 
-  
+
   const Apto::Array<cOrganism*, Apto::Smart>& GetLiveOrgList() const;
   cPopulationCell* GetCell() { return NULL; }
 	cPopulationCell* GetCell(int) { return NULL; }
@@ -57,7 +57,7 @@ public:
   cDeme* GetDeme() { return 0; }
   void SetCellID(int) { ; }
   void SetDemeID(int) { ; }
-  
+
   int GetAVCellID() { return -1; }
   void SetAVCellID(int) { ; }
   void SetAvatarFacing(int) { ; }
@@ -66,7 +66,7 @@ public:
 
   int GetCellXPosition() { return -1; }
   int GetCellYPosition() { return -1; }
-  
+
   int GetCellData() { return -1; }
   int GetCellDataOrgID() { return -1; }
   int GetCellDataUpdate() { return -1; }
@@ -88,7 +88,7 @@ public:
 
   bool GetLGTFragment(cAvidaContext& ctx, int region, const Genome& dest_genome, InstructionSequence& seq) { return false; }
 
-  bool Divide(cAvidaContext& ctx, cOrganism* parent, const Genome& offspring_genome);
+  bool Divide(cAvidaContext& ctx, cOrganism* parent, Genome& offspring_genome);
   cOrganism* GetNeighbor() { return NULL; }
   bool IsNeighborCellOccupied() { return false; }
   int GetNumNeighbors() { return 0; }
@@ -96,35 +96,35 @@ public:
   void GetAVNeighborhoodCellIDs(Apto::Array<int>& list, int av_num = 0) { ; }
   int GetNeighborCellContents() { return 0; }
   void Rotate(cAvidaContext& ctx, int direction = 1) { ; }
-  
+
   void Breakpoint() { ; }
   int GetInputAt(int& input_pointer);
   void ResetInputs(cAvidaContext& ctx);
   const Apto::Array<int>& GetInputs() const;
-  const Apto::Array<double>& GetResources(cAvidaContext& ctx); 
+  const Apto::Array<double>& GetResources(cAvidaContext& ctx);
   double GetResourceVal(cAvidaContext& ctx, int res_id);
-  const Apto::Array<double>& GetFacedCellResources(cAvidaContext& ctx); 
+  const Apto::Array<double>& GetFacedCellResources(cAvidaContext& ctx);
   double GetFacedResourceVal(cAvidaContext& ctx, int res_id);
-  const Apto::Array<double>& GetDemeResources(int deme_id, cAvidaContext& ctx); 
-  const Apto::Array<double>& GetCellResources(int cell_id, cAvidaContext& ctx); 
+  const Apto::Array<double>& GetDemeResources(int deme_id, cAvidaContext& ctx);
+  const Apto::Array<double>& GetCellResources(int cell_id, cAvidaContext& ctx);
   const Apto::Array<double>& GetFrozenResources(cAvidaContext& ctx, int cell_id);
   double GetFrozenCellResVal(cAvidaContext& ctx, int cell_id, int res_id);
   double GetCellResVal(cAvidaContext& ctx, int cell_id, int res_id);
   const Apto::Array< Apto::Array<int> >& GetCellIdLists();
-  
-  int GetCurrPeakX(cAvidaContext& ctx, int res_id) { return 0; } 
-  int GetCurrPeakY(cAvidaContext& ctx, int res_id) { return 0; } 
-  int GetFrozenPeakX(cAvidaContext& ctx, int res_id) { return 0; } 
-  int GetFrozenPeakY(cAvidaContext& ctx, int res_id) { return 0; } 
+
+  int GetCurrPeakX(cAvidaContext& ctx, int res_id) { return 0; }
+  int GetCurrPeakY(cAvidaContext& ctx, int res_id) { return 0; }
+  int GetFrozenPeakX(cAvidaContext& ctx, int res_id) { return 0; }
+  int GetFrozenPeakY(cAvidaContext& ctx, int res_id) { return 0; }
 
   cResourceCount* GetResourceCount() { return NULL; }
   void TriggerDoUpdates(cAvidaContext&) { }
   void UpdateResources(cAvidaContext& ctx, const Apto::Array<double>& res_change);
   void UpdateAVResources(cAvidaContext& ctx, const Apto::Array<double>& res_change);
   void UpdateDemeResources(cAvidaContext&, const Apto::Array<double>&) { ; }
-  
-  void Die(cAvidaContext& ctx) { ; } 
-  void KillCellID(int target, cAvidaContext& ctx) { ; } 
+
+  void Die(cAvidaContext& ctx) { ; }
+  void KillCellID(int target, cAvidaContext& ctx) { ; }
   void Kaboom(int distance, cAvidaContext& ctx);
   void SpawnDeme(cAvidaContext& ctx) { ; }
   cOrgSinkMessage* NetReceive() { return NULL; } // @DMB - todo: receive message
@@ -144,16 +144,16 @@ public:
 	bool BcastAlarm(int, int) { return false; }
   void DivideOrgTestamentAmongDeme(double) { ; }
 	void SendFlash() { ; }
-  
+
   int GetNortherly() { return 0; }
   int GetEasterly() { return 0; }
-	
+
 	void RotateToGreatestReputation(){ }
 	void RotateToGreatestReputationWithDifferentTag(int) { ; }
-	void RotateToGreatestReputationWithDifferentLineage(int) { ; }	
-  
+	void RotateToGreatestReputationWithDifferentLineage(int) { ; }
+
   int GetStateGridID(cAvidaContext& ctx);
-	
+
 	//! Link this organism's cell to the cell it is currently facing.
 	void CreateLinkByFacing(double) { ; }
 	//! Link this organism's cell to the cell with coordinates (x,y).
@@ -167,7 +167,7 @@ public:
 	//! Rotate to select a new network link.
 	bool NetworkRotate(int) { return false; }
 	//! Select a new network link.
-	bool NetworkSelect(int) { return false; }	
+	bool NetworkSelect(int) { return false; }
 
   int GetNextDemeInput(cAvidaContext&) { return -1; }
   void DoDemeInput(int) { ; }
@@ -181,12 +181,12 @@ public:
 	void DoHGTMutation(cAvidaContext&, Genome&) { ; }
 	//! Receive HGT donation (does nothing).
 	void ReceiveHGTDonation(const InstructionSequence&) { ; }
-  
+
   bool Move(cAvidaContext&, int, int) { return false; }
 
-  void AddLiveOrg() { ; }  
-  void RemoveLiveOrg() { ; }  
-  
+  void AddLiveOrg() { ; }
+  void RemoveLiveOrg() { ; }
+
   bool HasOpinion(cOrganism*) { return false; }
   void SetOpinion(int, cOrganism*) { ; }
   void ClearOpinion(cOrganism*) { ; }
@@ -199,7 +199,7 @@ public:
   int NumberGroupMales(int) { return 0; }
   int NumberGroupJuvs(int) { return 0; }
   void ChangeGroupMatingTypes(cOrganism*, int, int, int) { ; }
-    
+
   int IncTolerance(int, cAvidaContext&) { return 0; }
   int DecTolerance(int, cAvidaContext&) { return 0; }
   int CalcGroupToleranceImmigrants(int, int) { return 0; }
@@ -268,7 +268,7 @@ public:
   const Apto::Array<double>& GetAVFacedResources(cAvidaContext& ctx, int av_num = 0);
   double GetAVFacedResourceVal(cAvidaContext& ctx, int res_id, int av_num = 0);
   void UpdateAVResources(cAvidaContext& ctx, const Apto::Array<double>& res_change, int av_num = 0);
-  
+
   void BeginSleep() { ; }
   void EndSleep() { ; }
 };

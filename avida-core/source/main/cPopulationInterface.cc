@@ -52,7 +52,7 @@ namespace std
 #endif
 
 
-cPopulationInterface::cPopulationInterface(cWorld* world) 
+cPopulationInterface::cPopulationInterface(cWorld* world)
 : m_world(world)
 , m_cell_id(-1)
 , m_deme_id(-1)
@@ -77,11 +77,11 @@ const Apto::Array<cOrganism*, Apto::Smart>& cPopulationInterface::GetLiveOrgList
   return m_world->GetPopulation().GetLiveOrgList();
 }
 
-cPopulationCell* cPopulationInterface::GetCell() { 
+cPopulationCell* cPopulationInterface::GetCell() {
 	return &m_world->GetPopulation().GetCell(m_cell_id);
 }
 
-cPopulationCell* cPopulationInterface::GetCell(int cell_id) { 
+cPopulationCell* cPopulationInterface::GetCell(int cell_id) {
 	return &m_world->GetPopulation().GetCell(cell_id);
 }
 
@@ -159,14 +159,14 @@ bool cPopulationInterface::GetLGTFragment(cAvidaContext& ctx, int region, const 
 {
   const int MAX_POP_SAMPLES = 10;
   ConstInstructionSequencePtr src_seq(NULL);
-  
+
   switch (region) {
       // Local Neighborhood
     case 0:
     {
       Apto::Array<cPopulationCell*> occupied_cells;
       GetCell()->GetOccupiedNeighboringCells(occupied_cells);
-      
+
       int num_cells = occupied_cells.GetSize();
       for (int i = 0; i < num_cells;) {
         const Genome* cell_genome = &occupied_cells[i]->GetOrganism()->GetGenome();
@@ -178,14 +178,14 @@ bool cPopulationInterface::GetLGTFragment(cAvidaContext& ctx, int region, const 
           i++;
         }
       }
-      
+
       if (num_cells == 0) return false;
-      
+
       int cell_idx = ctx.GetRandom().GetInt(num_cells);
       src_seq.DynamicCastFrom(occupied_cells[cell_idx]->GetOrganism()->GetGenome().Representation());
     }
       break;
-      
+
       // Entire Population
     case 1:
     {
@@ -198,17 +198,17 @@ bool cPopulationInterface::GetLGTFragment(cAvidaContext& ctx, int region, const 
           break;
         }
       }
-      
+
       if (!src_seq) return false;
     }
       break;
-      
+
     default:
       return false;
   }
-  
+
   assert(src_seq);
-  
+
   // Select random start and end point
   int from = ctx.GetRandom().GetInt(src_seq->GetSize());
   int to = ctx.GetRandom().GetInt(src_seq->GetSize());
@@ -219,7 +219,7 @@ bool cPopulationInterface::GetLGTFragment(cAvidaContext& ctx, int region, const 
     to = from;
     from = tmp;
   }
-  
+
   // Resize outgoing sequence and copy over the fragment
   int new_size = to - from;
   if (new_size == 0) {
@@ -231,12 +231,12 @@ bool cPopulationInterface::GetLGTFragment(cAvidaContext& ctx, int region, const 
       seq[i - from] = (*src_seq)[i];
     }
   }
-  
+
   return true;
 }
 
 
-bool cPopulationInterface::Divide(cAvidaContext& ctx, cOrganism* parent, const Genome& offspring_genome)
+bool cPopulationInterface::Divide(cAvidaContext& ctx, cOrganism* parent, Genome& offspring_genome)
 {
   assert(parent != NULL);
   assert(m_world->GetPopulation().GetCell(m_cell_id).GetOrganism() == parent);
@@ -247,7 +247,7 @@ cOrganism* cPopulationInterface::GetNeighbor()
 {
   cPopulationCell& cell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(cell.IsOccupied());
-  
+
   return cell.ConnectionList().GetFirst()->GetOrganism();
 }
 
@@ -260,7 +260,7 @@ int cPopulationInterface::GetNumNeighbors()
 {
   cPopulationCell & cell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(cell.IsOccupied());
-  
+
   return cell.ConnectionList().GetSize();
 }
 
@@ -268,7 +268,7 @@ void cPopulationInterface::GetNeighborhoodCellIDs(Apto::Array<int>& list)
 {
   cPopulationCell& cell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(cell.IsOccupied());
-  
+
   list.Resize(cell.ConnectionList().GetSize());
   tConstListIterator<cPopulationCell> it(cell.ConnectionList());
   int i = 0;
@@ -279,7 +279,7 @@ void cPopulationInterface::GetAVNeighborhoodCellIDs(Apto::Array<int>& list, int 
 {
   cPopulationCell& cell = m_world->GetPopulation().GetCell(m_avatars[av_num].av_cell_id);
   assert(cell.HasAV());
-  
+
   list.Resize(cell.ConnectionList().GetSize());
   tConstListIterator<cPopulationCell> it(cell.ConnectionList());
   int i = 0;
@@ -315,7 +315,7 @@ void cPopulationInterface::Rotate(cAvidaContext& ctx, int direction)
 {
   cPopulationCell & cell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(cell.IsOccupied());
-	
+
   if (m_world->GetConfig().USE_AVATARS.Get()) {
     if (direction >= 0) RotateAV(ctx, 1);
     else RotateAV(ctx, -1);
@@ -333,9 +333,9 @@ int cPopulationInterface::GetInputAt(int& input_pointer)
   return cell.GetInputAt(input_pointer);
 }
 
-void cPopulationInterface::ResetInputs(cAvidaContext& ctx) 
-{ 
-  m_world->GetPopulation().GetCell(m_cell_id).ResetInputs(ctx); 
+void cPopulationInterface::ResetInputs(cAvidaContext& ctx)
+{
+  m_world->GetPopulation().GetCell(m_cell_id).ResetInputs(ctx);
 }
 
 const Apto::Array<int>& cPopulationInterface::GetInputs() const
@@ -345,7 +345,7 @@ const Apto::Array<int>& cPopulationInterface::GetInputs() const
 
 const Apto::Array<double>& cPopulationInterface::GetResources(cAvidaContext& ctx)
 {
-  return m_world->GetPopulation().GetCellResources(m_cell_id, ctx); 
+  return m_world->GetPopulation().GetCellResources(m_cell_id, ctx);
 }
 
 double cPopulationInterface::GetResourceVal(cAvidaContext& ctx, int res_id)
@@ -355,7 +355,7 @@ double cPopulationInterface::GetResourceVal(cAvidaContext& ctx, int res_id)
 
 const Apto::Array<double>& cPopulationInterface::GetFacedCellResources(cAvidaContext& ctx)
 {
-  return m_world->GetPopulation().GetCellResources(GetCell()->GetCellFaced().GetID(), ctx); 
+  return m_world->GetPopulation().GetCellResources(GetCell()->GetCellFaced().GetID(), ctx);
 }
 
 double cPopulationInterface::GetFacedResourceVal(cAvidaContext& ctx, int res_id)
@@ -365,12 +365,12 @@ double cPopulationInterface::GetFacedResourceVal(cAvidaContext& ctx, int res_id)
 
 const Apto::Array<double>& cPopulationInterface::GetCellResources(int cell_id, cAvidaContext& ctx)
 {
-  return m_world->GetPopulation().GetCellResources(cell_id, ctx); 
+  return m_world->GetPopulation().GetCellResources(cell_id, ctx);
 }
 
 const Apto::Array<double>& cPopulationInterface::GetFrozenResources(cAvidaContext& ctx, int cell_id)
 {
-  return m_world->GetPopulation().GetFrozenResources(ctx, cell_id); 
+  return m_world->GetPopulation().GetFrozenResources(ctx, cell_id);
 }
 
 double cPopulationInterface::GetFrozenCellResVal(cAvidaContext& ctx, int cell_id, int res_id)
@@ -390,7 +390,7 @@ cResourceCount* cPopulationInterface::GetResourceCount()
 
 const Apto::Array<double>& cPopulationInterface::GetDemeResources(int deme_id, cAvidaContext& ctx)
 {
-  return m_world->GetPopulation().GetDemeCellResources(deme_id, m_cell_id, ctx); 
+  return m_world->GetPopulation().GetDemeCellResources(deme_id, m_cell_id, ctx);
 }
 
 const Apto::Array< Apto::Array<int> >& cPopulationInterface::GetCellIdLists()
@@ -398,25 +398,25 @@ const Apto::Array< Apto::Array<int> >& cPopulationInterface::GetCellIdLists()
 	return m_world->GetPopulation().GetCellIdLists();
 }
 
-int cPopulationInterface::GetCurrPeakX(cAvidaContext& ctx, int res_id) 
-{ 
-  return m_world->GetPopulation().GetCurrPeakX(ctx, res_id); 
-} 
+int cPopulationInterface::GetCurrPeakX(cAvidaContext& ctx, int res_id)
+{
+  return m_world->GetPopulation().GetCurrPeakX(ctx, res_id);
+}
 
-int cPopulationInterface::GetCurrPeakY(cAvidaContext& ctx, int res_id) 
-{ 
-  return m_world->GetPopulation().GetCurrPeakY(ctx, res_id); 
-} 
+int cPopulationInterface::GetCurrPeakY(cAvidaContext& ctx, int res_id)
+{
+  return m_world->GetPopulation().GetCurrPeakY(ctx, res_id);
+}
 
-int cPopulationInterface::GetFrozenPeakX(cAvidaContext& ctx, int res_id) 
-{ 
-  return m_world->GetPopulation().GetFrozenPeakX(ctx, res_id); 
-} 
+int cPopulationInterface::GetFrozenPeakX(cAvidaContext& ctx, int res_id)
+{
+  return m_world->GetPopulation().GetFrozenPeakX(ctx, res_id);
+}
 
-int cPopulationInterface::GetFrozenPeakY(cAvidaContext& ctx, int res_id) 
-{ 
-  return m_world->GetPopulation().GetFrozenPeakY(ctx, res_id); 
-} 
+int cPopulationInterface::GetFrozenPeakY(cAvidaContext& ctx, int res_id)
+{
+  return m_world->GetPopulation().GetFrozenPeakY(ctx, res_id);
+}
 
 void cPopulationInterface::TriggerDoUpdates(cAvidaContext& ctx)
 {
@@ -433,51 +433,51 @@ void cPopulationInterface::UpdateDemeResources(cAvidaContext& ctx, const Apto::A
   return m_world->GetPopulation().UpdateDemeCellResources(ctx, res_change, m_cell_id);
 }
 
-void cPopulationInterface::Die(cAvidaContext& ctx) 
+void cPopulationInterface::Die(cAvidaContext& ctx)
 {
   cPopulationCell & cell = m_world->GetPopulation().GetCell(m_cell_id);
   m_world->GetPopulation().KillOrganism(cell, ctx);
 }
 
-void cPopulationInterface::KillCellID(int target, cAvidaContext& ctx) 
+void cPopulationInterface::KillCellID(int target, cAvidaContext& ctx)
 {
   cPopulationCell & cell = m_world->GetPopulation().GetCell(target);
-  m_world->GetPopulation().KillOrganism(cell, ctx); 
+  m_world->GetPopulation().KillOrganism(cell, ctx);
 }
 
-void cPopulationInterface::Kaboom(int distance, cAvidaContext& ctx) 
+void cPopulationInterface::Kaboom(int distance, cAvidaContext& ctx)
 {
   cPopulationCell & cell = m_world->GetPopulation().GetCell(m_cell_id);
-  m_world->GetPopulation().Kaboom(cell, ctx, distance); 
+  m_world->GetPopulation().Kaboom(cell, ctx, distance);
 }
 
-void cPopulationInterface::SpawnDeme(cAvidaContext& ctx) 
+void cPopulationInterface::SpawnDeme(cAvidaContext& ctx)
 {
   // const int num_demes = m_world->GetPopulation().GetNumDemes();
-	
+
   // Spawn the current deme; no target ID will put it into a random deme.
   const int deme_id = m_world->GetPopulation().GetCell(m_cell_id).GetDemeID();
-	
-  m_world->GetPopulation().SpawnDeme(deme_id, ctx); 
+
+  m_world->GetPopulation().SpawnDeme(deme_id, ctx);
 }
 
 int cPopulationInterface::ReceiveValue()
 {
   cPopulationCell & cell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(cell.IsOccupied());
-  
+
   const int num_neighbors = cell.ConnectionList().GetSize();
   for (int i = 0; i < num_neighbors; i++) {
     cell.ConnectionList().CircNext();
-    
+
     cOrganism* cur_neighbor = cell.ConnectionList().GetFirst()->GetOrganism();
     if (cur_neighbor == NULL || cur_neighbor->GetSentActive() == false) {
       continue;
     }
-    
+
     return cur_neighbor->RetrieveSentValue();
   }
-  
+
   return 0;
 }
 
@@ -485,7 +485,7 @@ bool cPopulationInterface::InjectParasite(cOrganism* host, Systematics::UnitPtr 
 {
   assert(parent != NULL);
   assert(m_world->GetPopulation().GetCell(m_cell_id).GetOrganism() == host);
-  
+
   return m_world->GetPopulation().ActivateParasite(host, parent, label, injected_code);
 }
 
@@ -570,7 +570,7 @@ bool cPopulationInterface::SendMessage(cOrgMessage& msg, int cellid) {
   return SendMessage(msg, cell);
 }
 
-/*! Send a message to the faced organism, failing if this cell does not have 
+/*! Send a message to the faced organism, failing if this cell does not have
  neighbors or if the cell currently faced is not occupied.
  */
 bool cPopulationInterface::SendMessage(cOrgMessage& msg) {
@@ -588,25 +588,25 @@ bool cPopulationInterface::SendMessage(cOrgMessage& msg) {
     return message_sent;
   } else {
     cPopulationCell* rcell = cell.ConnectionList().GetFirst();
-    assert(rcell != 0); // Cells should never be null.	
+    assert(rcell != 0); // Cells should never be null.
     return SendMessage(msg, *rcell);
   }
 }
 
 
-/*! Send a message to the faced organism, failing if this cell does not have 
+/*! Send a message to the faced organism, failing if this cell does not have
  neighbors or if the cell currently faced is not occupied. */
 bool cPopulationInterface::BroadcastMessage(cOrgMessage& msg, int depth) {
   cPopulationCell& cell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(cell.IsOccupied()); // This organism; sanity.
-	
+
 	// Get the set of cells that are within range.
 	std::set<cPopulationCell*> cell_set;
 	cell.GetNeighboringCells(cell_set, depth);
-	
+
 	// Remove this cell from the set!
 	cell_set.erase(&cell);
-	
+
 	// Now, send a message towards each cell:
 	for(std::set<cPopulationCell*>::iterator i=cell_set.begin(); i!=cell_set.end(); ++i) {
 		SendMessage(msg, **i);
@@ -619,15 +619,15 @@ bool cPopulationInterface::BcastAlarm(int jump_label, int bcast_range) {
   bool successfully_sent(false);
   cPopulationCell& scell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(scell.IsOccupied()); // This organism; sanity.
-	
+
   const int ALARM_SELF = m_world->GetConfig().ALARM_SELF.Get(); // does an alarm affect the sender; 0=no  non-0=yes
-  
+
   if(bcast_range > 1) { // multi-hop messaging
     cDeme& deme = m_world->GetPopulation().GetDeme(GetDemeID());
     for(int i = 0; i < deme.GetSize(); i++) {
       int possible_receiver_id = deme.GetCellID(i);
       cPopulationCell& rcell = m_world->GetPopulation().GetCell(possible_receiver_id);
-			
+
       if(rcell.IsOccupied() && possible_receiver_id != GetCellID()) {
         //check distance
         pair<int, int> sender_pos = deme.GetCellPosition(GetCellID());
@@ -647,7 +647,7 @@ bool cPopulationInterface::BcastAlarm(int jump_label, int bcast_range) {
     for(int i = 0; i < scell.ConnectionList().GetSize(); i++) {
       cPopulationCell* rcell = scell.ConnectionList().GetPos(i);
       assert(rcell != NULL); // Cells should never be null.
-			
+
       // Fail if the cell we're facing is not occupied.
       if(!rcell->IsOccupied())
         continue;
@@ -657,7 +657,7 @@ bool cPopulationInterface::BcastAlarm(int jump_label, int bcast_range) {
       successfully_sent = true;
     }
   }
-  
+
   if(ALARM_SELF) {
     scell.GetOrganism()->moveIPtoAlarmLabel(jump_label);
   }
@@ -679,7 +679,7 @@ void cPopulationInterface::DivideOrgTestamentAmongDeme(double value){
 void cPopulationInterface::SendFlash() {
   cPopulationCell& cell = m_world->GetPopulation().GetCell(m_cell_id);
   assert(cell.IsOccupied());
-	
+
   for(int i=0; i<cell.ConnectionList().GetSize(); ++i) {
     cPopulationCell* neighbor = cell.ConnectionList().GetFirst();
     if(neighbor->IsOccupied()) {
@@ -695,173 +695,173 @@ int cPopulationInterface::GetStateGridID(cAvidaContext& ctx)
 }
 
 /* Rotate an organism to face the neighbor with the highest reputation */
-void cPopulationInterface::RotateToGreatestReputation() 
+void cPopulationInterface::RotateToGreatestReputation()
 {
-	
+
 	cPopulationCell& cell = m_world->GetPopulation().GetCell(GetCellID());
-	int high_rep=-1; 
+	int high_rep=-1;
 	vector <int> high_rep_orgs;
-	
-	
+
+
 	// loop to find the max reputation
 	for(int i=0; i<cell.ConnectionList().GetSize(); ++i) {
 		const cPopulationCell* faced_cell = cell.ConnectionList().GetFirst();
 		// cell->organism, if occupied, check reputation, etc.
 		if (IsNeighborCellOccupied()) {
 			cOrganism* cur_neighbor = faced_cell->GetOrganism();
-			
-			// if it has high reputation	
+
+			// if it has high reputation
 			if (cur_neighbor->GetReputation() >= high_rep) {
 				if (cur_neighbor->GetReputation() > high_rep) {
 					high_rep = cur_neighbor->GetReputation();
 					high_rep_orgs.clear();
 				}
-				high_rep_orgs.push_back(cur_neighbor->GetID()); 
-			} 
+				high_rep_orgs.push_back(cur_neighbor->GetID());
+			}
 		}
-		
+
 		// check the next neighbor
 		cell.ConnectionList().CircNext();
 	}
-	
+
 	// Pick an organism to donate to
-	
+
 	if (high_rep_orgs.size() > 0) {
-		unsigned int rand_num = m_world->GetRandom().GetUInt(0, high_rep_orgs.size()); 
+		unsigned int rand_num = m_world->GetRandom().GetUInt(0, high_rep_orgs.size());
 		int high_org_id = high_rep_orgs[rand_num];
-		
+
 		for(int i=0; i<cell.ConnectionList().GetSize(); ++i) {
 			const cPopulationCell* faced_cell = cell.ConnectionList().GetFirst();
-			
+
 			if (IsNeighborCellOccupied()) {
-				
+
 				cOrganism* cur_neighbor = faced_cell->GetOrganism();
-				
-				// if it has high reputation	
+
+				// if it has high reputation
 				if (cur_neighbor->GetID() == high_org_id) {
 					break;
 				}
 			}
-			
+
 			cell.ConnectionList().CircNext();
-			
+
 		}
 	}
-	
+
 }
 
-/* Rotate an organism to face the neighbor with the highest reputation 
+/* Rotate an organism to face the neighbor with the highest reputation
  where the neighbor has a different tag than the organism*/
-void cPopulationInterface::RotateToGreatestReputationWithDifferentTag(int tag) 
+void cPopulationInterface::RotateToGreatestReputationWithDifferentTag(int tag)
 {
-	
+
 	cPopulationCell& cell = m_world->GetPopulation().GetCell(GetCellID());
-	int high_rep=-1; 
+	int high_rep=-1;
 	vector <int> high_rep_orgs;
-	
+
 	// loop to find the max reputation
 	for(int i=0; i<cell.ConnectionList().GetSize(); ++i) {
 		const cPopulationCell* faced_cell = cell.ConnectionList().GetFirst();
 		// cell->organism, if occupied, check reputation, etc.
 		if (IsNeighborCellOccupied()) {
 			cOrganism* cur_neighbor = faced_cell->GetOrganism();
-			
-			// if it has high reputation	
+
+			// if it has high reputation
 			if ((cur_neighbor->GetTagLabel() != tag) && (cur_neighbor->GetReputation() >= high_rep)) {
 				if (cur_neighbor->GetReputation() > high_rep) {
 					high_rep = cur_neighbor->GetReputation();
 					high_rep_orgs.clear();
 				}
-				high_rep_orgs.push_back(cur_neighbor->GetID()); 
-			} 
+				high_rep_orgs.push_back(cur_neighbor->GetID());
+			}
 		}
-		
+
 		// check the next neighbor
 		cell.ConnectionList().CircNext();
 	}
-	
+
 	// Pick an organism to donate to
-	
+
 	if (high_rep_orgs.size() > 0) {
-		unsigned int rand_num = m_world->GetRandom().GetUInt(0, high_rep_orgs.size()); 
+		unsigned int rand_num = m_world->GetRandom().GetUInt(0, high_rep_orgs.size());
 		int high_org_id = high_rep_orgs[rand_num];
-		
+
 		for(int i=0; i<cell.ConnectionList().GetSize(); ++i) {
 			const cPopulationCell* faced_cell = cell.ConnectionList().GetFirst();
-			
+
 			if (IsNeighborCellOccupied()) {
-				
+
 				cOrganism* cur_neighbor = faced_cell->GetOrganism();
-				
-				// if it has high reputation	
+
+				// if it has high reputation
 				if (cur_neighbor->GetID() == high_org_id) {
 					break;
 				}
 			}
-			
+
 			cell.ConnectionList().CircNext();
-			
+
 		}
-		
-		
-		
+
+
+
 	}
-	
+
 }
 
-/* Rotate an organism to face the neighbor with the highest reputation 
+/* Rotate an organism to face the neighbor with the highest reputation
  where the neighbor has a different tag than the organism*/
-void cPopulationInterface::RotateToGreatestReputationWithDifferentLineage(int line) 
+void cPopulationInterface::RotateToGreatestReputationWithDifferentLineage(int line)
 {
-	
+
 	cPopulationCell& cell = m_world->GetPopulation().GetCell(GetCellID());
-	int high_rep=-1; 
+	int high_rep=-1;
 	vector <int> high_rep_orgs;
-	
+
 	// loop to find the max reputation
 	for(int i=0; i<cell.ConnectionList().GetSize(); ++i) {
 		const cPopulationCell* faced_cell = cell.ConnectionList().GetFirst();
 		// cell->organism, if occupied, check reputation, etc.
 		if (IsNeighborCellOccupied()) {
 			cOrganism* cur_neighbor = faced_cell->GetOrganism();
-			
-			// if it has high reputation	
+
+			// if it has high reputation
 			if ((cur_neighbor->GetLineageLabel() != line) && (cur_neighbor->GetReputation() >= high_rep)) {
 				if (cur_neighbor->GetReputation() > high_rep) {
 					high_rep = cur_neighbor->GetReputation();
 					high_rep_orgs.clear();
 				}
-				high_rep_orgs.push_back(cur_neighbor->GetID()); 
-			} 
+				high_rep_orgs.push_back(cur_neighbor->GetID());
+			}
 		}
-		
+
 		// check the next neighbor
 		cell.ConnectionList().CircNext();
 	}
-	
+
 	// Pick an organism to donate to
-	
+
 	if (high_rep_orgs.size() > 0) {
-		unsigned int rand_num = m_world->GetRandom().GetUInt(0, high_rep_orgs.size()); 
+		unsigned int rand_num = m_world->GetRandom().GetUInt(0, high_rep_orgs.size());
 		int high_org_id = high_rep_orgs[rand_num];
-		
+
 		for(int i=0; i<cell.ConnectionList().GetSize(); ++i) {
 			const cPopulationCell* faced_cell = cell.ConnectionList().GetFirst();
-			
+
 			if (IsNeighborCellOccupied()) {
-				
+
 				cOrganism* cur_neighbor = faced_cell->GetOrganism();
-				
-				// if it has high reputation	
+
+				// if it has high reputation
 				if (cur_neighbor->GetID() == high_org_id) {
 					break;
 				}
 			}
-			
+
 			cell.ConnectionList().CircNext();
-			
+
 		}
-	}	
+	}
 }
 
 /*! Link this organism's cell to the cell it is currently facing.
@@ -878,7 +878,7 @@ void cPopulationInterface::CreateLinkByFacing(double weight) {
 void cPopulationInterface::CreateLinkByXY(int x, int y, double weight) {
 	cDeme* deme = GetDeme(); assert(deme);
 	cPopulationCell* this_cell = GetCell(); assert(this_cell);
-	// the static casts here are to fix a problem with -2^31 being sent in as a 
+	// the static casts here are to fix a problem with -2^31 being sent in as a
 	// cell coordinate.  the problem is that a 2s-complement int can hold a negative
 	// number whose absolute value is too large for the int to hold.  when this happens,
 	// abs returns the value unmodified.
@@ -896,7 +896,7 @@ void cPopulationInterface::CreateLinkByXY(int x, int y, double weight) {
 void cPopulationInterface::CreateLinkByIndex(int idx, double weight) {
 	cDeme* deme = GetDeme(); assert(deme);
 	cPopulationCell* this_cell = GetCell(); assert(this_cell);
-	// the static casts here are to fix a problem with -2^31 being sent in as a 
+	// the static casts here are to fix a problem with -2^31 being sent in as a
 	// cell coordinate.  the problem is that a 2s-complement int can hold a negative
 	// number whose absolute value is too large for the int to hold.  when this happens,
 	// abs returns the value unmodified.
@@ -908,7 +908,7 @@ void cPopulationInterface::CreateLinkByIndex(int idx, double weight) {
 
 /*! Broadcast a message to all organisms that are connected by this network.
  */
-bool cPopulationInterface::NetworkBroadcast(cOrgMessage& msg) {	
+bool cPopulationInterface::NetworkBroadcast(cOrgMessage& msg) {
 	cDeme* deme = GetDeme(); assert(deme);
 	cPopulationCell* this_cell = GetCell(); assert(this_cell);
 	deme->GetNetwork().BroadcastToNeighbors(*this_cell, msg, this);
@@ -969,13 +969,13 @@ void cPopulationInterface::DoDemeOutput(cAvidaContext& ctx, int value)
 
 
 /*! Called when this individual is the donor organism during conjugation.
- 
+
  This method causes this individual to "donate" a fragment of its own genome to
  another organism selected from the population.
  */
 void cPopulationInterface::DoHGTDonation(cAvidaContext& ctx) {
 	cPopulationCell* target=0;
-	
+
 	switch(m_world->GetConfig().HGT_CONJUGATION_METHOD.Get()) {
 		case 0: { // selected at random from neighborhood
 			std::set<cPopulationCell*> occupied_cell_set;
@@ -1007,7 +1007,7 @@ void cPopulationInterface::DoHGTDonation(cAvidaContext& ctx) {
 	fragment_list_type fragments;
   ConstInstructionSequencePtr seq;
   seq.DynamicCastFrom(GetOrganism()->GetGenome().Representation());
-	cGenomeUtil::RandomSplit(ctx, 
+	cGenomeUtil::RandomSplit(ctx,
 													 m_world->GetConfig().HGT_FRAGMENT_SIZE_MEAN.Get(),
 													 m_world->GetConfig().HGT_FRAGMENT_SIZE_VARIANCE.Get(),
 													 *seq,
@@ -1017,18 +1017,18 @@ void cPopulationInterface::DoHGTDonation(cAvidaContext& ctx) {
 
 
 /*! Called when this organism "requests" an HGT conjugation.
- 
+
  Technically, organisms don't request an HGT conjugation.  However, this provides
  an alternative to population-level conjugational events.  Specifically, whenever
  an organism replicates, there is the possibility that its offspring conjugates
  with another organism in the population -- that is what we check here.
- 
+
  This method is closely related to HGT donation, except here we're looking for
  the donatOR, instead of the donatEE.
  */
 void cPopulationInterface::DoHGTConjugation(cAvidaContext& ctx) {
 	cPopulationCell* source=0;
-	
+
 	switch(m_world->GetConfig().HGT_CONJUGATION_METHOD.Get()) {
 		case 0: { // selected at random from neighborhood
 			std::set<cPopulationCell*> occupied_cell_set;
@@ -1060,33 +1060,33 @@ void cPopulationInterface::DoHGTConjugation(cAvidaContext& ctx) {
 	fragment_list_type fragments;
   ConstInstructionSequencePtr seq;
   seq.DynamicCastFrom(source->GetOrganism()->GetGenome().Representation());
-	cGenomeUtil::RandomSplit(ctx, 
+	cGenomeUtil::RandomSplit(ctx,
 													 m_world->GetConfig().HGT_FRAGMENT_SIZE_MEAN.Get(),
 													 m_world->GetConfig().HGT_FRAGMENT_SIZE_VARIANCE.Get(),
 													 *seq,
 													 fragments);
-	ReceiveHGTDonation(fragments[ctx.GetRandom().GetInt(fragments.size())]);	
+	ReceiveHGTDonation(fragments[ctx.GetRandom().GetInt(fragments.size())]);
 }
 
 
-/*! Perform an HGT mutation on this offspring. 
- 
+/*! Perform an HGT mutation on this offspring.
+
  HGT mutations are location-dependent, hence they are piped through the population
  interface as opposed to being implemented in the CPU or organism.
 
- There is the possibility that more than one HGT mutation occurs when this method 
+ There is the possibility that more than one HGT mutation occurs when this method
  is called.
  */
 void cPopulationInterface::DoHGTMutation(cAvidaContext& ctx, Genome& offspring) {
 	InitHGTSupport();
-	
+
 	// first, gather up all the fragments that we're going to be inserting into this offspring:
 	// these come from a per-replication conjugational event:
 	if((m_world->GetConfig().HGT_CONJUGATION_P.Get() > 0.0)
 		 && (ctx.GetRandom().P(m_world->GetConfig().HGT_CONJUGATION_P.Get()))) {
 		DoHGTConjugation(ctx);
-	}	
-	
+	}
+
 	// the pending list includes both the fragments selected via the above process,
 	// as well as from population-level conjugational events (see cPopulationActions.cc:cActionAvidianConjugation).
 	fragment_list_type& fragments = m_hgt_support->_pending;
@@ -1094,10 +1094,10 @@ void cPopulationInterface::DoHGTMutation(cAvidaContext& ctx, Genome& offspring) 
 	// these come from "natural" competence (ie, eating the dead):
 	if((m_world->GetConfig().HGT_COMPETENCE_P.Get() > 0.0)
 		 && (ctx.GetRandom().P(m_world->GetConfig().HGT_COMPETENCE_P.Get()))) {
-		
+
 		// get this organism's cell:
 		cPopulationCell& cell = m_world->GetPopulation().GetCell(m_cell_id);
-		
+
 		// the hgt source controls where the genetic material for HGT comes from.
 		switch(m_world->GetConfig().HGT_SOURCE.Get()) {
 			case 0: { // source is other genomes, nothing to do here (default)
@@ -1118,25 +1118,25 @@ void cPopulationInterface::DoHGTMutation(cAvidaContext& ctx, Genome& offspring) 
 				break;
 			}
 		}
-		
+
 		// do we have any fragments available?
 		if(cell.CountGenomeFragments() > 0) {
 			// add a randomly-selected fragment to the list of fragments to be HGT'd,
 			// remove it from the cell, and adjust the level of HGT resource.
 			fragment_list_type::iterator selected=cell.GetFragments().begin();
 			std::advance(selected, ctx.GetRandom().GetInt(cell.GetFragments().size()));
-			fragments.insert(fragments.end(), *selected);			
+			fragments.insert(fragments.end(), *selected);
 			m_world->GetPopulation().AdjustHGTResource(ctx, -selected->GetSize());
 			cell.GetFragments().erase(selected);
 		}
 	}
-	
+
 	// now, for each fragment being HGT'd, figure out where to put it:
   InstructionSequencePtr offspring_seq_p;
   GeneticRepresentationPtr offspring_rep_p = offspring.Representation();
   offspring_seq_p.DynamicCastFrom(offspring_rep_p);
   InstructionSequence& offspring_seq = *offspring_seq_p;
-  
+
 	for(fragment_list_type::iterator i=fragments.begin(); i!=fragments.end(); ++i) {
 		cGenomeUtil::substring_match location;
 		switch(m_world->GetConfig().HGT_FRAGMENT_SELECTION.Get()) {
@@ -1158,7 +1158,7 @@ void cPopulationInterface::DoHGTMutation(cAvidaContext& ctx, Genome& offspring) 
 				break;
 			}
 		}
-		
+
 		// at this stage, we have a fragment and a location we're going to put it.
 		// there are various transformations to this fragment that we could perform,
 		// more as controls than anything else.
@@ -1181,9 +1181,9 @@ void cPopulationInterface::DoHGTMutation(cAvidaContext& ctx, Genome& offspring) 
         ctx.Driver().Feedback().Error("HGT_FRAGMENT_XFORM is set to an invalid value.");
         ctx.Driver().Abort(Avida::INVALID_CONFIG);
 				break;
-			}				
+			}
 		}
-		
+
 		// do the mutation; we currently support insertions and replacements, but this can
 		// be extended in the same way as fragment selection if need be.
 		if(ctx.GetRandom().P(m_world->GetConfig().HGT_INSERTION_MUT_P.Get())) {
@@ -1194,11 +1194,11 @@ void cPopulationInterface::DoHGTMutation(cAvidaContext& ctx, Genome& offspring) 
 			// respecting circularity.
 			offspring_seq.Replace(*i, location.begin, location.end);
 		}
-		
+
 		// stats tracking:
 		m_world->GetStats().GenomeFragmentInserted(GetOrganism(), *i, location);
 	}
-	
+
 	// clean-up; be sure to empty the pending list so that we don't end up doing an HGT
 	// operation multiple times on the same fragment.
 	fragments.clear();
@@ -1220,7 +1220,7 @@ void cPopulationInterface::HGTMatchPlacement(cAvidaContext& ctx, const Instructi
  In this fragment selection method, the
  match location within the genome is calculated on a "trimmed" fragment.  Specifically,
  the trimmed fragment has all duplicate instructions at its end removed prior to the match.
- 
+
  Mutations to the offspring are still performed using the entire fragment, so this effectively
  increases the insertion rate.  E.g., hgt(abcde, abcccc) -> abccccde.
  */
@@ -1232,14 +1232,14 @@ void cPopulationInterface::HGTTrimmedPlacement(cAvidaContext& ctx, const Instruc
 	while((trimmed.GetSize() >= 2) && (trimmed[trimmed.GetSize()-1] == trimmed[trimmed.GetSize()-2])) {
 		trimmed.Remove(trimmed.GetSize()-1);
 	}
-	
+
 	// find the location within the offspring's genome that best matches the selected fragment:
 	location = cGenomeUtil::FindUnbiasedCircularMatch(ctx, offspring, trimmed);
 }
 
 
 /*! Place the fragment at a random location.
- 
+
  Here we select a random location for the fragment within the offspring.
  The beginning of the fragment location is selected at random, while the end is selected a
  random distance (up to the length of the selected fragment * 2) instructions away.
@@ -1268,12 +1268,12 @@ bool cPopulationInterface::Move(cAvidaContext& ctx, int src_id, int dest_id)
   return m_world->GetPopulation().MoveOrganisms(ctx, src_id, dest_id, -1);
 }
 
-void cPopulationInterface::AddLiveOrg()  
+void cPopulationInterface::AddLiveOrg()
 {
   m_world->GetPopulation().AddLiveOrg(GetOrganism());
 }
 
-void cPopulationInterface::RemoveLiveOrg() 
+void cPopulationInterface::RemoveLiveOrg()
 {
   m_world->GetPopulation().RemoveLiveOrg(GetOrganism());
 }
@@ -1328,9 +1328,9 @@ int cPopulationInterface::NumberGroupJuvs(int group_id)
   return m_world->GetPopulation().NumberGroupJuvs(group_id);
 }
 
-void cPopulationInterface::ChangeGroupMatingTypes(cOrganism* org, int group_id, int old_type, int new_type)  
+void cPopulationInterface::ChangeGroupMatingTypes(cOrganism* org, int group_id, int old_type, int new_type)
 {
-  m_world->GetPopulation().ChangeGroupMatingTypes(org, group_id, old_type, new_type);  
+  m_world->GetPopulation().ChangeGroupMatingTypes(org, group_id, old_type, new_type);
 }
 
 /* Increases tolerance towards the addition of members to the group.
@@ -1344,14 +1344,14 @@ void cPopulationInterface::ChangeGroupMatingTypes(cOrganism* org, int group_id, 
 int cPopulationInterface::IncTolerance(const int tolerance_type, cAvidaContext &ctx)
 {
   int group_id = GetOrganism()->GetOpinion().first;
-  
+
   if (tolerance_type == 0) {
     // Modify tolerance towards immigrants
     PushToleranceInstExe(0, ctx);
-    
+
     // Update tolerance list by removing the most recent dec_tolerance record
     delete GetOrganism()->GetPhenotype().GetToleranceImmigrants().Pop();
-    
+
     // If not at individual's max tolerance, adjust both caches
     if (GetOrganism()->GetPhenotype().GetIntolerances()[0].second != 0) {
       GetOrganism()->GetPhenotype().GetIntolerances()[0].second--;
@@ -1368,10 +1368,10 @@ int cPopulationInterface::IncTolerance(const int tolerance_type, cAvidaContext &
   if (tolerance_type == 1) {
     // Modify tolerance towards own offspring
     PushToleranceInstExe(1, ctx);
-    
+
     // Update tolerance list by removing the most recent dec_tolerance record
     delete  GetOrganism()->GetPhenotype().GetToleranceOffspringOwn().Pop();
-    
+
     // If not at max tolerance, decrease the intolerance cache
     if (GetOrganism()->GetPhenotype().GetIntolerances()[1].second != 0) {
       GetOrganism()->GetPhenotype().GetIntolerances()[1].second--;
@@ -1382,10 +1382,10 @@ int cPopulationInterface::IncTolerance(const int tolerance_type, cAvidaContext &
   if (tolerance_type == 2) {
     // Modify tolerance towards other offspring of the group
     PushToleranceInstExe(2, ctx);
-    
+
     // Update tolerance list by removing the most recent dec_tolerance record
     delete GetOrganism()->GetPhenotype().GetToleranceOffspringOthers().Pop();
-    
+
     // If not at max tolerance, decrease the intolerance cache
     if (GetOrganism()->GetPhenotype().GetIntolerances()[2].second != 0) {
       GetOrganism()->GetPhenotype().GetIntolerances()[2].second--;
@@ -1410,16 +1410,16 @@ int cPopulationInterface::DecTolerance(const int tolerance_type, cAvidaContext &
   const int cur_update = m_world->GetStats().GetUpdate();
   const int tolerance_max = m_world->GetConfig().MAX_TOLERANCE.Get();
   int group_id = GetOrganism()->GetOpinion().first;
-  
+
   if (tolerance_type == 0) {
     // Modify tolerance towards immigrants
     PushToleranceInstExe(3, ctx);
-    
+
     // Update tolerance list by inserting new record (at the front)
     tList<int>& tolerance_list = GetOrganism()->GetPhenotype().GetToleranceImmigrants();
     tolerance_list.Push(new int(cur_update));
     if (tolerance_list.GetSize() > tolerance_max) delete tolerance_list.PopRear();
-    
+
     // If not at min tolerance, increase the intolerance cache
     if (GetOrganism()->GetPhenotype().GetIntolerances()[0].second != tolerance_max) {
       GetOrganism()->GetPhenotype().GetIntolerances()[0].second++;
@@ -1430,18 +1430,18 @@ int cPopulationInterface::DecTolerance(const int tolerance_type, cAvidaContext &
         else if (GetOrganism()->GetPhenotype().GetMatingType() == MATING_TYPE_JUVENILE) GetGroupIntolerances(group_id, 0, 2)++;
       }
     }
-    
+
     // Return modified tolerance total for immigrants.
     return GetOrganism()->GetPhenotype().CalcToleranceImmigrants();
   }
   if (tolerance_type == 1) {
     PushToleranceInstExe(4, ctx);
-    
+
     // Update tolerance list by inserting new record (at the front)
     tList<int>& tolerance_list = GetOrganism()->GetPhenotype().GetToleranceOffspringOwn();
     tolerance_list.Push(new int(cur_update));
     if(tolerance_list.GetSize() > tolerance_max) delete tolerance_list.PopRear();
-    
+
     // If not at min tolerance, increase the intolerance cache
     if (GetOrganism()->GetPhenotype().GetIntolerances()[1].second != tolerance_max) {
       GetOrganism()->GetPhenotype().GetIntolerances()[1].second++;
@@ -1452,12 +1452,12 @@ int cPopulationInterface::DecTolerance(const int tolerance_type, cAvidaContext &
   }
   if (tolerance_type == 2) {
     PushToleranceInstExe(5, ctx);
-    
+
     // Update tolerance list by inserting new record (at the front)
     tList<int>& tolerance_list = GetOrganism()->GetPhenotype().GetToleranceOffspringOthers();
     tolerance_list.Push(new int(cur_update));
     if(tolerance_list.GetSize() > tolerance_max) delete tolerance_list.PopRear();
-    
+
     // If not at min tolerance, increase the intolerance cache
     if (GetOrganism()->GetPhenotype().GetIntolerances()[2].second != tolerance_max) {
       GetOrganism()->GetPhenotype().GetIntolerances()[2].second++;
@@ -1505,21 +1505,21 @@ void cPopulationInterface::PushToleranceInstExe(int tol_inst, cAvidaContext& ctx
     m_world->GetStats().PushToleranceInstExe(tol_inst);
     return;
   }
-  
+
   const Apto::Array<double> res_count = GetResources(ctx);
-  
+
   int group_id = GetOrganism()->GetOpinion().first;
   int group_size = NumberOfOrganismsInGroup(group_id);
   double resource_level = res_count[group_id];
   int tol_max = m_world->GetConfig().MAX_TOLERANCE.Get();
-  
+
   double immigrant_odds = CalcGroupOddsImmigrants(group_id, -1);
   double offspring_own_odds;
   double offspring_others_odds;
   int tol_immi = GetOrganism()->GetPhenotype().CalcToleranceImmigrants();
   int tol_own;
   int tol_others;
-  
+
   if(m_world->GetConfig().TOLERANCE_VARIATIONS.Get() > 0) {
     offspring_own_odds = 1.0;
     offspring_others_odds = 1.0;
@@ -1531,11 +1531,11 @@ void cPopulationInterface::PushToleranceInstExe(int tol_inst, cAvidaContext& ctx
     tol_own = GetOrganism()->GetPhenotype().CalcToleranceOffspringOwn();
     tol_others = GetOrganism()->GetPhenotype().CalcToleranceOffspringOthers();
   }
-  
+
   double odds_immi = immigrant_odds * 100;
   double odds_own = offspring_own_odds * 100;
   double odds_others = offspring_others_odds * 100;
-  
+
   m_world->GetStats().PushToleranceInstExe(tol_inst, group_id, group_size, resource_level, odds_immi, odds_own, odds_others, tol_immi, tol_own, tol_others, tol_max);
   return;
 }
@@ -1602,7 +1602,7 @@ void cPopulationInterface::InjectPreyClone(cAvidaContext& ctx, int gen_id)
   Apto::Array<cOrganism*> TriedIdx(live_org_list.GetSize());
   int list_size = TriedIdx.GetSize();
   for (int i = 0; i < list_size; i ++) { TriedIdx[i] = live_org_list[i]; }
-  
+
   int idx = ctx.GetRandom().GetUInt(list_size);
   while (org_to_clone == NULL) {
     cOrganism* org_at = TriedIdx[idx];
@@ -1651,7 +1651,7 @@ Apto::Array<int> cPopulationInterface::GetFormedGroupArray()
  * Each cell contains an array of the organisms with avatars in that cell, linking the cells back to
  * the organisms (in cPopulationCell). This allows both multiple organisms to occupy the same cell
  * and organisms to occupy/interact with multiple cells. Currently only two types of avatars are
- * supported: input and output, also used as predators and prey. 
+ * supported: input and output, also used as predators and prey.
  */
 
 // Check if the avatar has any output avatars sharing the same cell
@@ -2046,7 +2046,7 @@ void cPopulationInterface::SetAVFacedCellID(cAvidaContext& ctx, int av_num)
         if (y == 0) {
           y += 1;
           off_the_edge_facing = true;
-        } 
+        }
         else if (y == (y_size - 1)) {
           y -= 1;
           off_the_edge_facing = true;
@@ -2056,7 +2056,7 @@ void cPopulationInterface::SetAVFacedCellID(cAvidaContext& ctx, int av_num)
         if (x == 0) {
           x += 1;
           off_the_edge_facing = true;
-        } 
+        }
         else if (y == (y_size - 1)) {
           x -= 1;
           off_the_edge_facing = true;
@@ -2106,13 +2106,13 @@ void cPopulationInterface::SetAVFacedCellID(cAvidaContext& ctx, int av_num)
               y -= 1;
               off_the_edge_facing = true;
             // West edge facing west
-            } 
+            }
             else if (facing == 6) {
               if (ctx.GetRandom().GetInt(0, 2)) y += 1;
               else y -= 1;
               off_the_edge_facing = true;
             }
-            // West edge facing northwest                                                   
+            // West edge facing northwest
             else if (facing == 7) {
               y += 1;
               off_the_edge_facing = true;
@@ -2160,7 +2160,7 @@ void cPopulationInterface::SetAVFacedCellID(cAvidaContext& ctx, int av_num)
               y -= 1;
               off_the_edge_facing = true;
             // East edge facing east
-            } 
+            }
             else if (facing == 2) {
               if (ctx.GetRandom().GetInt(0, 2)) y += 1;
               else y -= 1;
@@ -2180,7 +2180,7 @@ void cPopulationInterface::SetAVFacedCellID(cAvidaContext& ctx, int av_num)
             x -= 1;
             off_the_edge_facing = true;
           // North edge facing north
-          } 
+          }
           else if (facing == 0) {
             if (ctx.GetRandom().GetInt(0, 2)) x += 1;
             else x -= 1;
@@ -2199,7 +2199,7 @@ void cPopulationInterface::SetAVFacedCellID(cAvidaContext& ctx, int av_num)
             x += 1;
             off_the_edge_facing = true;
           // South edge facing south
-          } 
+          }
           else if (facing == 4) {
             if (ctx.GetRandom().GetInt(0, 2)) x += 1;
             else x -= 1;

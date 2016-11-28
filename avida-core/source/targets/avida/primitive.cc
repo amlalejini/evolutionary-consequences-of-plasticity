@@ -18,6 +18,9 @@
  *
  */
 
+#ifndef __AVIDA_PRIMITIVE__WTF
+#define __AVIDA_PRIMITIVE__WTF
+
 #include "AvidaTools.h"
 
 #include "apto/core/FileSystem.h"
@@ -37,14 +40,14 @@ int main(int argc, char * argv[])
 {
 
   Avida::Initialize();
-  
+
   cout << Avida::Version::Banner() << endl;
 
   // Initialize the configuration data...
   Apto::Map<Apto::String, Apto::String> defs;
   cAvidaConfig* cfg = new cAvidaConfig();
   Avida::Util::ProcessCmdLineArgs(argc, argv, cfg, defs);
-  
+
   cUserFeedback feedback;
   Avida::World* new_world = new Avida::World();
   cWorld* world = cWorld::Initialize(cfg, cString(Apto::FileSystem::GetCWD()), new_world, &feedback, &defs);
@@ -59,7 +62,7 @@ int main(int argc, char * argv[])
   }
 
   if (!world) return -1;
-  
+
   const int rand_seed = world->GetConfig().RANDOM_SEED.Get();
   cout << "Random Seed: " << rand_seed;
   if (rand_seed != world->GetRandom().Seed()) cout << " -> " << world->GetRandom().Seed();
@@ -69,8 +72,10 @@ int main(int argc, char * argv[])
     cout << "Data Directory: " << Avida::Output::Manager::Of(new_world)->OutputPath() << endl;
 
   cout << endl;
-  
+
   (new Avida2Driver(world, new_world))->Run();
-  
+
   return 0;
 }
+
+#endif

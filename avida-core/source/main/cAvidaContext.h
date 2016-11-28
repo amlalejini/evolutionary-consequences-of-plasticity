@@ -40,23 +40,23 @@ private:
   bool m_analyze;
   bool m_testing;
   bool m_org_faults;
-  
+
 public:
   cAvidaContext(Avida::WorldDriver* driver, Apto::Random& rng) : m_driver(driver), m_rng(&rng), m_analyze(false), m_testing(false), m_org_faults(false) { ; }
   cAvidaContext(Avida::WorldDriver* driver, Apto::Random* rng) : m_driver(driver), m_rng(rng), m_analyze(false), m_testing(false), m_org_faults(false) { ; }
   ~cAvidaContext() { ; }
-  
+
   Avida::WorldDriver& Driver() { return *m_driver; }
   bool HasDriver() const { return (m_driver != NULL); }
-  
+
   void SetRandom(Apto::Random& rng) { m_rng = &rng; }
   void SetRandom(Apto::Random* rng) { m_rng = rng; }
   Apto::Random& GetRandom() { return *m_rng; }
-  
+
   void SetAnalyzeMode() { m_analyze = true; }
   void ClearAnalyzeMode() { m_analyze = false; }
   bool GetAnalyzeMode() { return m_analyze; }
-  
+
   void SetTestMode()   { m_testing = true; }   //@MRR  Some modifications I've made need to distinguish
   void ClearTestMode() { m_testing = false; }  //      when we're running a genotype through a test-cpu
   bool GetTestMode()   { return m_testing; }   //      versus when we're not when dealing with reactions rewards.
