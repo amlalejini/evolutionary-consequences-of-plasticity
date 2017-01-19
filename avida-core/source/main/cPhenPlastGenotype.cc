@@ -50,7 +50,7 @@ void cPhenPlastGenotype::Process(cCPUTestInfo& test_info, cWorld* world, cAvidaC
   cTestCPU* test_cpu = m_world->GetHardwareManager().CreateTestCPU(ctx);
 
   if (m_num_trials > 1) test_info.UseRandomInputs(true);
-  std::cout << test_info.GetUseRandomInputs() << std::endl;
+  
   for (int k = 0; k < m_num_trials; k++){
     test_cpu->TestGenome(ctx, test_info, m_genome);
     //Is this a new phenotype?

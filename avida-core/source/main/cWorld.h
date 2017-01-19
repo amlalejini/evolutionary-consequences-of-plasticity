@@ -35,7 +35,7 @@
 
 #include "../../../../Empirical/evo/LineageTracker.h"
 #include "../../../../Empirical/evo/OEE.h"
-#include "../../../../Empirical/tools/signal.h"
+#include "../../../../Empirical/control/Signal.h"
 #include "../../../../Empirical/tools/memo_function.h"
 
 #include <cassert>
@@ -148,12 +148,12 @@ public:
 
   emp::memo_function<double(const Avida::InstructionSequence)> fit_fun;
 
-  emp::LinkKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
-  emp::LinkKey OnOffspringReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return offspring_ready_sig.AddAction(fun); }
-  emp::LinkKey OnOrgPlacement(const std::function<void(int)> & fun) { return org_placement_sig.AddAction(fun); }
-  emp::LinkKey OnOrgDeath(const std::function<void(int)> & fun) { return org_death_sig.AddAction(fun); }
-  emp::LinkKey OnUpdate(const std::function<void(int)> & fun) { return on_update_sig.AddAction(fun); }
-  emp::LinkKey OnInjectReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return inject_ready_sig.AddAction(fun); }
+  emp::SignalKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
+  emp::SignalKey OnOffspringReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return offspring_ready_sig.AddAction(fun); }
+  emp::SignalKey OnOrgPlacement(const std::function<void(int)> & fun) { return org_placement_sig.AddAction(fun); }
+  emp::SignalKey OnOrgDeath(const std::function<void(int)> & fun) { return org_death_sig.AddAction(fun); }
+  emp::SignalKey OnUpdate(const std::function<void(int)> & fun) { return on_update_sig.AddAction(fun); }
+  emp::SignalKey OnInjectReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return inject_ready_sig.AddAction(fun); }
 
   void SetDriver(WorldDriver* driver, bool take_ownership = false);
 

@@ -64,7 +64,7 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
        cAnalyzeGenotype genotype(this, gen);
        genotype.Recalculate(*m_ctx);
        double fit = genotype.GetFitness();
-     //   std::cout << " ending fit " << fit <<std::endl;
+    //    std::cout << " ending fit " << fit <<std::endl;
        return fit;
    };
     // OnUpdate([](int update){std::cout << update << " it works!" << std::endl;});
