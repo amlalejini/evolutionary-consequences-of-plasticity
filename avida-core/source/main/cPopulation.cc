@@ -1373,9 +1373,10 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
     genotype->SetLastForagerType(in_organism->GetParentFT());
   }
 
-  const InstructionSequence* const_seq = &(*seq);
+  const InstructionSequence* const_seq = new InstructionSequence(*seq);
   m_world->offspring_ready_sig.Trigger(const_seq);
   m_world->org_placement_sig.Trigger(target_cell.GetID());
+  delete const_seq;
 
   bool org_survived = true;
   // For tolerance_window, we cheated by dumping doomed offspring into cell (X * Y) - 1 ...now that we updated the stats, we need to

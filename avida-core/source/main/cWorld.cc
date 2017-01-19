@@ -49,7 +49,6 @@
 
 using namespace AvidaTools;
 
-
 cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
   : m_working_dir(wd), m_analyze(NULL), m_conf(cfg), m_ctx(NULL)
   , m_env(NULL), m_event_list(NULL), m_hw_mgr(NULL), m_pop(NULL), m_stats(NULL), m_mig_mat(NULL), m_driver(NULL), m_data_mgr(NULL)
@@ -58,6 +57,16 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
   , org_placement_sig("org-placement"), on_update_sig("on-update")
   , org_death_sig("on-death")
 {
+
+    fit_fun = [this](const Avida::InstructionSequence& seq){
+    //    std::cout << "starting fit " <<std::endl;
+       Avida::Genome gen(this->GetHardwareManager().m_inst_sets[0]->GetHardwareType(), this->props, GeneticRepresentationPtr(new InstructionSequence(seq)));
+       cAnalyzeGenotype genotype(this, gen);
+       genotype.Recalculate(*m_ctx);
+       double fit = genotype.GetFitness();
+     //   std::cout << " ending fit " << fit <<std::endl;
+       return fit;
+   };
     // OnUpdate([](int update){std::cout << update << " it works!" << std::endl;});
 }
 
@@ -207,31 +216,21 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     success = false;
   }
 
-  std::cout << "startging setup" << std::endl;
+  // std::cout << "startging setup" << std::endl;
   lineageM.Setup(this);
-  std::cout << "lineage setup" << std::endl;
+  // std::cout << "lineage setup" << std::endl;
   OEE_stats.Setup(this);
-  std::cout << "Stats set up" << std::endl;
-  std::cout << this->GetHardwareManager().GetNumInstSets() << std::endl;
-  std::cout << "test" << std::endl;
+  // std::cout << "Stats set up" << std::endl;
+  // std::cout << this->GetHardwareManager().GetNumInstSets() << std::endl;
+  // std::cout << "test" << std::endl;
   cInstSet is = *(this->GetHardwareManager().m_inst_sets[0]);
-  std::cout << "Got hardware manager" << std::endl;
+  // std::cout << "Got hardware manager" << std::endl;
   OEE_stats.NULL_VAL = is.ActivateNullInst();
-  std::cout << "Null set" << std::endl;
+  // std::cout << "Null set" << std::endl;
   const char * inst_set_name = (const char*)is.GetInstSetName();
-  HardwareTypeID hw_type = is.GetHardwareType();
   cHardwareManager::SetupPropertyMap(props, inst_set_name);
-
-  OEE_stats.SetDefaultFitnessFun([this, hw_type](const Avida::InstructionSequence* seq){
-    //   std::cout << "starting fit " <<std::endl;
-      Avida::Genome gen(hw_type, this->props, GeneticRepresentationPtr(new InstructionSequence(*seq)));
-      cAnalyzeGenotype genotype(this, gen);
-      genotype.Recalculate(*m_ctx);
-      double fit = genotype.GetFitness();
-    //   std::cout << " ending fit " << fit <<std::endl;
-      return fit;
-  });
-  std::cout << "initialized" << std::endl;
+  OEE_stats.SetDefaultFitnessFun(fit_fun);
+  // std::cout << "initialized" << std::endl;
 
   return success;
 }

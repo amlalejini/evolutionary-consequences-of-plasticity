@@ -36,6 +36,7 @@
 #include "../../../../Empirical/evo/LineageTracker.h"
 #include "../../../../Empirical/evo/OEE.h"
 #include "../../../../Empirical/tools/signal.h"
+#include "../../../../Empirical/tools/memo_function.h"
 
 #include <cassert>
 
@@ -145,6 +146,8 @@ public:
 
   Avida::InstructionSequence non_const_seq;
 
+  emp::memo_function<double(const Avida::InstructionSequence)> fit_fun;
+
   emp::LinkKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
   emp::LinkKey OnOffspringReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return offspring_ready_sig.AddAction(fun); }
   emp::LinkKey OnOrgPlacement(const std::function<void(int)> & fun) { return org_placement_sig.AddAction(fun); }
@@ -169,8 +172,8 @@ public:
   WorldDriver& GetDriver() { return *m_driver; }
   World* GetNewWorld() { return m_new_world; }
 
-  emp::evo::LineageTracker_Standalone<Avida::InstructionSequence> lineageM;
-  // If there are multiple instruction ets this could be a problem
+  emp::evo::LineageTrackerPruned_Standalone<Avida::InstructionSequence> lineageM;
+  // // If there are multiple instruction ets this could be a problem
   emp::evo::OEEStatsManager<emp::evo::PopulationManager_Base<InstructionSequence> > OEE_stats;
 
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }
