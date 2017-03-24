@@ -137,12 +137,12 @@ public:
   virtual ~cWorld();
 
   // Signals triggered by the world.
-  emp::Signal<int> before_repro_sig;       // Trigger: Immediately prior to producing offspring
-  emp::Signal<const Avida::InstructionSequence*> offspring_ready_sig;  // Trigger: Offspring about to enter population
-  emp::Signal<const Avida::InstructionSequence*> inject_ready_sig;     // Trigger: New org about to be added to population
-  emp::Signal<int> org_placement_sig;      // Trigger: Organism has been added to population
-  emp::Signal<int> org_death_sig;      // Trigger: Organism has been added to population
-  emp::Signal<int> on_update_sig;          // Trigger: New update is starting.
+  emp::Signal<void(int)> before_repro_sig;       // Trigger: Immediately prior to producing offspring
+  emp::Signal<void(const Avida::InstructionSequence*)> offspring_ready_sig;  // Trigger: Offspring about to enter population
+  emp::Signal<void(const Avida::InstructionSequence*)> inject_ready_sig;     // Trigger: New org about to be added to population
+  emp::Signal<void(int)> org_placement_sig;      // Trigger: Organism has been added to population
+  emp::Signal<void(int)> org_death_sig;      // Trigger: Organism has been added to population
+  emp::Signal<void(int)> on_update_sig;          // Trigger: New update is starting.
 
   Avida::InstructionSequence non_const_seq;
 

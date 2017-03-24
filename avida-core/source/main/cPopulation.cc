@@ -6087,6 +6087,10 @@ void cPopulation::ProcessPostUpdate(cAvidaContext& ctx)
   }
 
   for (int i = 0; i < deme_array.GetSize(); i++) deme_array[i].ProcessUpdate(ctx);
+  if (m_world->fit_fun.size() > 100000) {
+      std::cout << "Cleared!" << std::endl;
+      m_world->fit_fun.Clear();
+  }
 }
 
 void cPopulation::ProcessUpdateCellActions(cAvidaContext& ctx)
