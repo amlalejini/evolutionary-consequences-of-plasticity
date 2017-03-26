@@ -219,17 +219,17 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   // std::cout << "startging setup" << std::endl;
   lineageM.Setup(this);
   // std::cout << "lineage setup" << std::endl;
-  OEE_stats.Setup(this);
+  //OEE_stats.Setup(this);
   // std::cout << "Stats set up" << std::endl;
   // std::cout << this->GetHardwareManager().GetNumInstSets() << std::endl;
   // std::cout << "test" << std::endl;
   cInstSet is = *(this->GetHardwareManager().m_inst_sets[0]);
   // std::cout << "Got hardware manager" << std::endl;
-  OEE_stats.NULL_VAL = is.ActivateNullInst();
+  //OEE_stats.NULL_VAL = is.ActivateNullInst();
   // std::cout << "Null set" << std::endl;
-  const char * inst_set_name = (const char*)is.GetInstSetName();
-  cHardwareManager::SetupPropertyMap(props, inst_set_name);
-  OEE_stats.SetDefaultFitnessFun(fit_fun);
+  //const char * inst_set_name = (const char*)is.GetInstSetName();
+  //cHardwareManager::SetupPropertyMap(props, inst_set_name);
+  //OEE_stats.SetDefaultFitnessFun(fit_fun);
   // std::cout << "initialized" << std::endl;
 
   return success;

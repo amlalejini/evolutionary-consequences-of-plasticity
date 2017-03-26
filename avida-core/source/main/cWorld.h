@@ -174,7 +174,7 @@ public:
 
   emp::evo::LineageTrackerPruned_Standalone<Avida::InstructionSequence> lineageM;
   // // If there are multiple instruction ets this could be a problem
-  emp::evo::OEEStatsManager<emp::evo::PopulationManager_Base<InstructionSequence> > OEE_stats;
+  //emp::evo::OEEStatsManager<emp::evo::PopulationManager_Base<InstructionSequence> > OEE_stats;
 
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }
 
