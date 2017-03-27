@@ -38,6 +38,7 @@
 #include "../../../../Empirical/control/Signal.h"
 #include "../../../../Empirical/tools/memo_function.h"
 
+#include <array>
 #include <cassert>
 
 class cAnalyze;
@@ -171,6 +172,9 @@ public:
   cStats& GetStats() { return *m_stats; }
   WorldDriver& GetDriver() { return *m_driver; }
   World* GetNewWorld() { return m_new_world; }
+
+  std::array<int, 9> tasks = {{0,0,0,0,0,0,0,0,0}};
+  bool all_tasks = false;
 
   emp::evo::LineageTrackerPruned_Standalone<Avida::InstructionSequence> lineageM;
   // // If there are multiple instruction ets this could be a problem

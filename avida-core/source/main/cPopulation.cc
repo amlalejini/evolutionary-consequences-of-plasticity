@@ -1378,6 +1378,40 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
   m_world->org_placement_sig.Trigger(target_cell.GetID());
   delete const_seq;
 
+  if (!m_world->all_tasks) {
+      cCPUTestInfo test_info;
+      cTestCPU* test_cpu = m_world->GetHardwareManager().CreateTestCPU(ctx);
+      test_info.UseManualInputs(target_cell.GetInputs()); // Test using what the environment will be
+      Genome mg(in_organism->GetGenome().HardwareType(),
+                in_organism->GetGenome().Properties(),
+                GeneticRepresentationPtr(new InstructionSequence(in_organism->GetHardware().GetMemory())));
+
+
+      test_cpu->TestGenome(ctx, test_info, mg);  // Use the true genome
+      const Apto::Array<int>& tasks = test_info.GetTestPhenotype().GetCurTaskCount();
+      for (int i = 0; i < 9; i++) {
+        if (tasks[i] && !m_world->tasks[i]) {
+          m_world->tasks[i] = 1;
+          std::ofstream output_location;
+          output_location.open("lineage_locs_"+emp::to_string(i)+".dat");
+          output_location << emp::to_string(m_world->lineageM.TraceLineageLocs(m_world->lineageM.next_org_id));
+          output_location << m_world->GetStats().GetUpdate();
+          output_location.close();
+          bool done = true;
+          for (int j = 0; j < 9; j++) {
+            if (!m_world->tasks[j]) {
+              done = false;
+            }
+          }
+          if (done) {
+            m_world->all_tasks = true;
+            m_world->lineageM.WriteDataToFileCSV("lineage.csv");
+          }
+        }
+      }
+    delete test_cpu;
+  }
+
   bool org_survived = true;
   // For tolerance_window, we cheated by dumping doomed offspring into cell (X * Y) - 1 ...now that we updated the stats, we need to
   // kill that org. @JJB
