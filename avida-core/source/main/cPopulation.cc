@@ -1387,15 +1387,19 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
                 GeneticRepresentationPtr(new InstructionSequence(in_organism->GetHardware().GetMemory())));
 
 
-      test_cpu->TestGenome(ctx, test_info, mg);  // Use the true genome
-      const Apto::Array<int>& tasks = test_info.GetTestPhenotype().GetCurTaskCount();
+      bool viable = test_cpu->TestGenome(ctx, test_info, mg);  // Use the true genome
+      const Apto::Array<int>& tasks = test_info.GetTestPhenotype().GetLastTaskCount();
       for (int i = 0; i < 9; i++) {
-        if (tasks[i] && !m_world->tasks[i]) {
+        if (viable && tasks[i] && !m_world->tasks[i]) {
+        //   std::cout <<"TESTINGGGG!!!! " << i << " " <<test_info.GetTestPhenotype().GetNumDivides() << " "<< viable << " " << test_info.GetMaxDepth()  << std::endl;
           m_world->tasks[i] = 1;
+
           std::ofstream output_location;
           output_location.open("lineage_locs_"+emp::to_string(i)+".dat");
           output_location << emp::to_string(m_world->lineageM.TraceLineageLocs(m_world->lineageM.next_org_id));
           output_location << m_world->GetStats().GetUpdate();
+          output_location << std::endl;
+          output_location << mg.AsString() <<std::endl;
           output_location.close();
           bool done = true;
           for (int j = 0; j < 9; j++) {
