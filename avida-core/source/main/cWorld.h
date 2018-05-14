@@ -33,10 +33,12 @@
 #include "avida/core/InstructionSequence.h"
 #include "avida/core/Genome.h"
 
-#include "../../../../Empirical/evo/LineageTracker.h"
-#include "../../../../Empirical/evo/OEE.h"
-#include "../../../../Empirical/control/Signal.h"
-#include "../../../../Empirical/tools/memo_function.h"
+#include "Evolve/Systematics.h"
+#include "Evolve/OEE.h"
+#include "control/Signal.h"
+#include "control/SignalControl.h"
+#include "tools/memo_function.h"
+#include "base/Ptr.h"
 
 #include <array>
 #include <cassert>
@@ -138,6 +140,7 @@ public:
   virtual ~cWorld();
 
   // Signals triggered by the world.
+  emp::SignalControl control;  // Setup the world to control various signals.
   emp::Signal<void(int)> before_repro_sig;       // Trigger: Immediately prior to producing offspring
   emp::Signal<void(const Avida::InstructionSequence*)> offspring_ready_sig;  // Trigger: Offspring about to enter population
   emp::Signal<void(const Avida::InstructionSequence*)> inject_ready_sig;     // Trigger: New org about to be added to population
@@ -147,7 +150,7 @@ public:
 
   Avida::InstructionSequence non_const_seq;
 
-  emp::memo_function<double(const Avida::InstructionSequence)> fit_fun;
+  emp::memo_function<double(const Avida::InstructionSequence&)> fit_fun;
 
   emp::SignalKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
   emp::SignalKey OnOffspringReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return offspring_ready_sig.AddAction(fun); }
@@ -176,9 +179,9 @@ public:
   std::array<int, 9> tasks = {{0,0,0,0,0,0,0,0,0}};
   bool all_tasks = false;
 
-  emp::evo::LineageTrackerPruned_Standalone<Avida::InstructionSequence> lineageM;
+  emp::Ptr<emp::Systematics<Avida::InstructionSequence, emp::vector<Instruction>>> systematics_manager;
   // // If there are multiple instruction ets this could be a problem
-  //emp::evo::OEEStatsManager<emp::evo::PopulationManager_Base<InstructionSequence> > OEE_stats;
+  emp::Ptr<emp::OEETracker<Avida::InstructionSequence, emp::vector<Instruction>>> OEE_stats;
 
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }
 

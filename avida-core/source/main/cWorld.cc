@@ -52,10 +52,10 @@ using namespace AvidaTools;
 cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
   : m_working_dir(wd), m_analyze(NULL), m_conf(cfg), m_ctx(NULL)
   , m_env(NULL), m_event_list(NULL), m_hw_mgr(NULL), m_pop(NULL), m_stats(NULL), m_mig_mat(NULL), m_driver(NULL), m_data_mgr(NULL)
-  , m_own_driver(false), lineageM(false), before_repro_sig("before-repro")
-  , offspring_ready_sig("offspring-ready"), inject_ready_sig("inject-ready")
-  , org_placement_sig("org-placement"), on_update_sig("on-update")
-  , org_death_sig("on-death")
+  , m_own_driver(false), control(), before_repro_sig("before-repro", control)
+  , offspring_ready_sig("offspring-ready", control), inject_ready_sig("inject-ready", control)
+  , org_placement_sig("org-placement", control), on_update_sig("on-update", control)
+  , org_death_sig("on-death", control)
 {
 
     fit_fun = [this](const Avida::InstructionSequence& seq){
@@ -67,7 +67,8 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
     //    std::cout << " ending fit " << fit <<std::endl;
        return fit;
    };
-    // OnUpdate([](int update){std::cout << update << " it works!" << std::endl;});
+  
+   // OnUpdate([](int update){std::cout << update << " it works!" << std::endl;});
 }
 
 cWorld* cWorld::Initialize(cAvidaConfig* cfg, const cString& working_dir, World* new_world, cUserFeedback* feedback, const Apto::Map<Apto::String, Apto::String>* mappings)
@@ -182,7 +183,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     }
     success = false;
   }
-
+  
   // If there were errors loading at this point, it is perilous to try to go further (pop depends on an instruction set)
   if (!success) return success;
 
@@ -217,7 +218,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   }
 
   // std::cout << "startging setup" << std::endl;
-  lineageM.Setup(this);
+  // lineageM.Setup(this);
   // std::cout << "lineage setup" << std::endl;
   //OEE_stats.Setup(this);
   // std::cout << "Stats set up" << std::endl;
@@ -225,7 +226,9 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   // std::cout << "test" << std::endl;
   cInstSet is = *(this->GetHardwareManager().m_inst_sets[0]);
   // std::cout << "Got hardware manager" << std::endl;
-  //OEE_stats.NULL_VAL = is.ActivateNullInst();
+  auto null_inst = is.ActivateNullInst();
+  systematics_manager.New([this, null_inst](const Avida::InstructionSequence & seq){return emp::Skeletonize(seq, null_inst, fit_fun.to_function());}, true, true, true, true);
+  OEE_stats.New(systematics_manager, [](emp::Ptr<emp::Taxon<emp::vector<Instruction>, emp::datastruct::no_data>> org){return org->GetInfo().size();});
   // std::cout << "Null set" << std::endl;
   //const char * inst_set_name = (const char*)is.GetInstSetName();
   //cHardwareManager::SetupPropertyMap(props, inst_set_name);

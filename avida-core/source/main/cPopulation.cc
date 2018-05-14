@@ -1394,13 +1394,13 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
         //   std::cout <<"TESTINGGGG!!!! " << i << " " <<test_info.GetTestPhenotype().GetNumDivides() << " "<< viable << " " << test_info.GetMaxDepth()  << std::endl;
           m_world->tasks[i] = 1;
 
-          std::ofstream output_location;
-          output_location.open("lineage_locs_"+emp::to_string(i)+".dat");
-          output_location << emp::to_string(m_world->lineageM.TraceLineageLocs(m_world->lineageM.next_org_id));
-          output_location << m_world->GetStats().GetUpdate();
-          output_location << std::endl;
-          output_location << mg.AsString() <<std::endl;
-          output_location.close();
+          // std::ofstream output_location;
+          // output_location.open("lineage_locs_"+emp::to_string(i)+".dat");
+          // output_location << emp::to_string(m_world->lineageM.TraceLineageLocs(m_world->lineageM.next_org_id));
+          // output_location << m_world->GetStats().GetUpdate();
+          // output_location << std::endl;
+          // output_location << mg.AsString() <<std::endl;
+          // output_location.close();
           bool done = true;
           for (int j = 0; j < 9; j++) {
             if (!m_world->tasks[j]) {
@@ -1409,7 +1409,7 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
           }
           if (done) {
             m_world->all_tasks = true;
-            m_world->lineageM.WriteDataToFileCSV("lineage.csv");
+            // m_world->lineageM.WriteDataToFileCSV("lineage.csv");
           }
         }
       }
@@ -7403,8 +7403,8 @@ void cPopulation::InjectGenome(int cell_id, Systematics::Source src, const Genom
 
   // Because there aren't actually separate paths for adding org via injection vs. birth
   // so we can't just use signals like we should
-  m_world->lineageM.inject = true;
-  m_world->lineageM.next_parent_id = 0;
+  // m_world->lineageM.inject = true;
+  // m_world->lineageM.next_parent_id = 0;
 
   // Activate the organism in the population...
   if (assign_group) ActivateOrganism(ctx, new_organism, cell_array[cell_id], true, true);
