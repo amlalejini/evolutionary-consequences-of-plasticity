@@ -22,7 +22,7 @@ IF(NOT WIN32)
   ADD_SUBDIRECTORY(libs/tcmalloc-1.4)
 ENDIF(NOT WIN32)
 ADD_SUBDIRECTORY(avida-core)
-ADD_SUBDIRECTORY(../Empirical/source/ .)
+#ADD_SUBDIRECTORY(../Empirical/source/ .)
 
 # Default location for installed software/configs/ docs is the build directory.
 SET(CMAKE_INSTALL_PREFIX
