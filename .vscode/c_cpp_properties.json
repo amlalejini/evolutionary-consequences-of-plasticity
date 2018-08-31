@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "defines": [],
+            "cStandard": "c11",
+            "browse": {
+                "path": [ "${workspaceFolder}" ],
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "${workspaceFolder}/avida-core/include/public",
+                "${workspaceFolder}/avida-core/include/private",
+                "${workspaceFolder}/libs/apto/include",
+                "${workspaceFolder}/avida-core/source/main",
+                "${workspaceFolder}/avida-core/source/cpu",
+                "${workspaceFolder}/avida-core/source/tools",
+                "${workspaceFolder}/avida-core/source/analyze",
+                "${workspaceFolder}/avida-core/source/core",
+                "${workspaceFolder}/avida-core/source/actions",
+                "${workspaceFolder}/avida-core/source/script",
+                "${workspaceFolder}/../Empirical/source"
+            ]
+        }
+    ],
+    "version": 4
+}

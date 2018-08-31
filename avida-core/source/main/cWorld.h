@@ -39,6 +39,7 @@
 #include "control/SignalControl.h"
 #include "tools/memo_function.h"
 #include "base/Ptr.h"
+#include "data/DataFile.h"
 
 #include <array>
 #include <cassert>
@@ -142,18 +143,20 @@ public:
   // Signals triggered by the world.
   emp::SignalControl control;  // Setup the world to control various signals.
   emp::Signal<void(int)> before_repro_sig;       // Trigger: Immediately prior to producing offspring
-  emp::Signal<void(const Avida::InstructionSequence*)> offspring_ready_sig;  // Trigger: Offspring about to enter population
+  emp::Signal<void(Avida::InstructionSequence)> offspring_ready_sig;  // Trigger: Offspring about to enter population
   emp::Signal<void(const Avida::InstructionSequence*)> inject_ready_sig;     // Trigger: New org about to be added to population
   emp::Signal<void(int)> org_placement_sig;      // Trigger: Organism has been added to population
   emp::Signal<void(int)> org_death_sig;      // Trigger: Organism has been added to population
   emp::Signal<void(int)> on_update_sig;          // Trigger: New update is starting.
 
   Avida::InstructionSequence non_const_seq;
+  int next_cell_id = -1;
+  emp::DataFile oee_file;
 
   emp::memo_function<double(const Avida::InstructionSequence&)> fit_fun;
 
   emp::SignalKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
-  emp::SignalKey OnOffspringReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return offspring_ready_sig.AddAction(fun); }
+  emp::SignalKey OnOffspringReady(const std::function<void(Avida::InstructionSequence)> & fun) { return offspring_ready_sig.AddAction(fun); }
   emp::SignalKey OnOrgPlacement(const std::function<void(int)> & fun) { return org_placement_sig.AddAction(fun); }
   emp::SignalKey OnOrgDeath(const std::function<void(int)> & fun) { return org_death_sig.AddAction(fun); }
   emp::SignalKey OnUpdate(const std::function<void(int)> & fun) { return on_update_sig.AddAction(fun); }

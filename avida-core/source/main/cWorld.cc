@@ -55,16 +55,18 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
   , m_own_driver(false), control(), before_repro_sig("before-repro", control)
   , offspring_ready_sig("offspring-ready", control), inject_ready_sig("inject-ready", control)
   , org_placement_sig("org-placement", control), on_update_sig("on-update", control)
-  , org_death_sig("on-death", control)
+  , org_death_sig("on-death", control), oee_file("oee.csv")
 {
 
     fit_fun = [this](const Avida::InstructionSequence& seq){
-    //    std::cout << "starting fit " <<std::endl;
-       Avida::Genome gen(this->GetHardwareManager().m_inst_sets[0]->GetHardwareType(), this->props, GeneticRepresentationPtr(new InstructionSequence(seq)));
+       std::cout << "starting fit " <<std::endl;
+       Avida::Genome gen(this->GetHardwareManager().GetDefaultInstSet().GetHardwareType(), this->props, GeneticRepresentationPtr(new InstructionSequence(seq)));
+       gen.Properties().SetValue("instset", "(default)");
        cAnalyzeGenotype genotype(this, gen);
+       std::cout << "instset: " << gen.Properties().Get("instset").StringValue() << std::endl; 
        genotype.Recalculate(*m_ctx);
        double fit = genotype.GetFitness();
-    //    std::cout << " ending fit " << fit <<std::endl;
+       std::cout << " ending fit " << fit <<std::endl;
        return fit;
    };
   
@@ -228,7 +230,24 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   // std::cout << "Got hardware manager" << std::endl;
   auto null_inst = is.ActivateNullInst();
   systematics_manager.New([this, null_inst](const Avida::InstructionSequence & seq){return emp::Skeletonize(seq, null_inst, fit_fun.to_function());}, true, true, true, true);
+  systematics_manager->PrintStatus();
   OEE_stats.New(systematics_manager, [](emp::Ptr<emp::Taxon<emp::vector<Instruction>, emp::datastruct::no_data>> org){return org->GetInfo().size();});
+  std::cout << "Setting up signal triggers" << std::endl;
+  OnBeforeRepro([this](int pos){systematics_manager->SetNextParent(pos);});
+  OnOffspringReady([this](Avida::InstructionSequence seq){systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
+  OnOrgDeath([this](int pos){std::cout << "removing org" << std::endl; systematics_manager->PrintStatus(); std::cout << "printed status" << std::endl; systematics_manager->RemoveOrg(pos);});
+  OnUpdate([this](int ud){OEE_stats->Update(ud);});
+
+  std::function<int()> update_fun = [this](){return GetStats().GetUpdate();};
+
+  oee_file.AddFun(update_fun, "update", "Update");
+  oee_file.AddCurrent(*OEE_stats->GetDataNode("change"), "change", "change potential");
+  oee_file.AddCurrent(*OEE_stats->GetDataNode("novelty"), "novelty", "novelty potential");
+  oee_file.AddCurrent(*OEE_stats->GetDataNode("diversity"), "ecology", "ecology potential");
+  oee_file.AddCurrent(*OEE_stats->GetDataNode("complexity"), "complexity", "complexity potential");
+  oee_file.PrintHeaderKeys();
+  oee_file.SetTimingRepeat(1000);
+  
   // std::cout << "Null set" << std::endl;
   //const char * inst_set_name = (const char*)is.GetInstSetName();
   //cHardwareManager::SetupPropertyMap(props, inst_set_name);

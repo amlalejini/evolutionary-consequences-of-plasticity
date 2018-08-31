@@ -1373,10 +1373,11 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
     genotype->SetLastForagerType(in_organism->GetParentFT());
   }
 
-  const InstructionSequence* const_seq = new InstructionSequence(*seq);
-  m_world->offspring_ready_sig.Trigger(const_seq);
-  m_world->org_placement_sig.Trigger(target_cell.GetID());
-  delete const_seq;
+  InstructionSequence* nseq = new InstructionSequence(*seq);
+  m_world->next_cell_id = target_cell.GetID();
+  m_world->offspring_ready_sig.Trigger(*nseq);
+  
+  delete nseq;
 
   if (!m_world->all_tasks) {
       cCPUTestInfo test_info;

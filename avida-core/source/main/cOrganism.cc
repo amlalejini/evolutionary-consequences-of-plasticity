@@ -208,7 +208,6 @@ cOrganism::cOrganism(cWorld* world, cAvidaContext& ctx, const Genome& genome, in
 {
 	// initializing this here because it may be needed during hardware creation:
 	m_id = m_world->GetStats().GetTotCreatures();
-
   m_hardware = m_world->GetHardwareManager().Create(ctx, this, genome);
 
   initialize(ctx);
@@ -662,7 +661,9 @@ void cOrganism::NotifyDeath(cAvidaContext& ctx)
     GetDeme()->DecSleepingCount();
   }
 
-  m_world->org_death_sig.Trigger(this->GetCellID());
+  if (this->GetCellID() != -1) {
+    m_world->org_death_sig.Trigger(this->GetCellID());
+  }
 
   // Return currently stored internal resources to the world
   if (m_world->GetConfig().USE_RESOURCE_BINS.Get() && m_world->GetConfig().RETURN_STORED_ON_DEATH.Get()) {
