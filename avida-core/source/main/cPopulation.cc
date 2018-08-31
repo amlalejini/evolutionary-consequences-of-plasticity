@@ -1373,11 +1373,11 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
     genotype->SetLastForagerType(in_organism->GetParentFT());
   }
 
-  // InstructionSequence* nseq = new InstructionSequence(*seq);
+  InstructionSequence* nseq = new InstructionSequence(*seq);
   m_world->next_cell_id = target_cell.GetID();
-  m_world->offspring_ready_sig.Trigger(in_organism->GetGenome());
+  m_world->offspring_ready_sig.Trigger(*nseq);
   
-  // delete nseq;
+  delete nseq;
 
   if (!m_world->all_tasks) {
       cCPUTestInfo test_info;
@@ -6126,9 +6126,9 @@ void cPopulation::ProcessPostUpdate(cAvidaContext& ctx)
   }
 
   for (int i = 0; i < deme_array.GetSize(); i++) deme_array[i].ProcessUpdate(ctx);
-  // if (m_world->fit_fun.size() > 100000) {
-  //     m_world->fit_fun.Clear();
-  // }
+  if (m_world->fit_fun.size() > 100000) {
+      m_world->fit_fun.Clear();
+  }
 }
 
 void cPopulation::ProcessUpdateCellActions(cAvidaContext& ctx)

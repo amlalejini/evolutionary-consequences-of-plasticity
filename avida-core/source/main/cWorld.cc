@@ -58,10 +58,10 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
   , org_death_sig("on-death", control), oee_file("oee.csv")
 {
 
-    fit_fun = [this](const Avida::Genome& gen){
+    fit_fun = [this](const Avida::InstructionSequence& seq){
        std::cout << "starting fit " <<std::endl;
-      //  Avida::Genome gen(this->GetHardwareManager().GetDefaultInstSet().GetHardwareType(), this->props, GeneticRepresentationPtr(new InstructionSequence(seq)));
-      //  gen.Properties().SetValue("instset", "(default)");
+       Avida::Genome gen(this->GetHardwareManager().GetDefaultInstSet().GetHardwareType(), this->props, GeneticRepresentationPtr(new InstructionSequence(seq)));
+       gen.Properties().SetValue("instset", "(default)");
        cAnalyzeGenotype genotype(this, gen);
        std::cout << "instset: " << gen.Properties().Get("instset").StringValue() << std::endl; 
        genotype.Recalculate(*m_ctx);
@@ -229,16 +229,12 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   cInstSet is = *(this->GetHardwareManager().m_inst_sets[0]);
   // std::cout << "Got hardware manager" << std::endl;
   auto null_inst = is.ActivateNullInst();
-  systematics_manager.New([this, null_inst](const Avida::Genome & gen){
-    ConstInstructionSequencePtr seq;
-    seq.DynamicCastFrom(gen.Representation());
-    return emp::Skeletonize(gen, null_inst, fit_fun);
-  }, true, true, true, true);
+  systematics_manager.New([this, null_inst](const Avida::InstructionSequence & seq){return emp::Skeletonize(seq, null_inst, fit_fun.to_function());}, true, true, true, true);
   systematics_manager->PrintStatus();
   OEE_stats.New(systematics_manager, [](emp::Ptr<emp::Taxon<emp::vector<Instruction>, emp::datastruct::no_data>> org){return org->GetInfo().size();});
   std::cout << "Setting up signal triggers" << std::endl;
   OnBeforeRepro([this](int pos){systematics_manager->SetNextParent(pos);});
-  OnOffspringReady([this](Avida::Genome gen){systematics_manager->AddOrg(gen, next_cell_id, GetStats().GetUpdate(), false);});
+  OnOffspringReady([this](Avida::InstructionSequence seq){systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
   OnOrgDeath([this](int pos){std::cout << "removing org" << std::endl; systematics_manager->PrintStatus(); std::cout << "printed status" << std::endl; systematics_manager->RemoveOrg(pos);});
   OnUpdate([this](int ud){OEE_stats->Update(ud);});
 
