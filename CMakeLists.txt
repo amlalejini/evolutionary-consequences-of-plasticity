@@ -32,3 +32,4 @@ SET(CMAKE_INSTALL_PREFIX
   FORCE
 )
 
+target_compile_options(avida PUBLIC -g -O0)
