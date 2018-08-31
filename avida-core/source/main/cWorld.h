@@ -143,8 +143,8 @@ public:
   // Signals triggered by the world.
   emp::SignalControl control;  // Setup the world to control various signals.
   emp::Signal<void(int)> before_repro_sig;       // Trigger: Immediately prior to producing offspring
-  emp::Signal<void(Avida::InstructionSequence)> offspring_ready_sig;  // Trigger: Offspring about to enter population
-  emp::Signal<void(const Avida::InstructionSequence*)> inject_ready_sig;     // Trigger: New org about to be added to population
+  emp::Signal<void(Avida::Genome)> offspring_ready_sig;  // Trigger: Offspring about to enter population
+  emp::Signal<void(Avida::Genome)> inject_ready_sig;     // Trigger: New org about to be added to population
   emp::Signal<void(int)> org_placement_sig;      // Trigger: Organism has been added to population
   emp::Signal<void(int)> org_death_sig;      // Trigger: Organism has been added to population
   emp::Signal<void(int)> on_update_sig;          // Trigger: New update is starting.
@@ -153,14 +153,14 @@ public:
   int next_cell_id = -1;
   emp::DataFile oee_file;
 
-  emp::memo_function<double(const Avida::InstructionSequence&)> fit_fun;
+  std::function<double(const Avida::Genome&)> fit_fun;
 
   emp::SignalKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
-  emp::SignalKey OnOffspringReady(const std::function<void(Avida::InstructionSequence)> & fun) { return offspring_ready_sig.AddAction(fun); }
+  emp::SignalKey OnOffspringReady(const std::function<void(Avida::Genome)> & fun) { return offspring_ready_sig.AddAction(fun); }
   emp::SignalKey OnOrgPlacement(const std::function<void(int)> & fun) { return org_placement_sig.AddAction(fun); }
   emp::SignalKey OnOrgDeath(const std::function<void(int)> & fun) { return org_death_sig.AddAction(fun); }
   emp::SignalKey OnUpdate(const std::function<void(int)> & fun) { return on_update_sig.AddAction(fun); }
-  emp::SignalKey OnInjectReady(const std::function<void(const Avida::InstructionSequence*)> & fun) { return inject_ready_sig.AddAction(fun); }
+  emp::SignalKey OnInjectReady(const std::function<void(Avida::Genome)> & fun) { return inject_ready_sig.AddAction(fun); }
 
   void SetDriver(WorldDriver* driver, bool take_ownership = false);
 
@@ -182,9 +182,9 @@ public:
   std::array<int, 9> tasks = {{0,0,0,0,0,0,0,0,0}};
   bool all_tasks = false;
 
-  emp::Ptr<emp::Systematics<Avida::InstructionSequence, emp::vector<Instruction>>> systematics_manager;
+  emp::Ptr<emp::Systematics<Avida::Genome &, emp::vector<Instruction>>> systematics_manager;
   // // If there are multiple instruction ets this could be a problem
-  emp::Ptr<emp::OEETracker<Avida::InstructionSequence, emp::vector<Instruction>>> OEE_stats;
+  emp::Ptr<emp::OEETracker<Avida::Genome &, emp::vector<Instruction>>> OEE_stats;
 
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }
 
