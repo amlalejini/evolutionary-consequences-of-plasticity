@@ -59,11 +59,11 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
 {
 
     fit_fun = [this](const Avida::InstructionSequence& seq){
-       std::cout << "starting fit " <<std::endl;
-       Avida::Genome gen(this->GetHardwareManager().GetDefaultInstSet().GetHardwareType(), this->props, GeneticRepresentationPtr(new InstructionSequence(seq)));
-       gen.Properties().SetValue("instset", "(default)");
+      //  std::cout << "starting fit " <<std::endl;
+       Avida::Genome gen(curr_genome.HardwareType(), curr_genome.Properties(), GeneticRepresentationPtr(new InstructionSequence(seq)));
+      //  gen.Properties().SetValue("instset", "(default)");
        cAnalyzeGenotype genotype(this, gen);
-       std::cout << "instset: " << gen.Properties().Get("instset").StringValue() << std::endl; 
+      //  std::cout << "instset: " << gen.Properties().Get("instset").StringValue() << std::endl; 
        genotype.Recalculate(*m_ctx);
        double fit = genotype.GetFitness();
        std::cout << " ending fit " << fit <<std::endl;
@@ -112,6 +112,7 @@ cWorld::~cWorld()
 
 bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Apto::String, Apto::String>* defs)
 {
+
   m_new_world = new_world;
 
   bool success = true;
@@ -189,6 +190,8 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   // If there were errors loading at this point, it is perilous to try to go further (pop depends on an instruction set)
   if (!success) return success;
 
+  // std::cout << "Number of instruction sets: " << m_hw_mgr->GetNumInstSets() << " " << m_hw_mgr->GetInstSet("heads_default").N std::endl;
+  auto null_inst = m_hw_mgr->m_inst_sets[0]->ActivateNullInst();
 
   // @MRR CClade Tracking
 //	if (m_conf->TRACK_CCLADES.Get() > 0)
@@ -226,16 +229,21 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   // std::cout << "Stats set up" << std::endl;
   // std::cout << this->GetHardwareManager().GetNumInstSets() << std::endl;
   // std::cout << "test" << std::endl;
-  cInstSet is = *(this->GetHardwareManager().m_inst_sets[0]);
+
   // std::cout << "Got hardware manager" << std::endl;
-  auto null_inst = is.ActivateNullInst();
+  
   systematics_manager.New([this, null_inst](const Avida::InstructionSequence & seq){return emp::Skeletonize(seq, null_inst, fit_fun.to_function());}, true, true, true, true);
   systematics_manager->PrintStatus();
   OEE_stats.New(systematics_manager, [](emp::Ptr<emp::Taxon<emp::vector<Instruction>, emp::datastruct::no_data>> org){return org->GetInfo().size();});
   std::cout << "Setting up signal triggers" << std::endl;
-  OnBeforeRepro([this](int pos){systematics_manager->SetNextParent(pos);});
-  OnOffspringReady([this](Avida::InstructionSequence seq){systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
-  OnOrgDeath([this](int pos){std::cout << "removing org" << std::endl; systematics_manager->PrintStatus(); std::cout << "printed status" << std::endl; systematics_manager->RemoveOrg(pos);});
+  OnBeforeRepro([this](int pos){
+    std::cout << "Next parent is: " << pos; 
+    if(systematics_manager->IsTaxonAt(pos)){
+      std::cout << systematics_manager->GetTaxonAt(pos)->GetID();
+    } 
+    std::cout << std::endl; systematics_manager->SetNextParent(pos);});
+  OnOffspringReady([this](Avida::InstructionSequence seq){ std::cout << "Adding org" << std::endl; systematics_manager->PrintStatus(); systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
+  OnOrgDeath([this](int pos){std::cout << "removing org" << std::endl; systematics_manager->PrintStatus(); systematics_manager->RemoveOrgAfterRepro(pos);});
   OnUpdate([this](int ud){OEE_stats->Update(ud);});
 
   std::function<int()> update_fun = [this](){return GetStats().GetUpdate();};
@@ -246,7 +254,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   oee_file.AddCurrent(*OEE_stats->GetDataNode("diversity"), "ecology", "ecology potential");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("complexity"), "complexity", "complexity potential");
   oee_file.PrintHeaderKeys();
-  oee_file.SetTimingRepeat(1000);
+  oee_file.SetTimingRepeat(10);
   
   // std::cout << "Null set" << std::endl;
   //const char * inst_set_name = (const char*)is.GetInstSetName();

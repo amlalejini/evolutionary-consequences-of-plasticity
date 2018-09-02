@@ -625,7 +625,7 @@ bool cPopulation::ActivateOffspring(cAvidaContext& ctx, Genome& offspring_genome
   int doomed_cell = (world_x * world_y) - 1; //Also at the end of cPopulation::ActivateOrganism
   Apto::Array<cOrganism*> offspring_array;
   Apto::Array<cMerit> merit_array;
-  m_world->before_repro_sig.Trigger(parent_organism->GetCellID());
+  // m_world->before_repro_sig.Trigger(parent_organism->GetCellID());
 
   // If divide method is split, parent will be reset to completely tolerant
   // must remove their intolerance from the group's cached total.
@@ -901,6 +901,7 @@ bool cPopulation::ActivateOffspring(cAvidaContext& ctx, Genome& offspring_genome
           || (m_world->GetConfig().EPIGENETIC_METHOD.Get() == EPIGENETIC_METHOD_BOTH) ) {
         offspring_array[i]->GetHardware().InheritState(parent_organism->GetHardware());
       }
+      m_world->before_repro_sig.Trigger(parent_organism->GetCellID());
       bool org_survived = ActivateOrganism(ctx, offspring_array[i], GetCell(target_cells[i]));
       // only assign an avatar cell if the org lived through birth and it isn't the parent
       if (m_world->GetConfig().USE_AVATARS.Get() && org_survived) {
@@ -1249,6 +1250,16 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
   target_cell.InsertOrganism(in_organism, ctx);
   AddLiveOrg(in_organism);
 
+  ConstInstructionSequencePtr seq;
+  seq.DynamicCastFrom(in_organism->GetGenome().Representation());
+
+  InstructionSequence* nseq = new InstructionSequence(*seq);
+  m_world->curr_genome = in_organism->GetGenome();
+  m_world->next_cell_id = target_cell.GetID();
+  m_world->offspring_ready_sig.Trigger(*nseq);
+  
+  delete nseq;
+
   // Setup the inputs in the target cell.
   environment.SetupInputs(ctx, target_cell.m_inputs);
 
@@ -1311,7 +1322,6 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
   //only relevant if merit is proportional to # times MERIT_BONUS_INST is in the genome
   int rewarded_instruction = m_world->GetConfig().MERIT_BONUS_INST.Get();
   int num_rewarded_instructions = 0;
-  ConstInstructionSequencePtr seq;
   seq.DynamicCastFrom(in_organism->GetGenome().Representation());
   int genome_length = seq->GetSize();
 
@@ -1372,12 +1382,6 @@ bool cPopulation::ActivateOrganism(cAvidaContext& ctx, cOrganism* in_organism, c
     else genotype->SetLastGroupID(in_organism->GetParentGroup());
     genotype->SetLastForagerType(in_organism->GetParentFT());
   }
-
-  InstructionSequence* nseq = new InstructionSequence(*seq);
-  m_world->next_cell_id = target_cell.GetID();
-  m_world->offspring_ready_sig.Trigger(*nseq);
-  
-  delete nseq;
 
   if (!m_world->all_tasks) {
       cCPUTestInfo test_info;
@@ -2206,6 +2210,8 @@ void cPopulation::KillOrganism(cPopulationCell& in_cell, cAvidaContext& ctx)
   UpdateQs(organism, false);
 
   int cellID = in_cell.GetID();
+  emp_assert(cellID > -1, cellID);
+  m_world->org_death_sig.Trigger(cellID);
 
   organism->NotifyDeath(ctx);
 
@@ -5780,7 +5786,11 @@ void cPopulation::UpdateOrganismStats(cAvidaContext& ctx)
     const int cur_genome_length = phenotype.GetGenomeLength();
 
     Apto::Array<Apto::Stat::Accumulator<int> >& from_message_exec_counts = stats.InstFromMessageExeCountsForInstSet((const char*)organism->GetGenome().Properties().Get(s_prop_id_instset).StringValue());
-    for (int j = 0; j < phenotype.GetLastFromMessageInstCount().GetSize(); j++) {
+    int upper_bound = from_message_exec_counts.GetSize();
+    if (upper_bound > phenotype.GetLastFromMessageInstCount().GetSize()) {
+      upper_bound = phenotype.GetLastFromMessageInstCount().GetSize();
+    }
+    for (int j = 0; j < upper_bound; j++) {
       from_message_exec_counts[j].Add(organism->GetPhenotype().GetLastFromMessageInstCount()[j]);
     }
 

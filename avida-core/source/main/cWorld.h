@@ -185,6 +185,7 @@ public:
   emp::Ptr<emp::Systematics<Avida::InstructionSequence, emp::vector<Instruction>>> systematics_manager;
   // // If there are multiple instruction ets this could be a problem
   emp::Ptr<emp::OEETracker<Avida::InstructionSequence, emp::vector<Instruction>>> OEE_stats;
+  Genome curr_genome;
 
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }
 

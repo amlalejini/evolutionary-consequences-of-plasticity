@@ -661,10 +661,6 @@ void cOrganism::NotifyDeath(cAvidaContext& ctx)
     GetDeme()->DecSleepingCount();
   }
 
-  if (this->GetCellID() != -1) {
-    m_world->org_death_sig.Trigger(this->GetCellID());
-  }
-
   // Return currently stored internal resources to the world
   if (m_world->GetConfig().USE_RESOURCE_BINS.Get() && m_world->GetConfig().RETURN_STORED_ON_DEATH.Get()) {
   	if (m_world->GetConfig().USE_AVATARS.Get()) m_interface->UpdateAVResources(ctx, GetRBins());

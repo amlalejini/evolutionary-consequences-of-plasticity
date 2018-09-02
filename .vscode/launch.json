@@ -4,13 +4,13 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+
         {
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/cbuild/work/avida",
-            "args": [],
+            "args": ["-set", "WORLD_X", "2", "-set", "WORLD_Y", "2"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/cbuild/work",
             "environment": [],

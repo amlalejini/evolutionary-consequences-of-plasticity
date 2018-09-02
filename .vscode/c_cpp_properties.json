@@ -5,7 +5,7 @@
             "defines": [],
             "cStandard": "c11",
             "browse": {
-                "path": [ "${workspaceFolder}" ],
+                "path": [ "${workspaceFolder}", "${workspaceFolder}/avida-core/include/public", "${workspaceFolder}/avida-core/include/private", "${workspaceFolder}/../Empirical/source", "${workspaceFolder}/avida-core/include/public/avida/core/*" ],
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
