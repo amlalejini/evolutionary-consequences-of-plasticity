@@ -6139,6 +6139,10 @@ void cPopulation::ProcessPostUpdate(cAvidaContext& ctx)
   if (m_world->fit_fun.size() > 100000) {
       m_world->fit_fun.Clear();
   }
+  // if (m_world->skel_fun.size() > 100000) {
+  //     m_world->skel_fun.Clear();
+  // }
+
 }
 
 void cPopulation::ProcessUpdateCellActions(cAvidaContext& ctx)

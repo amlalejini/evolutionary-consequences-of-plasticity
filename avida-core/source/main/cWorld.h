@@ -154,6 +154,7 @@ public:
   emp::DataFile oee_file;
 
   emp::memo_function<double(const Avida::InstructionSequence&)> fit_fun;
+  std::function<emp::vector<Avida::Instruction>(const Avida::InstructionSequence&)> skel_fun;
 
   emp::SignalKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
   emp::SignalKey OnOffspringReady(const std::function<void(Avida::InstructionSequence)> & fun) { return offspring_ready_sig.AddAction(fun); }

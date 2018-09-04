@@ -60,10 +60,13 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
 
     fit_fun = [this](const Avida::InstructionSequence& seq){
        Avida::Genome gen(curr_genome.HardwareType(), curr_genome.Properties(), GeneticRepresentationPtr(new InstructionSequence(seq)));
-       cAnalyzeGenotype genotype(this, gen);
-       genotype.Recalculate(*m_ctx);
-       double fit = genotype.GetFitness();
-       return fit;
+      //  cAnalyzeGenotype genotype(this, gen);
+      //  genotype.Recalculate(*m_ctx);
+      cCPUTestInfo test_info;
+      cTestCPU* test_cpu = GetHardwareManager().CreateTestCPU(*m_ctx);
+      // test_info.UseManualInputs(curr_target_cell.GetInputs()); // Test using what the environment will be
+      test_cpu->TestGenome(*m_ctx, test_info, gen);  // Use the true genome
+      return test_info.GetGenotypeFitness();
    };
   
    // OnUpdate([](int update){std::cout << update << " it works!" << std::endl;});
@@ -228,13 +231,17 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
 
   // std::cout << "Got hardware manager" << std::endl;
   
-  systematics_manager.New([this, null_inst](const Avida::InstructionSequence & seq){
+  skel_fun = [this, null_inst](const Avida::InstructionSequence & seq){
     // std::cout << std::endl; for (auto inst : emp::Skeletonize(seq, null_inst, fit_fun.to_function())){std::cout << inst.AsString() << std::endl;}; std::cout << std::endl;
     return emp::Skeletonize(seq, null_inst, fit_fun.to_function());
-  }, true, true, true, true);
-  systematics_manager->PrintStatus();
-  OEE_stats.New(systematics_manager, [](emp::Ptr<emp::Taxon<emp::vector<Instruction>, emp::datastruct::no_data>> org){return org->GetInfo().size();});
-  std::cout << "Setting up signal triggers" << std::endl;
+  };
+
+  systematics_manager.New(skel_fun);
+  // systematics_manager->PrintStatus();
+  OEE_stats.New(systematics_manager, [null_inst](emp::Ptr<emp::Taxon<emp::vector<Instruction>, emp::datastruct::no_data>> org){return org->GetInfo().size() - std::count(org->GetInfo().begin(), org->GetInfo().end(), null_inst);});
+  OEE_stats->SetGenerationInterval(100);
+  OEE_stats->SetResolution(100);
+
   OnBeforeRepro([this](int pos){
     // std::cout << "Next parent is: " << pos; 
     // if(systematics_manager->IsTaxonAt(pos)){
@@ -253,7 +260,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   oee_file.AddCurrent(*OEE_stats->GetDataNode("diversity"), "ecology", "ecology potential");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("complexity"), "complexity", "complexity potential");
   oee_file.PrintHeaderKeys();
-  oee_file.SetTimingRepeat(10);
+  oee_file.SetTimingRepeat(100);
   
   // std::cout << "Null set" << std::endl;
   //const char * inst_set_name = (const char*)is.GetInstSetName();
