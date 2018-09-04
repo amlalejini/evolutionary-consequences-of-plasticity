@@ -183,9 +183,9 @@ public:
   std::array<int, 9> tasks = {{0,0,0,0,0,0,0,0,0}};
   bool all_tasks = false;
 
-  emp::Ptr<emp::Systematics<Avida::InstructionSequence, emp::vector<Instruction>>> systematics_manager;
+  emp::Ptr<emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence, emp::datastruct::oee_data<emp::vector<Avida::Instruction> > > > systematics_manager;
   // // If there are multiple instruction ets this could be a problem
-  emp::Ptr<emp::OEETracker<Avida::InstructionSequence, emp::vector<Instruction>>> OEE_stats;
+  emp::Ptr<emp::OEETracker<Avida::InstructionSequence, Avida::InstructionSequence, emp::vector<Instruction>, emp::datastruct::oee_data<emp::vector<Avida::Instruction> > > > OEE_stats;
   Genome curr_genome;
 
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }
