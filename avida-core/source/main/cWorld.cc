@@ -239,8 +239,8 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);});
   // systematics_manager->PrintStatus();
   OEE_stats.New(systematics_manager, skel_fun, [null_inst](emp::vector<Instruction> & org){return org.size() - std::count(org.begin(), org.end(), null_inst);});
-  OEE_stats->SetGenerationInterval(10000);
-  OEE_stats->SetResolution(1000);
+  OEE_stats->SetGenerationInterval(m_conf->FILTER_TIME.Get());
+  OEE_stats->SetResolution(m_conf->OEE_RES.Get());
 
   OnBeforeRepro([this](int pos){
     // std::cout << "Next parent is: " << pos; 
@@ -260,7 +260,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   oee_file.AddCurrent(*OEE_stats->GetDataNode("diversity"), "ecology", "ecology potential");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("complexity"), "complexity", "complexity potential");
   oee_file.PrintHeaderKeys();
-  oee_file.SetTimingRepeat(1000);
+  oee_file.SetTimingRepeat(m_conf->OEE_RES.Get());
   
   // std::cout << "Null set" << std::endl;
   //const char * inst_set_name = (const char*)is.GetInstSetName();

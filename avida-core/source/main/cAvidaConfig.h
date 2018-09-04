@@ -284,8 +284,9 @@ public:
   CONFIG_ADD_VAR(SPECULATIVE, bool, 1, "Enable speculative execution\n(pre-execute instructions that don't affect other organisms)");
   CONFIG_ADD_VAR(POPULATION_CAP, int, 0, "Carrying capacity in number of organisms (use 0 for no cap)");
   CONFIG_ADD_VAR(POP_CAP_ELDEST, int, 0, "Carrying capacity in number of organisms (use 0 for no cap). Will kill oldest organism in population, but still use birth method to place new offspring."); 
-  
-  
+  CONFIG_ADD_VAR(FILTER_TIME, int, 10000, "How long does a lineage need to survive to pass the coalesence filter?");
+  CONFIG_ADD_VAR(OEE_RES, int, 1000, "How often should we print OEE stats?");
+
   // -------- Topology config options --------
   CONFIG_ADD_GROUP(TOPOLOGY_GROUP, "World topology");
   CONFIG_ADD_VAR(WORLD_X, int, 60, "Width of the Avida world");
