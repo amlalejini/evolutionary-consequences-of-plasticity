@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/cbuild/work/avida",
-            "args": [],
+            "args": ["-set", "WORLD_X", "100", "-set", "WORLD_Y", "5", "-set", "BIRTH_METHOD", "4"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/cbuild/work",
             "environment": [],
