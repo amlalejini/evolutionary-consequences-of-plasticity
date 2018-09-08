@@ -249,7 +249,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     // } 
     systematics_manager->SetNextParent(pos);});
   OnOffspringReady([this](Avida::InstructionSequence seq){ systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
-  OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos);});
+  OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetUpdate());});
   OnUpdate([this](int ud){OEE_stats->Update(ud); oee_file.Update(ud);});
 
   std::function<int()> update_fun = [this](){return GetStats().GetUpdate();};
