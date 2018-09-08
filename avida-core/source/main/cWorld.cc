@@ -248,13 +248,13 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     //   std::cout << systematics_manager->GetTaxonAt(pos)->GetID();
     // } 
     systematics_manager->SetNextParent(pos);});
-  OnOffspringReady([this](Avida::InstructionSequence seq){ systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
-  OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetUpdate());});
-  OnUpdate([this](int ud){OEE_stats->Update(ud); oee_file.Update(ud);});
+  OnOffspringReady([this](Avida::InstructionSequence seq){ systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetGeneration(), false);});
+  OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetGeneration());});
+  OnUpdate([this](int ud){if (std::round(GetStats().GetGeneration()) > latest_gen) { latest_gen = std::round(GetStats().GetGeneration()); OEE_stats->Update(latest_gen); oee_file.Update(latest_gen);}});
 
-  std::function<int()> update_fun = [this](){return GetStats().GetUpdate();};
+  std::function<int()> update_fun = [this](){return std::round(GetStats().GetGeneration());};
 
-  oee_file.AddFun(update_fun, "update", "Update");
+  oee_file.AddFun(update_fun, "generation", "Generation");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("change"), "change", "change potential");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("novelty"), "novelty", "novelty potential");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("diversity"), "ecology", "ecology potential");
