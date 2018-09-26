@@ -66,6 +66,7 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
       cTestCPU* test_cpu = GetHardwareManager().CreateTestCPU(*m_ctx);
       // test_info.UseManualInputs(curr_target_cell.GetInputs()); // Test using what the environment will be
       test_cpu->TestGenome(*m_ctx, test_info, gen);  // Use the true genome
+      delete test_cpu;
       return test_info.GetGenotypeFitness();
    };
   
@@ -230,15 +231,20 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   // std::cout << "test" << std::endl;
 
   // std::cout << "Got hardware manager" << std::endl;
-  
+  // emp_assert(false);
   skel_fun = [this, null_inst](const Avida::InstructionSequence & seq){
-    // std::cout << std::endl; for (auto inst : emp::Skeletonize(seq, null_inst, fit_fun.to_function())){std::cout << inst.AsString() << std::endl;}; std::cout << std::endl;
-    return emp::Skeletonize(seq, null_inst, fit_fun.to_function());
+    // std::cout << "Skeletonizing" <<std::endl;
+    std::stringstream ss;
+    emp::vector<Avida::Instruction> skel = emp::Skeletonize(seq, null_inst, fit_fun);
+    for (auto inst : skel) {
+      ss << inst.GetSymbol();
+    }
+    return ss.str();
   };
 
   systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);});
   // systematics_manager->PrintStatus();
-  OEE_stats.New(systematics_manager, skel_fun, [null_inst](const emp::vector<Instruction> & org){return org.size();});
+  OEE_stats.New(systematics_manager, skel_fun, [null_inst](const std::string & org){return org.size();}, m_conf->WORLD_X.Get() * m_conf->WORLD_Y.Get() * 200000);
   OEE_stats->SetGenerationInterval(m_conf->FILTER_TIME.Get());
   OEE_stats->SetResolution(m_conf->OEE_RES.Get());
 
@@ -248,9 +254,9 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     //   std::cout << systematics_manager->GetTaxonAt(pos)->GetID();
     // } 
     systematics_manager->SetNextParent(pos);});
-  OnOffspringReady([this](Avida::InstructionSequence seq){ systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetGeneration(), false);});
-  OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetGeneration());});
-  OnUpdate([this](int ud){if (std::round(GetStats().GetGeneration()) > latest_gen) { latest_gen = std::round(GetStats().GetGeneration()); OEE_stats->Update(latest_gen); oee_file.Update(latest_gen);}});
+  OnOffspringReady([this](Avida::InstructionSequence seq){ systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
+  OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetUpdate());});
+  OnUpdate([this](int ud){if (std::round(GetStats().GetGeneration()) > latest_gen) { latest_gen = std::round(GetStats().GetGeneration()); OEE_stats->Update(latest_gen, GetStats().GetUpdate()); oee_file.Update(latest_gen);}});
 
   std::function<int()> update_fun = [this](){return std::round(GetStats().GetGeneration());};
 

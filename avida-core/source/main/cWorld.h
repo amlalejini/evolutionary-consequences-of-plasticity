@@ -153,8 +153,8 @@ public:
   int next_cell_id = -1;
   emp::DataFile oee_file;
 
-  emp::memo_function<double(const Avida::InstructionSequence&)> fit_fun;
-  std::function<emp::vector<Avida::Instruction>(const Avida::InstructionSequence&)> skel_fun;
+  std::function<double(const Avida::InstructionSequence&)> fit_fun;
+  std::function<std::string(const Avida::InstructionSequence&)> skel_fun;
 
   emp::SignalKey OnBeforeRepro(const std::function<void(int)> & fun) { return before_repro_sig.AddAction(fun); }
   emp::SignalKey OnOffspringReady(const std::function<void(Avida::InstructionSequence)> & fun) { return offspring_ready_sig.AddAction(fun); }
@@ -184,9 +184,9 @@ public:
   bool all_tasks = false;
   int latest_gen = -1; // Force time to go forward
 
-  emp::Ptr<emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence, emp::datastruct::oee_data<emp::vector<Avida::Instruction> > > > systematics_manager;
+  emp::Ptr<emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence, emp::datastruct::oee_data<std::string > > > systematics_manager;
   // // If there are multiple instruction ets this could be a problem
-  emp::Ptr<emp::OEETracker<Avida::InstructionSequence, Avida::InstructionSequence, emp::vector<Instruction>, emp::datastruct::oee_data<emp::vector<Avida::Instruction> > > > OEE_stats;
+  emp::Ptr<emp::OEETracker<Avida::InstructionSequence, Avida::InstructionSequence, std::string, emp::datastruct::oee_data<std::string > > > OEE_stats;
   Genome curr_genome;
 
   Data::ManagerPtr& GetDataManager() { return m_data_mgr; }

@@ -6136,9 +6136,9 @@ void cPopulation::ProcessPostUpdate(cAvidaContext& ctx)
   }
 
   for (int i = 0; i < deme_array.GetSize(); i++) deme_array[i].ProcessUpdate(ctx);
-  if (m_world->fit_fun.size() > 100000) {
-      m_world->fit_fun.Clear();
-  }
+  // if (m_world->fit_fun.size() > 10) {
+  //     m_world->fit_fun.Clear();
+  // }
   // if (m_world->skel_fun.size() > 100000) {
   //     m_world->skel_fun.Clear();
   // }
