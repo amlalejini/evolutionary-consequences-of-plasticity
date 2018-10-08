@@ -245,7 +245,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);});
   // systematics_manager->PrintStatus();
   systematics_manager->AddSnapshotFun([](const taxon_t & tax) {
-      return emp::to_string(tax.GetInfo().AsString());
+      return emp::to_string(tax.GetInfo().AsString().GetCString());
     }, "sequence", "Avida instruction sequence for this taxon.");
 
   OEE_stats.New(systematics_manager, skel_fun, [null_inst](const std::string & org){return org.size();}, m_conf->WORLD_X.Get() * m_conf->WORLD_Y.Get() * 200000);
