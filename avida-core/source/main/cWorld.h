@@ -185,7 +185,7 @@ public:
   int latest_gen = -1; // Force time to go forward
 
   using systematics_t = emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence, emp::datastruct::oee_data<std::string > >;
-  using taxon_t = typename systematics_t::taxon_t;
+  using taxon_t = emp::Taxon< Avida::InstructionSequence, emp::datastruct::oee_data<std::string >>
 
   emp::Ptr<systematics_t> systematics_manager;
   // // If there are multiple instruction ets this could be a problem
