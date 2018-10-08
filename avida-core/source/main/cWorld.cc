@@ -244,6 +244,10 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
 
   systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);});
   // systematics_manager->PrintStatus();
+  systematics_manager->AddSnapshotFun([](const taxon_t & tax) {
+    return tax.GetInfo().AsString();
+  }, "sequence", "Avida instruction sequence for this taxon.");
+
   OEE_stats.New(systematics_manager, skel_fun, [null_inst](const std::string & org){return org.size();}, m_conf->WORLD_X.Get() * m_conf->WORLD_Y.Get() * 200000);
   OEE_stats->SetGenerationInterval(m_conf->FILTER_TIME.Get());
   OEE_stats->SetResolution(m_conf->OEE_RES.Get());
@@ -257,6 +261,8 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   OnOffspringReady([this](Avida::InstructionSequence seq){ systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
   OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetUpdate());});
   OnUpdate([this](int ud){if (std::round(GetStats().GetGeneration()) > latest_gen) { latest_gen = std::round(GetStats().GetGeneration()); OEE_stats->Update(latest_gen, GetStats().GetUpdate()); oee_file.Update(latest_gen);}});
+  // --- bookmark ---
+  OnUpdate([this](int ud) { if (GetStats().GetUpdate() % m_conf->OEE_RES.Get()) { systematics_manager->Snapshot("phylogeny-snapshot-" + emp::to_string(GetStats().GetUpdate()) + ".csv" ); } });
 
   std::function<int()> update_fun = [this](){return std::round(GetStats().GetGeneration());};
 

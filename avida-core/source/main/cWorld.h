@@ -184,7 +184,10 @@ public:
   bool all_tasks = false;
   int latest_gen = -1; // Force time to go forward
 
-  emp::Ptr<emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence, emp::datastruct::oee_data<std::string > > > systematics_manager;
+  using systematics_t = emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence, emp::datastruct::oee_data<std::string > >;
+  using taxon_t = typename systematics_t::taxon_t;
+
+  emp::Ptr<systematics_t> systematics_manager;
   // // If there are multiple instruction ets this could be a problem
   emp::Ptr<emp::OEETracker<Avida::InstructionSequence, Avida::InstructionSequence, std::string, emp::datastruct::oee_data<std::string > > > OEE_stats;
   Genome curr_genome;
