@@ -34,11 +34,13 @@
 #include "avida/core/Genome.h"
 
 #include "Evolve/Systematics.h"
+#include "Evolve/SystematicsAnalysis.h"
 #include "Evolve/OEE.h"
 #include "control/Signal.h"
 #include "control/SignalControl.h"
 #include "tools/memo_function.h"
 #include "base/Ptr.h"
+#include "base/vector.h"
 #include "data/DataFile.h"
 
 #include <array>
@@ -58,6 +60,32 @@ class cStats;
 class cTestCPU;
 class cUserFeedback;
 template<class T> class tDataEntry;
+
+struct Phenotype {
+  double merit = -1;
+  int gestation_time = -1;
+  int start_generation = -1;
+  emp::vector<int> final_task_count;
+
+  // bool operator==(const Phenotype & other) {
+  //   return merit == other.merit && gestation_time == other.gestation_time && final_task_count == other.final_task_count; 
+  // }
+
+  bool operator<(const Phenotype & other) const {
+    return merit < other.merit || gestation_time < other.gestation_time || final_task_count < other.final_task_count; 
+  }
+
+  bool operator!=(const Phenotype & other) const {
+    return merit != other.merit || gestation_time != other.gestation_time || final_task_count != other.final_task_count; 
+  }
+
+
+  // bool operator<(Phenotype other) const {
+  //   return merit < other.merit;// && gestation_time < other.gestation_time; //&& final_task_count < other.final_task_count; 
+  // }
+
+
+};
 
 namespace std
 {
@@ -152,6 +180,9 @@ public:
   Avida::InstructionSequence non_const_seq;
   int next_cell_id = -1;
   emp::DataFile oee_file;
+  emp::DataFile phylodiversity_file;
+  emp::DataFile lineage_file;
+  emp::DataFile dom_file;
 
   std::function<double(const Avida::InstructionSequence&)> fit_fun;
   std::function<std::string(const Avida::InstructionSequence&)> skel_fun;
@@ -184,8 +215,15 @@ public:
   bool all_tasks = false;
   int latest_gen = -1; // Force time to go forward
 
-  using systematics_t = emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence>;
-  using taxon_t = emp::Taxon< Avida::InstructionSequence>;
+  using systematics_t = emp::Systematics<Avida::InstructionSequence, Avida::InstructionSequence, emp::datastruct::mut_landscape_info<Phenotype>>;
+  using taxon_t = emp::Taxon< Avida::InstructionSequence, emp::datastruct::mut_landscape_info<Phenotype>>;
+  emp::Ptr<taxon_t> best_tax;
+
+  std::function<void(emp::Ptr<taxon_t>)> eval_fun;
+  const emp::vector<std::string> MUTATION_TYPES = {"substitution", "insertion", "deletion"};
+
+  using mut_count_t = std::unordered_map<std::string, double>;
+  mut_count_t last_mutation;
 
   emp::Ptr<systematics_t> systematics_manager;
   // // If there are multiple instruction ets this could be a problem

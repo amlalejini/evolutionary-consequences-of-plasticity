@@ -287,6 +287,7 @@ public:
   CONFIG_ADD_VAR(FILTER_TIME, int, 10000, "How long does a lineage need to survive to pass the coalesence filter?");
   CONFIG_ADD_VAR(OEE_RES, int, 1000, "How often should we print OEE stats?");
   CONFIG_ADD_VAR(PHYLOGENY_SNAPSHOT_RES, int, 1000, "How often should we print phylogeny stats?");
+  CONFIG_ADD_VAR(SYSTEMATICS_RES, int, 1000, "How often should we print phylodiversity stats?");
 
   // -------- Topology config options --------
   CONFIG_ADD_GROUP(TOPOLOGY_GROUP, "World topology");

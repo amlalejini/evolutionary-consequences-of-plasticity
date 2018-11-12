@@ -55,7 +55,7 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
   , m_own_driver(false), control(), before_repro_sig("before-repro", control)
   , offspring_ready_sig("offspring-ready", control), inject_ready_sig("inject-ready", control)
   , org_placement_sig("org-placement", control), on_update_sig("on-update", control)
-  , org_death_sig("on-death", control), oee_file("oee.csv")
+  , org_death_sig("on-death", control), oee_file("oee.csv"), phylodiversity_file("phylodiversity.csv"), lineage_file("lineage.csv"), dom_file("dominant.csv")
 {
 
     fit_fun = [this](const Avida::InstructionSequence& seq){
@@ -69,7 +69,30 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
       delete test_cpu;
       return test_info.GetGenotypeFitness();
    };
-  
+
+    eval_fun = [this](emp::Ptr<taxon_t> tax){
+
+       Avida::Genome gen(curr_genome.HardwareType(), curr_genome.Properties(), GeneticRepresentationPtr(new InstructionSequence(tax->GetInfo())));
+      //  cAnalyzeGenotype genotype(this, gen);
+      //  genotype.Recalculate(*m_ctx);
+      cCPUTestInfo test_info;
+      cTestCPU* test_cpu = GetHardwareManager().CreateTestCPU(*m_ctx);
+      // test_info.UseManualInputs(curr_target_cell.GetInputs()); // Test using what the environment will be
+      test_cpu->TestGenome(*m_ctx, test_info, gen);  // Use the true genome
+      delete test_cpu;
+      tax->GetData().RecordFitness(test_info.GetGenotypeFitness());
+      Phenotype p;
+      p.merit = test_info.GetTestPhenotype().GetMerit().GetDouble();
+      p.gestation_time = test_info.GetTestPhenotype().GetGestationTime();
+      p.start_generation = test_info.GetTestPhenotype().GetGeneration();
+      auto tasks = test_info.GetTestPhenotype().GetCurTaskCount();
+      for (int i = 0; i < tasks.GetSize(); i++) {
+        p.final_task_count.push_back(tasks[i]);
+      }
+      tax->GetData().RecordPhenotype(p);
+   };
+
+
    // OnUpdate([](int update){std::cout << update << " it works!" << std::endl;});
 }
 
@@ -258,15 +281,29 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     //   std::cout << systematics_manager->GetTaxonAt(pos)->GetID();
     // } 
     systematics_manager->SetNextParent(pos);});
-  OnOffspringReady([this](Avida::InstructionSequence seq){ systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);});
+  OnOffspringReady([this](Avida::InstructionSequence seq){ 
+    systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);
+    emp::Ptr<taxon_t> tax = systematics_manager->GetMostRecent();
+    if (tax->GetData().GetPhenotype().merit == -1) {
+      eval_fun(tax);
+    }
+  });
   OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetUpdate());});
-  OnUpdate([this](int ud){if (std::round(GetStats().GetGeneration()) > latest_gen) { latest_gen = std::round(GetStats().GetGeneration()); OEE_stats->Update(latest_gen, GetStats().GetUpdate()); oee_file.Update(latest_gen);}});
+  OnUpdate([this](int ud){
+    if (std::round(GetStats().GetGeneration()) > latest_gen) { 
+      latest_gen = std::round(GetStats().GetGeneration()); 
+      OEE_stats->Update(latest_gen, GetStats().GetUpdate()); 
+      oee_file.Update(latest_gen); 
+    }
+  });
+  OnUpdate([this](int ud){systematics_manager->Update(); phylodiversity_file.Update(ud); lineage_file.Update(ud); dom_file.Update(ud);});
   // --- bookmark ---
   OnUpdate([this](int ud) { if (GetStats().GetUpdate() % m_conf->PHYLOGENY_SNAPSHOT_RES.Get() == 0) { systematics_manager->Snapshot("phylogeny-snapshot-" + emp::to_string(GetStats().GetUpdate()) + ".csv" ); } });
 
-  std::function<int()> update_fun = [this](){return std::round(GetStats().GetGeneration());};
+  std::function<int()> gen_fun = [this](){return std::round(GetStats().GetGeneration());};
+  std::function<int()> update_fun = [this](){return GetStats().GetUpdate();};
 
-  oee_file.AddFun(update_fun, "generation", "Generation");
+  oee_file.AddFun(gen_fun, "generation", "Generation");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("change"), "change", "change potential");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("novelty"), "novelty", "novelty potential");
   oee_file.AddCurrent(*OEE_stats->GetDataNode("diversity"), "ecology", "ecology potential");
@@ -274,6 +311,67 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   oee_file.PrintHeaderKeys();
   oee_file.SetTimingRepeat(m_conf->OEE_RES.Get());
   
+  systematics_manager->AddEvolutionaryDistinctivenessDataNode();
+  systematics_manager->AddPairwiseDistanceDataNode();
+  systematics_manager->AddPhylogeneticDiversityDataNode();
+  phylodiversity_file.AddFun(update_fun, "update", "Update");
+  phylodiversity_file.AddStats(*systematics_manager->GetDataNode("evolutionary_distinctiveness") , "evolutionary_distinctiveness", "evolutionary distinctiveness for a single update", true, true);
+  phylodiversity_file.AddStats(*systematics_manager->GetDataNode("pairwise_distances"), "pairwise_distance", "pairwise distance for a single update", true, true);
+  phylodiversity_file.AddCurrent(*systematics_manager->GetDataNode("phylogenetic_diversity"), "current_phylogenetic_diversity", "current phylogenetic_diversity", true, true);
+  phylodiversity_file.PrintHeaderKeys();
+  phylodiversity_file.SetTimingRepeat(m_conf->SYSTEMATICS_RES.Get());
+
+  emp::vector<std::string> mut_types = {"substitution"};
+
+  for (size_t i = 0; i < mut_types.size(); i++) {
+      systematics_manager->AddMutationCountDataNode(mut_types[i]+"_mut_count", mut_types[i]);
+  }
+
+  systematics_manager->AddDeleteriousStepDataNode();
+  systematics_manager->AddVolatilityDataNode();
+  systematics_manager->AddUniqueTaxaDataNode();
+
+  lineage_file.AddFun(update_fun, "update", "Update");
+  for (size_t i = 0; i < mut_types.size(); i++) {
+      lineage_file.AddStats(*systematics_manager->GetDataNode(mut_types[i]+"_mut_count"), mut_types[i] + "_mutations_on_lineage", "counts of" + mut_types[i] + "mutations along each lineage", true, true);
+  }
+
+  lineage_file.AddStats(*systematics_manager->GetDataNode("deleterious_steps"), "deleterious_steps", "counts of deleterious steps along each lineage", true, true);
+  lineage_file.AddStats(*systematics_manager->GetDataNode("volatility"), "taxon_volatility", "counts of changes in taxon along each lineage", true, true);
+  lineage_file.AddStats(*systematics_manager->GetDataNode("unique_taxa"), "unique_taxa", "counts of unique taxa along each lineage", true, true);
+  lineage_file.PrintHeaderKeys();
+  lineage_file.SetTimingRepeat(m_conf->SYSTEMATICS_RES.Get());
+
+  dom_file.AddFun(update_fun, "update", "Update");
+  
+  std::function<double(void)> get_score = [this]() {
+    best_tax = emp::FindDominant(*systematics_manager);
+    return best_tax->GetData().GetFitness();
+  };
+
+  dom_file.AddFun(get_score, "score", "get best phenotype score from this update");
+
+  std::function<int(void)> dom_lin_len = [this](){
+    return emp::LineageLength(best_tax);
+  };
+  std::function<int(void)> dom_del_step = [this](){
+    return emp::CountDeleteriousSteps(best_tax);
+  };
+  std::function<size_t(void)> dom_phen_vol = [this](){
+    return emp::CountPhenotypeChanges(best_tax);
+  };
+  std::function<size_t(void)> dom_unique_phen = [this](){
+    return emp::CountUniquePhenotypes(best_tax);
+  };
+
+  // file.AddFun(dom_mut_count, "dominant_mutation_count", "sum of mutations along dominant organism's lineage");
+  dom_file.AddFun(dom_lin_len, "dominant_lineage_length", "count of changes in genotype in the dominant organism's lineage.");
+  dom_file.AddFun(dom_del_step, "dominant_deleterious_steps", "count of deleterious steps along dominant organism's lineage");
+  dom_file.AddFun(dom_phen_vol, "dominant_phenotypic_volatility", "count of changes in phenotype along dominant organism's lineage");
+  dom_file.AddFun(dom_unique_phen, "dominant_unique_phenotypes", "count of unique phenotypes along dominant organism's lineage");
+  dom_file.PrintHeaderKeys();
+  dom_file.SetTimingRepeat(m_conf->SYSTEMATICS_RES.Get());
+
   // std::cout << "Null set" << std::endl;
   //const char * inst_set_name = (const char*)is.GetInstSetName();
   //cHardwareManager::SetupPropertyMap(props, inst_set_name);
