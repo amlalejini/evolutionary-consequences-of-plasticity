@@ -4,6 +4,6 @@ git submodule init
 git submodule update
 mkdir -p cbuild
 cd cbuild
-cmake -DCMAKE_BUILD_TYPE=Debug "$@" ../
+cmake -DCMAKE_BUILD_TYPE=Release "$@" ../
 make -j 10 install
 

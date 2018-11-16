@@ -271,7 +271,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
       return emp::to_string(tax.GetInfo().AsString().GetCString());
     }, "sequence", "Avida instruction sequence for this taxon.");
 
-  OEE_stats.New(systematics_manager, skel_fun, [null_inst](const std::string & org){return org.size();}, true, m_conf->WORLD_X.Get() * m_conf->WORLD_Y.Get() * 200000);
+  OEE_stats.New(systematics_manager, skel_fun, [null_inst](const std::string & org){return org.size();}, false, m_conf->WORLD_X.Get() * m_conf->WORLD_Y.Get() * 200000);
   OEE_stats->SetGenerationInterval(m_conf->FILTER_TIME.Get());
   OEE_stats->SetResolution(m_conf->OEE_RES.Get());
 
@@ -318,6 +318,15 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   phylodiversity_file.AddStats(*systematics_manager->GetDataNode("evolutionary_distinctiveness") , "evolutionary_distinctiveness", "evolutionary distinctiveness for a single update", true, true);
   phylodiversity_file.AddStats(*systematics_manager->GetDataNode("pairwise_distances"), "pairwise_distance", "pairwise distance for a single update", true, true);
   phylodiversity_file.AddCurrent(*systematics_manager->GetDataNode("phylogenetic_diversity"), "current_phylogenetic_diversity", "current phylogenetic_diversity", true, true);
+
+  phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetNumActive(); }, "num_taxa", "Number of unique taxonomic groups currently active." );
+  phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetTotalOrgs(); }, "total_orgs", "Number of organisms tracked." );
+  phylodiversity_file.template AddFun<double>( [this](){ return systematics_manager->GetAveDepth(); }, "ave_depth", "Average Phylogenetic Depth of Organisms." );
+  phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetNumRoots(); }, "num_roots", "Number of independent roots for phlogenies." );
+  phylodiversity_file.template AddFun<int>(    [this](){ return systematics_manager->GetMRCADepth(); }, "mrca_depth", "Phylogenetic Depth of the Most Recent Common Ancestor (-1=none)." );
+  phylodiversity_file.template AddFun<double>( [this](){ return systematics_manager->CalcDiversity(); }, "diversity", "Genotypic Diversity (entropy of taxa in population)." );
+
+
   phylodiversity_file.PrintHeaderKeys();
   phylodiversity_file.SetTimingRepeat(m_conf->SYSTEMATICS_RES.Get());
 
