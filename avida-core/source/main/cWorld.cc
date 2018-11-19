@@ -82,7 +82,7 @@ cWorld::cWorld(cAvidaConfig* cfg, const cString& wd)
       delete test_cpu;
       tax->GetData().RecordFitness(test_info.GetGenotypeFitness());
       Phenotype p;
-      p.merit = test_info.GetTestPhenotype().GetMerit().GetDouble();
+      // p.merit = test_info.GetTestPhenotype().GetMerit().GetDouble();
       p.gestation_time = test_info.GetTestPhenotype().GetGestationTime();
       p.start_generation = test_info.GetTestPhenotype().GetGeneration();
       auto tasks = test_info.GetTestPhenotype().GetCurTaskCount();
@@ -284,7 +284,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   OnOffspringReady([this](Avida::InstructionSequence seq){ 
     systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);
     emp::Ptr<taxon_t> tax = systematics_manager->GetMostRecent();
-    if (tax->GetData().GetPhenotype().merit == -1) {
+    if (tax->GetData().GetPhenotype().gestation_time == -1) {
       eval_fun(tax);
     }
   });

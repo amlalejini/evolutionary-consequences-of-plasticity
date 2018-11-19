@@ -62,21 +62,20 @@ class cUserFeedback;
 template<class T> class tDataEntry;
 
 struct Phenotype {
-  double merit = -1;
   int gestation_time = -1;
   int start_generation = -1;
   emp::vector<int> final_task_count;
 
-  // bool operator==(const Phenotype & other) {
-  //   return merit == other.merit && gestation_time == other.gestation_time && final_task_count == other.final_task_count; 
-  // }
+  bool operator==(const Phenotype & other) const {
+    return gestation_time == other.gestation_time && final_task_count == other.final_task_count; 
+  }
 
   bool operator<(const Phenotype & other) const {
-    return merit < other.merit || gestation_time < other.gestation_time || final_task_count < other.final_task_count; 
+    return std::tie(gestation_time, final_task_count) < std::tie(other.gestation_time, other.final_task_count); 
   }
 
   bool operator!=(const Phenotype & other) const {
-    return merit != other.merit || gestation_time != other.gestation_time || final_task_count != other.final_task_count; 
+    return gestation_time != other.gestation_time || final_task_count != other.final_task_count; 
   }
 
 
