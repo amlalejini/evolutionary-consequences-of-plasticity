@@ -132,7 +132,7 @@ protected:
   int m_promoter_index;       //site to begin looking for the next active promoter from
   int m_promoter_offset;      //bit offset when testing whether a promoter is on
 
-  struct cPromoter 
+  struct cPromoter
   {
   public:
     int m_pos;      //position within genome
@@ -154,7 +154,7 @@ protected:
 
 
   bool SingleProcess_ExecuteInst(cAvidaContext& ctx, const Instruction& cur_inst);
-  
+
   // --------  Stack Manipulation...  --------
   inline void StackPush(int value);
   inline int StackPop();
@@ -246,7 +246,7 @@ public:
 
 
   // --------  Helper methods  --------
-  int GetType() const { return HARDWARE_TYPE_CPU_ORIGINAL; }  
+  int GetType() const { return HARDWARE_TYPE_CPU_ORIGINAL; }
   bool SupportsSpeculative() const { return true; }
   void PrintStatus(std::ostream& fp);
   void SetupMiniTraceFileHeader(Avida::Output::File& df, const int gen_id, const Apto::String& genotype);
@@ -291,7 +291,7 @@ public:
   // --------  Thread Manipulation  --------
   inline void ThreadPrev(); // Shift the current thread in use.
   Systematics::UnitPtr ThreadGetOwner() { m_organism->AddReference(); return Systematics::UnitPtr(m_organism); }
-  
+
 
   int GetNumThreads() const     { return m_threads.GetSize(); }
   int GetCurThread() const      { return m_cur_thread; }
@@ -300,7 +300,7 @@ public:
 
   // --------  Parasite Stuff  --------
   bool ParasiteInfectHost(Systematics::UnitPtr) { return false; }
-    
+
   // -------- Kaboom Stuff ------------
   bool checkNoMutList(cHeadCPU to);
 
@@ -339,9 +339,9 @@ private:
   bool Inst_IfAboveResLevelEnd(cAvidaContext& ctx);
   bool Inst_IfNotAboveResLevel(cAvidaContext& ctx);
   bool Inst_IfNotAboveResLevelEnd(cAvidaContext& ctx);
-  
+
   bool Inst_IfGerm(cAvidaContext& ctx);
-  bool Inst_IfSoma(cAvidaContext& ctx);  
+  bool Inst_IfSoma(cAvidaContext& ctx);
 
   // Probabilistic ifs.
   bool Inst_IfP0p125(cAvidaContext& ctx);
@@ -356,7 +356,7 @@ private:
   bool Inst_IfNotEqualEnd(cAvidaContext& ctx);
   bool Inst_IfGrtEquEnd(cAvidaContext& ctx);
   bool Inst_Else(cAvidaContext& ctx);
-  bool Inst_EndIf(cAvidaContext& ctx);	
+  bool Inst_EndIf(cAvidaContext& ctx);
 
   bool Inst_JumpF(cAvidaContext& ctx);
   bool Inst_JumpB(cAvidaContext& ctx);
@@ -365,14 +365,14 @@ private:
 
   bool Inst_Throw(cAvidaContext& ctx);
   bool Inst_ThrowIf0(cAvidaContext& ctx);
-  bool Inst_ThrowIfNot0(cAvidaContext& ctx);  
+  bool Inst_ThrowIfNot0(cAvidaContext& ctx);
   bool Inst_Catch(cAvidaContext&) { ReadLabel(); return true; };
- 
+
   bool Inst_Goto(cAvidaContext& ctx);
   bool Inst_GotoIf0(cAvidaContext& ctx);
-  bool Inst_GotoIfNot0(cAvidaContext& ctx);  
+  bool Inst_GotoIfNot0(cAvidaContext& ctx);
   bool Inst_Label(cAvidaContext&) { ReadLabel(); return true; };
-    
+
   // Stack and Register Operations
   bool Inst_Pop(cAvidaContext& ctx);
   bool Inst_Push(cAvidaContext& ctx);
@@ -512,7 +512,7 @@ private:
   bool Inst_SenseUnit(cAvidaContext& ctx);
   bool Inst_SenseMult100(cAvidaContext& ctx);
   bool DoSense(cAvidaContext& ctx, int conversion_method, double base);
-  bool DoSenseResourceX(int reg_to_set, int cell_id, int resid, cAvidaContext& ctx); 
+  bool DoSenseResourceX(int reg_to_set, int cell_id, int resid, cAvidaContext& ctx);
   bool Inst_SenseResource0(cAvidaContext& ctx);
   bool Inst_SenseResource1(cAvidaContext& ctx);
   bool Inst_SenseResource2(cAvidaContext& ctx);
@@ -521,11 +521,23 @@ private:
   bool Inst_SenseFacedResource2(cAvidaContext& ctx);
   bool Inst_SenseResourceID(cAvidaContext& ctx);
   // Resources of next group +1 or -1, based on positive or negative value in the nop register,
-  // wrapping from the top group back to group 1 (skipping 0). 
+  // wrapping from the top group back to group 1 (skipping 0).
   bool Inst_SenseNextResLevel(cAvidaContext& ctx);
   bool Inst_SenseOpinionResourceQuantity(cAvidaContext& ctx);
   bool Inst_SenseDiffFaced(cAvidaContext& ctx);
   bool Inst_SenseFacedHabitat(cAvidaContext& ctx);
+
+  // Reaction-specific sensors. NOP behavior if reaction does not exist.
+  bool DoSenseReact(cAvidaContext& ctx, const cString & reaction_name);
+  bool Inst_SenseReactNAND(cAvidaContext& ctx);
+  bool Inst_SenseReactNOT(cAvidaContext& ctx);
+  bool Inst_SenseReactAND(cAvidaContext& ctx);
+  bool Inst_SenseReactORN(cAvidaContext& ctx);
+  bool Inst_SenseReactOR(cAvidaContext& ctx);
+  bool Inst_SenseReactANDN(cAvidaContext& ctx);
+  bool Inst_SenseReactNOR(cAvidaContext& ctx);
+  bool Inst_SenseReactXOR(cAvidaContext& ctx);
+  bool Inst_SenseReactEQU(cAvidaContext& ctx);
 
   // Resources
   int FindModifiedResource(cAvidaContext& ctx, int& spec_id);
@@ -576,8 +588,8 @@ private:
   bool Inst_IncreaseEnergyDonation(cAvidaContext& ctx);
   bool Inst_DecreaseEnergyDonation(cAvidaContext& ctx);
 
-  void DoResourceDonatePercent(cAvidaContext& ctx, const int to_cell, const int resource_id, const double frac_resource_given); 
-  void DoResourceDonateAmount(cAvidaContext& ctx, const int to_cell, const int resource_id, const double amount); 
+  void DoResourceDonatePercent(cAvidaContext& ctx, const int to_cell, const int resource_id, const double frac_resource_given);
+  void DoResourceDonateAmount(cAvidaContext& ctx, const int to_cell, const int resource_id, const double amount);
   bool DonateResourceX(cAvidaContext& ctx, const int res_id);
   bool Inst_DonateResource0(cAvidaContext& ctx);
   bool Inst_DonateResource1(cAvidaContext& ctx);
@@ -611,8 +623,8 @@ private:
   bool Inst_GetCellPosition(cAvidaContext& ctx);
   bool Inst_GetCellPositionX(cAvidaContext& ctx);
   bool Inst_GetCellPositionY(cAvidaContext& ctx);
-  bool Inst_GetDirectionOffNorth(cAvidaContext& ctx);  
-  bool Inst_GetNortherly(cAvidaContext& ctx); 
+  bool Inst_GetDirectionOffNorth(cAvidaContext& ctx);
+  bool Inst_GetNortherly(cAvidaContext& ctx);
   bool Inst_GetEasterly(cAvidaContext& ctx);
   bool Inst_ZeroEasterly(cAvidaContext& ctx);
   bool Inst_ZeroNortherly(cAvidaContext& ctx);
@@ -750,7 +762,7 @@ private:
   bool Inst_BitConsensus(cAvidaContext& ctx);
   bool Inst_BitConsensus24(cAvidaContext& ctx);
   bool Inst_IfConsensus(cAvidaContext& ctx);
-  bool Inst_IfConsensus24(cAvidaContext& ctx);  
+  bool Inst_IfConsensus24(cAvidaContext& ctx);
   bool Inst_IfLessConsensus(cAvidaContext& ctx);
   bool Inst_IfLessConsensus24(cAvidaContext& ctx);
 
@@ -801,45 +813,45 @@ private:
 
 
   // -------- Reputation support --------
-  /* These instructions interact with the "reputation" support in cOrganism.h.  They 
+  /* These instructions interact with the "reputation" support in cOrganism.h.  They
   are  based on the donate instructions. However, these instructions donate
-  "raw materials" rather than merit and will eventually be used to support 
+  "raw materials" rather than merit and will eventually be used to support
   reputation based cooperation.
-  */ 
+  */
   // Donate a raw material to the neighbor
   bool Inst_DonateFacingRawMaterials(cAvidaContext& ctx);
   // Donate a raw material to the neighbor if it is another species
   bool Inst_DonateFacingRawMaterialsOtherSpecies(cAvidaContext& ctx);
   // Donate a raw material to the neighbor if it was a prior donor
-  bool Inst_DonateIfDonor(cAvidaContext& ctx);	
+  bool Inst_DonateIfDonor(cAvidaContext& ctx);
   // Donate a string to the neighbor, if it's reputation is > 0
-  bool Inst_DonateStringIfDonorRep(cAvidaContext& ctx);		
+  bool Inst_DonateStringIfDonorRep(cAvidaContext& ctx);
   // Donate a string to a neighbor
   bool Inst_DonateFacingString(cAvidaContext& ctx);
 
   // Rotate to the organims with the greatest reputation
-  bool Inst_RotateToGreatestReputation(cAvidaContext& ctx);	
+  bool Inst_RotateToGreatestReputation(cAvidaContext& ctx);
   // Rotate to the organims with the greatest reputation that has a different tag
-  bool Inst_RotateToGreatestReputationWithDifferentTag(cAvidaContext& ctx);	
+  bool Inst_RotateToGreatestReputationWithDifferentTag(cAvidaContext& ctx);
   // Rotate to the organims with the greatest reputation that has a different tag
-  bool Inst_RotateToGreatestReputationWithDifferentLineage(cAvidaContext& ctx);		
+  bool Inst_RotateToGreatestReputationWithDifferentLineage(cAvidaContext& ctx);
   // Rotate to an organim with a different tag
-  bool Inst_RotateToDifferentTag(cAvidaContext& ctx);	
+  bool Inst_RotateToDifferentTag(cAvidaContext& ctx);
   // Rotate to the organims with the greatest reputation and donate
-  bool Inst_RotateToGreatestReputationAndDonate(cAvidaContext& ctx);	
+  bool Inst_RotateToGreatestReputationAndDonate(cAvidaContext& ctx);
   // Get a neighbor's reputation
   bool Inst_GetNeighborsReputation(cAvidaContext& ctx);
   // Get the organism's reputation
-  bool Inst_GetReputation(cAvidaContext& ctx);	
+  bool Inst_GetReputation(cAvidaContext& ctx);
   // Execute the following instruction if the facing neighbor was a donor
   bool Inst_IfDonor(cAvidaContext& ctx);
   // Produce string
   bool Inst_ProduceString(cAvidaContext& ctx);
   // Get the organism's raw material level
   bool Inst_GetAmountOfRawMaterials(cAvidaContext& ctx);
-  // Get the number of raw materials the organism 
+  // Get the number of raw materials the organism
   // has gotten from others
-  bool Inst_GetAmountOfOtherRawMaterials(cAvidaContext& ctx);	
+  bool Inst_GetAmountOfOtherRawMaterials(cAvidaContext& ctx);
   // Pretend to donate
   bool Inst_Pose(cAvidaContext& ctx);
 
@@ -903,7 +915,7 @@ public:
   bool Inst_SetOpinionToZero(cAvidaContext& ctx);
   bool Inst_SetOpinionToOne(cAvidaContext& ctx);
   bool Inst_SetOpinionToTwo(cAvidaContext& ctx);
-  
+
 
   // -------- Cell Data Support --------
 public:
@@ -922,9 +934,9 @@ public:
   bool Inst_MarkCellWithVitality(cAvidaContext& ctx);
   bool Inst_GetResStored(cAvidaContext& ctx);
   bool Inst_GetID(cAvidaContext& ctx);
-  bool Inst_GetFacedVitalityDiff(cAvidaContext& ctx); 
-  bool Inst_GetFacedOrgID(cAvidaContext& ctx);  
-  bool Inst_AttackFacedOrg(cAvidaContext& ctx); 
+  bool Inst_GetFacedVitalityDiff(cAvidaContext& ctx);
+  bool Inst_GetFacedOrgID(cAvidaContext& ctx);
+  bool Inst_AttackFacedOrg(cAvidaContext& ctx);
   bool Inst_GetAttackOdds(cAvidaContext& ctx);
 
 private:
@@ -941,23 +953,23 @@ public:
   //! Get if & when this organism last received a flash.
   bool Inst_FlashInfo(cAvidaContext& ctx);
   //! Get if (but not when) this organism last received a flash.
-  bool Inst_FlashInfoB(cAvidaContext& ctx);  
+  bool Inst_FlashInfoB(cAvidaContext& ctx);
   //! Reset the information this organism has regarding receiving a flash.
-  bool Inst_ResetFlashInfo(cAvidaContext& ctx);  
+  bool Inst_ResetFlashInfo(cAvidaContext& ctx);
   //! Reset the entire CPU.
   bool Inst_HardReset(cAvidaContext& ctx);
   //! Current "time": the number of cycles this CPU has been "alive."
   bool Inst_GetCycles(cAvidaContext& ctx);
 
 private:
-  /*! Used to track the last flash received; first=whether we've received a flash, 
+  /*! Used to track the last flash received; first=whether we've received a flash,
   second= #cycles since we've received a flash, or 0 if we haven't. */
   std::pair<unsigned int, unsigned int> m_flash_info;
   //! Cycle timer; counts the number of cycles this virtual CPU has executed.
-  unsigned int m_cycle_counter;	
+  unsigned int m_cycle_counter;
 
   // -------- Neighborhood-sensing support --------
-public:	
+public:
   //! Loads the current neighborhood into the organism's memory.
   bool Inst_GetNeighborhood(cAvidaContext& ctx);
   //! Test if the current neighborhood has changed from that in the organism's memory.
@@ -966,7 +978,7 @@ public:
 
   // -------- Group Formation Support --------
 public:
-  //! An organism joins a group by setting it opinion to the group id. 
+  //! An organism joins a group by setting it opinion to the group id.
   bool Inst_JoinGroup(cAvidaContext& ctx);
   bool Inst_JoinMTGroup(cAvidaContext& ctx);
   // Organism joins group +1 or -1 wrapping from the top group back to group 1 (skipping 0)
@@ -1011,7 +1023,7 @@ public:
   // -------- Division of labor support --------
   bool Inst_GetTimeUsed(cAvidaContext& ctx);
   bool Inst_DonateResToDeme(cAvidaContext& ctx);
-  // If there is a penalty for switching tasks, call this function and 
+  // If there is a penalty for switching tasks, call this function and
   // the additional cycle cost will be added.
   void IncrementTaskSwitchingCost(int cost);
   int GetTaskSwitchingCost() { return m_task_switching_cost; }
@@ -1020,7 +1032,7 @@ public:
   // Apply point mutations to a genome, where the mutation rate
   // depends on the task last performed
   bool Inst_ApplyVaryingPointMutations(cAvidaContext& ctx);
-  // Apply point mutations to a genome in the deme with the same 
+  // Apply point mutations to a genome in the deme with the same
   // germ/soma status
   bool Inst_ApplyPointMutationsGroupGS(cAvidaContext& ctx);
   // Apply point mutations to a genome in the deme at random
@@ -1110,8 +1122,8 @@ inline int cHardwareCPU::GetStack(int depth, int stack_id, int in_thread) const
 inline int cHardwareCPU::GetCurStack(int in_thread) const
 {
   if(in_thread >= m_threads.GetSize() || in_thread < 0) in_thread = m_cur_thread;
-  
-  return m_threads[in_thread].cur_stack;  
+
+  return m_threads[in_thread].cur_stack;
 }
 
 
@@ -1131,5 +1143,3 @@ inline void cHardwareCPU::SwitchStack()
 }
 
 #endif
-
-
