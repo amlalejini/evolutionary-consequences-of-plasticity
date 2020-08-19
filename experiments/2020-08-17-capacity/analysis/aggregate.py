@@ -145,14 +145,11 @@ def main():
         aggregate_lineage = []
 
         info["equals_odd+even_update"] = None
-        info["equals_odd+even_generation"] = None
         info["equals_all_update"] = None
-        info["equals_all_generation"] = None
+        info["equals_update"] = None
         info["plastic_odd_even_update"] = None
-        info["plastic_odd_even_generation"] = None
 
         for i in range(len(lineage_env_all)):
-            generation = i
             update = lineage_env_all[i]["update_born"]
             info_i = {}
             info_i["phenotype_even"] = "".join([lineage_env_even[i][trait] for trait in phenotypic_traits])
@@ -160,6 +157,7 @@ def main():
             info_i["plastic_odd_even"] = info_i["phenotype_even"] != info_i["phenotype_odd"]
             info_i["equals_odd+even"] = lineage_env_even[i]["equals"] == "1" and lineage_env_odd[i]["equals"] == "1"
             info_i["equals_all"] = lineage_env_all[i]["equals"] == "1"
+            info_i["equals"] = lineage_env_even[i]["equals"] == "1" or lineage_env_odd[i]["equals"] == "1" or lineage_env_all[i]["equals"] == "1"
             info_i["match_score_even"] = simple_match_coeff(info_i["phenotype_even"], even_profile)
             info_i["match_score_odd"] = simple_match_coeff(info_i["phenotype_odd"], odd_profile)
             # info_i["match_score_all"] = simple_match_coeff(info_i["phenotype_all"], all_profile)
@@ -170,20 +168,23 @@ def main():
             if (info["equals_odd+even_update"] == None) and (info_i["equals_odd+even"]):
                 info["equals_odd+even_update"] = update
 
-            if (info["equals_odd+even_generation"] == None) and (info_i["equals_odd+even"]):
-                info["equals_odd+even_generation"] = generation
+            # if (info["equals_odd+even_generation"] == None) and (info_i["equals_odd+even"]):
+            #     info["equals_odd+even_generation"] = generation
 
             if (info["equals_all_update"] == None) and (info_i["equals_all"]):
                 info["equals_all_update"] = update
 
-            if (info["equals_all_generation"] == None) and (info_i["equals_all"]):
-                info["equals_all_generation"] = generation
+            # if (info["equals_all_generation"] == None) and (info_i["equals_all"]):
+            #     info["equals_all_generation"] = generation
 
             if (info["plastic_odd_even_update"] == None) and (info_i["plastic_odd_even"]):
                 info["plastic_odd_even_update"] = update
 
-            if (info["plastic_odd_even_generation"] == None) and (info_i["plastic_odd_even"]):
-                info["plastic_odd_even_generation"] = generation
+            if (info["equals_update"] == None) and info_i["equals"]:
+                info["equals_update"] = update
+
+            # if (info["plastic_odd_even_generation"] == None) and (info_i["plastic_odd_even"]):
+            #     info["plastic_odd_even_generation"] = generation
 
         # Write to summary file.
         param_fields=list(cmd_params.keys())
