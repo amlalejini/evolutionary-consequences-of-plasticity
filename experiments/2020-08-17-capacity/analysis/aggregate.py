@@ -129,7 +129,7 @@ def main():
 
         info = {}
         info["genome_length"] = final_dom_env_all["genome_length"]
-        info["average_generation"] = time_data[-1]["average generation"]
+        info["average_generation"] = time_data[-1]["average_generation"]
 
         info["phenotype_even"] = "".join([final_dom_env_even[trait] for trait in phenotypic_traits])
         info["phenotype_odd"] = "".join([final_dom_env_odd[trait] for trait in phenotypic_traits])
