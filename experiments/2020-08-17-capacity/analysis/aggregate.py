@@ -111,6 +111,7 @@ def main():
     summary_header = None
     summary_content_lines = []
     for run_dir in run_dirs:
+        print(f"processing {run_dir}")
         # run_id = run_dir.split("_")[-1]
         run_path = os.path.join(data_dir, run_dir)
         analysis_path = os.path.join(analysis_dir, run_dir)
