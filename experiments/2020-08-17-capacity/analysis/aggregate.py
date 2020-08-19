@@ -72,24 +72,17 @@ def simple_match_coeff(a, b):
         exit(-1)
     return sum(ai==bi for ai,bi in zip(a,b))
 
-
-
 def main():
     parser = argparse.ArgumentParser(description="Run submission script.")
     parser.add_argument("--data_dir", type=str, help="Where is the base output directory for each run?")
-    parser.add_argument("--analysis_dir", type=str, help="Where are is the output of avida analysis?")
     parser.add_argument("--dump", type=str, help="Where to dump this?", default=".")
 
     args = parser.parse_args()
     data_dir = args.data_dir
-    analysis_dir = args.analysis_dir
     dump_dir = args.dump
 
     if not os.path.exists(data_dir):
         print("Unable to find data directory.")
-        exit(-1)
-    if not os.path.exists(analysis_dir):
-        print("Unable to find analysis directory.")
         exit(-1)
 
     mkdir_p(dump_dir)
@@ -97,14 +90,6 @@ def main():
     # Aggregate run directories.
     run_dirs = [run_dir for run_dir in os.listdir(data_dir) if run_identifier in run_dir]
     print(f"Found {len(run_dirs)} run directories.")
-    # Aggregate analysis directories.
-    analysis_dirs = {run_dir for run_dir in os.listdir(analysis_dir) if run_identifier in run_dir}
-    print(f"Found {len(analysis_dirs)} analysis directories.")
-
-    # Double check that run_dir is in both data directory and in analysis directory.
-    if set(run_dirs) != analysis_dirs:
-        print("Run directories not same as analysis directories.")
-        exit(-1)
 
     # For each run directory:
     # - get id, get command line configuration settings
@@ -112,9 +97,7 @@ def main():
     summary_content_lines = []
     for run_dir in run_dirs:
         print(f"processing {run_dir}")
-        # run_id = run_dir.split("_")[-1]
         run_path = os.path.join(data_dir, run_dir)
-        analysis_path = os.path.join(analysis_dir, run_dir)
         ############################################################
         # Extract commandline configuration settings (from cmd.log file)
         cmd_log_path = os.path.join(run_path, "cmd.log")
@@ -124,20 +107,16 @@ def main():
         chg_rate = cmd_params["EVENT_FILE"].split(".")[0].split("-")[-1] if chg_env else "u0"
         cmd_params["change_rate"] = chg_rate
         cmd_params["changing_env"] = str(int(chg_env))
-        # Write command params to file in analysis directory.
-        with open(os.path.join(analysis_path, "cmd_params.csv"), "w") as fp:
-            fp.write("\n".join(["parameter,value"] + [f"{param},{cmd_params[param]}" for param in cmd_params]))
         ############################################################
 
         # Extract environment information.
-        final_dom_env_all = read_avida_dat_file(os.path.join(analysis_path, "final_dominant", "env_all", "final_dominant.dat"))[0]
-        final_dom_env_odd = read_avida_dat_file(os.path.join(analysis_path, "final_dominant", "env_odd", "final_dominant.dat"))[0]
-        final_dom_env_even = read_avida_dat_file(os.path.join(analysis_path, "final_dominant", "env_even", "final_dominant.dat"))[0]
+        final_dom_env_all = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_all", "final_dominant.dat"))[0]
+        final_dom_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "final_dominant.dat"))[0]
+        final_dom_env_even = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_even", "final_dominant.dat"))[0]
 
-
-        lineage_env_all = read_avida_dat_file(os.path.join(analysis_path, "final_dominant", "env_all", "lineage_tasks.dat"))
-        lineage_env_odd = read_avida_dat_file(os.path.join(analysis_path, "final_dominant", "env_odd", "lineage_tasks.dat"))
-        lineage_env_even = read_avida_dat_file(os.path.join(analysis_path, "final_dominant", "env_even", "lineage_tasks.dat"))
+        lineage_env_all = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_all", "lineage_tasks.dat"))
+        lineage_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "lineage_tasks.dat"))
+        lineage_env_even = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_even", "lineage_tasks.dat"))
         if len({len(lineage_env_all), len(lineage_env_even), len(lineage_env_odd)}) != 1:
             print("lineage length mismatch!")
             exit(-1)
