@@ -120,4 +120,8 @@ ggplot(agg_data, aes(x=sensors, y=lineage_length)) +
 ggplot(agg_data, aes(x=sensors, y=average_generation)) +
   geom_boxplot()  +
   facet_wrap(~change_rate) + ggsave("average_generation.pdf")
+
+ggplot(agg_data, aes(x=sensors, y=genome_length)) + 
+  geom_boxplot() +
+  facet_wrap(~change_rate) + ggsave("genome_length.pdf")
 ```
