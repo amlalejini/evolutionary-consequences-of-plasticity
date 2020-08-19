@@ -1,0 +1,33 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+
+#SBATCH --time=<<TIME_REQUEST>>          # limit of wall clock time - how long the job will run (same as -t)
+#SBATCH --array=<<ARRAY_ID_RANGE>>
+#SBATCH --mem=<<MEMORY_REQUEST>>        # memory required per node - amount of memory (in bytes)
+#SBATCH --job-name <<JOB_NAME>>         # you can give your job a name for easier identification (same as -J)
+#SBATCH --account=devolab
+
+########## Command Lines to Run ##########
+
+EXEC=<<EXEC>>
+CONFIG_DIR=<<CONFIG_DIR>>
+
+module load GCCcore/9.1.0
+
+mkdir -p ${RUN_DIR}
+cd ${RUN_DIR}
+cp ${CONFIG_DIR}/*.cfg .
+cp ${CONFIG_DIR}/*.org .
+
+cp ${CONFIG_DIR}/${EXEC} .
+
+JOB_SEED_OFFSET=<<JOB_SEED_OFFSET>>
+SEED=$((JOB_SEED_OFFSET + SLURM_ARRAY_TASK_ID))
+
+<<RUN_COMMANDS>>
+
+<<ANALYSIS_COMMANDS>>
+
+rm ${EXEC}
+
+"""
