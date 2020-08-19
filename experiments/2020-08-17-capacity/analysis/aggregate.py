@@ -109,6 +109,9 @@ def main():
         cmd_params["changing_env"] = str(int(chg_env))
         ############################################################
 
+        # Extract time information
+        time_data = read_avida_dat_file(os.path.join(run_path, "data", "time.dat"))
+
         # Extract environment information.
         final_dom_env_all = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_all", "final_dominant.dat"))[0]
         final_dom_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "final_dominant.dat"))[0]
@@ -123,6 +126,7 @@ def main():
 
         info = {}
         info["genome_length"] = final_dom_env_all["genome_length"]
+        info["average_generation"] = time_data[-1]["average generation"]
 
         info["phenotype_even"] = "".join([final_dom_env_even[trait] for trait in phenotypic_traits])
         info["phenotype_odd"] = "".join([final_dom_env_odd[trait] for trait in phenotypic_traits])
