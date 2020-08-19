@@ -42,8 +42,11 @@ def read_avida_dat_file(path):
     # Where does the legend table start?
     for line_i in range(0, len(content)):
         line = content[line_i].strip()
-        if line == "# Legend:":
+        if line == "# Legend:":         # Handles analyze mode detail files.
             legend_start = line_i + 1
+            break
+        if "#  1:" in line:             # Handles time.dat file.
+            legend_start = line_i
             break
     # For each line in legend table, extract field
     fields = []
