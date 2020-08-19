@@ -1,6 +1,6 @@
-[submodule "libs/apto"]
+[submodule "avida/libs/apto"]
 	path = avida/libs/apto
 	url = https://github.com/dmbryson/apto.git
-[submodule "documentation"]
+[submodule "avida/documentation"]
 	path = avida/documentation
 	url = https://github.com/devosoft/avida.wiki.git
