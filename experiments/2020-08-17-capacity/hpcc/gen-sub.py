@@ -56,11 +56,10 @@ cp ${CONFIG_DIR}/*.org .
 
 cp ${CONFIG_DIR}/${EXEC} .
 
-echo "./${EXEC} ${RUN_PARAMS}" > cmd.log
-./${EXEC} ${RUN_PARAMS} > run.log
+<<RUN_COMMANDS>>
 
-rm ./*.cfg
-rm ./*.org
+<<ANALYSIS_COMMANDS>>
+
 rm ${EXEC}
 
 """
@@ -89,11 +88,18 @@ def main():
     parser.add_argument("--data_dir", type=str, help="Where is the base output directory for each run?")
     parser.add_argument("--config_dir", type=str, help="Where is the configuration directory for experiment?")
     parser.add_argument("--replicates", type=int, default=default_num_replicates, help="How many replicates should we run of each condition?")
+    parser.add_argument("--run_experiment", action="store_true", help="Should we run the experiment?")
+    parser.add_argument("--run_analysis", action="store_true", help="Should we run analyze mode?")
+    parser.add_argument("--analysis_file", type=str, default="analysis.cfg", help="Path to the analysis script to use for avida analyze mode.")
 
     args = parser.parse_args()
     data_dir = args.data_dir
     config_dir = args.config_dir
     num_replicates = args.replicates
+
+    run_exp = args.run_experiment
+    run_analysis = args.run_analysis
+    analysis_file_path = args.analysis_file
 
     submissions = []
 
@@ -134,6 +140,20 @@ def main():
     script = script.replace("<<CONFIG_DIR>>", config_dir)
     script = script.replace("<<SUBMISSION_LOGIC>>", sub_logic)
     script = script.replace("<<EXEC>>", executable)
+
+    # Add run commands if we're running the experiment.
+    run_commands = ""
+    if run_exp:
+        print("Configuring slurm script to run experiment.")
+        run_commands += 'echo "./${EXEC} ${RUN_PARAMS}" > cmd.log\n'
+        run_commands += './${EXEC} ${RUN_PARAMS} > run.log'
+    script = script.replace("<<RUN_COMMANDS>>", run_commands)
+
+    analysis_commands = ""
+    if run_analysis:
+        print("Configuring slurm script to run analysis.")
+        analysis_commands += "./${EXEC} ${RUN_PARAMS} -set ANALYZE_FILE " + analysis_file_path + " -a\n"
+    script = script.replace("<<ANALYSIS_COMMANDS>>", analysis_commands)
 
     with open("sub.sb", "w") as fp:
         fp.write(script)
