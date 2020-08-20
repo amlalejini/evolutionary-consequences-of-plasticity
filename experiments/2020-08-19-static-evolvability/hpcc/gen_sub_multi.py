@@ -16,7 +16,7 @@ base_script_filename = './base_script.txt'
 # Create combo object to collect all conditions we'll run
 combos = CombinationCollector()
 combos.register_var('CONFIG_ID')
-combos.add_val('CONFIG_ID', [str(i).zfill(2) for i in range(16)])
+combos.add_val('CONFIG_ID', [str(i).zfill(2) for i in range(17)])
 
 # Load in the base slurm file
 with open(base_script_filename, 'r') as fp:
@@ -74,7 +74,8 @@ def main():
         file_str = file_str.replace("<<JOB_NAME>>", job_name)
         file_str = file_str.replace("<<CONFIG_DIR>>", config_dir)
         file_str = file_str.replace("<<EXEC>>", executable)
-        file_str = file_str.replace("<<RUN_DIR>>", os.path.join(data_dir, f'{filename_prefix}'))
+        file_str = file_str.replace("<<RUN_DIR>>", \
+            os.path.join(data_dir, f'{filename_prefix}', '${SEED}'))
         file_str = file_str.replace("<<JOB_SEED_OFFSET>>", str(cur_seed))
         # Format configuration parameters for the run
         run_params =  f'-set EVENT_FILE events-const-{condition_dict["CONFIG_ID"]}.cfg'
@@ -85,13 +86,14 @@ def main():
         # Add run commands if we're running the experiment.
         run_commands = ''
         if run_exp:
-            run_commands += f'RUN_PARAMS={run_params}\n'
+            run_commands += f'RUN_PARAMS="{run_params}"\n'
             run_commands += 'echo "./${EXEC} ${RUN_PARAMS}" > cmd.log\n'
             run_commands += './${EXEC} ${RUN_PARAMS} > run.log\n'
         file_str = file_str.replace("<<RUN_COMMANDS>>", run_commands)
         # Add analysis commands if we're analyzing the data
         analysis_commands = ""
         if run_analysis:
+            analysis_commands += f'RUN_PARAMS="{run_params}"\n'
             analysis_commands += './${EXEC} ${RUN_PARAMS}'
             analysis_commands += ' -set ANALYZE_FILE ' + analysis_file_path 
             analysis_commands += ' -a\n'

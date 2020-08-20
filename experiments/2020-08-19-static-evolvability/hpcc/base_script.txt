@@ -9,8 +9,12 @@
 
 ########## Command Lines to Run ##########
 
+JOB_SEED_OFFSET=<<JOB_SEED_OFFSET>>
+SEED=$((JOB_SEED_OFFSET + SLURM_ARRAY_TASK_ID))
+
 EXEC=<<EXEC>>
 CONFIG_DIR=<<CONFIG_DIR>>
+RUN_DIR=<<RUN_DIR>>
 
 module load GCCcore/9.1.0
 
@@ -21,8 +25,6 @@ cp ${CONFIG_DIR}/*.org .
 
 cp ${CONFIG_DIR}/${EXEC} .
 
-JOB_SEED_OFFSET=<<JOB_SEED_OFFSET>>
-SEED=$((JOB_SEED_OFFSET + SLURM_ARRAY_TASK_ID))
 
 <<RUN_COMMANDS>>
 
