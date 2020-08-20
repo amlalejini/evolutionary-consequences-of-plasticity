@@ -115,6 +115,7 @@ def main():
 
         # Extract time information
         time_data = read_avida_dat_file(os.path.join(run_path, "data", "time.dat"))
+        tasks_data = read_avida_dat_file(os.path.join(run_path, "data", "tasks.dat"))
 
         # Extract environment information.
 
@@ -136,6 +137,9 @@ def main():
         # - maybe don't put both phases in the same final_dominant.gen file.
         info["phase_1_average_generation"] = time_data[-1]["average_generation"]
         info["phase_0_average_generation"] = [time_data[i]["average_generation"] for i in range(len(time_data)) if time_data[i]["update"] == "200000"][0]
+
+        info["phase_1_pop_equals"] = int(tasks_data[-1]["equals"]) > 0
+        info["phase_0_pop_equals"] = int([tasks_data[i]["equals"] for i in range(len(tasks_data)) if tasks_data[i]["update"] == "200000"][0]) > 0
 
         # Collect info on dominant genotypes for both phases.
         for phase_i in range(len(doms_env_all)):
