@@ -99,7 +99,7 @@ def main():
     summary_header = None
     summary_content_lines = []
     for run_dir in run_dirs:
-        if "RUN_2596" in run_dir or "RUN_2989" in run_dir: continue
+        if "RUN_2596" in run_dir: continue
         print(f"processing {run_dir}")
         run_path = os.path.join(data_dir, run_dir)
         ############################################################
