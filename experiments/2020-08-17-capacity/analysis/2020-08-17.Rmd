@@ -46,6 +46,8 @@ agg_data$plastic_odd_even <- as.factor(agg_data$plastic_odd_even)
 
 agg_data$sensors <- agg_data$DISABLE_REACTION_SENSORS == "0"
 
+theme_set(theme_cowplot())
+
 ```
 
 ## Graphs!
@@ -63,7 +65,7 @@ ggplot(filter(agg_data, plastic_odd_even=="True"), aes(x=sensors)) +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE)) +
   ylab("plastic final dominant (odd/even environment)") +
   facet_wrap(~change_rate) +
-  ggsave("final_dom_plastic.pdf")
+  ggsave("final_dom_plastic.png", width=10, height=7)
 ```
 
 ### Equals
@@ -78,11 +80,10 @@ ggplot(filter(agg_data, equals=="True"), aes(x=sensors)) +
   )  +
   ylab("Replicates w/equals-capable final dom") +
   facet_wrap(~change_rate) + 
-  ggsave("equals_final_dom.pdf")
+  ggsave("equals_final_dom.png", width=10, height=7)
 ```
 
 ```{r}
-# agg_data$plastic_along_lineage = agg_data$plastic_odd_even_generation != "None"
 ggplot(filter(agg_data, equals_update!="None"), aes(x=sensors)) +
   geom_bar(position=position_dodge(0.9)) +
   geom_text(
@@ -92,7 +93,7 @@ ggplot(filter(agg_data, equals_update!="None"), aes(x=sensors)) +
   )  +
   ylab("Replicates w/Equals Along Lineage") +
   facet_wrap(~change_rate) + 
-  ggsave("equals_on_lineage.pdf")
+  ggsave("equals_on_lineage.png", width=10, height=7)
 ```
 
 
@@ -115,11 +116,11 @@ ggplot(agg_data_equals_odd_even, aes(x=sensors, y=equals_odd.even_update)) +
 ```{r}
 ggplot(agg_data, aes(x=sensors, y=lineage_length)) +
   geom_boxplot()  +
-  facet_wrap(~change_rate) + ggsave("lineage_length.pdf")
+  facet_wrap(~change_rate) + ggsave("lineage_length.png")
 
 ggplot(agg_data, aes(x=sensors, y=average_generation)) +
   geom_boxplot()  +
-  facet_wrap(~change_rate) + ggsave("average_generation.pdf")
+  facet_wrap(~change_rate) + ggsave("average_generation.png")
 
 ggplot(agg_data, aes(x=sensors, y=genome_length)) + 
   geom_boxplot() +
