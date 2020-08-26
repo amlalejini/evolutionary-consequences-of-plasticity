@@ -209,7 +209,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     }
     success = false;
   }
-  
+
   // If there were errors loading at this point, it is perilous to try to go further (pop depends on an instruction set)
   if (!success) return success;
 
@@ -276,13 +276,14 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   OEE_stats->SetResolution(m_conf->OEE_RES.Get());
 
   OnBeforeRepro([this](int pos){
-    // std::cout << "Next parent is: " << pos; 
+    // std::cout << "Next parent is: " << pos;
     // if(systematics_manager->IsTaxonAt(pos)){
     //   std::cout << systematics_manager->GetTaxonAt(pos)->GetID();
-    // } 
+    // }
     systematics_manager->SetNextParent(pos);});
-  OnOffspringReady([this](Avida::InstructionSequence seq){ 
-    systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);
+  OnOffspringReady([this](Avida::InstructionSequence seq){
+    // systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);
+    systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate());
     emp::Ptr<taxon_t> tax = systematics_manager->GetMostRecent();
     if (tax->GetData().GetPhenotype().gestation_time == -1) {
       eval_fun(tax);
@@ -290,10 +291,10 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   });
   OnOrgDeath([this](int pos){ systematics_manager->RemoveOrgAfterRepro(pos, GetStats().GetUpdate());});
   OnUpdate([this](int ud){
-    if (std::round(GetStats().GetGeneration()) > latest_gen) { 
-      latest_gen = std::round(GetStats().GetGeneration()); 
-      OEE_stats->Update(latest_gen, GetStats().GetUpdate()); 
-      oee_file.Update(latest_gen); 
+    if (std::round(GetStats().GetGeneration()) > latest_gen) {
+      latest_gen = std::round(GetStats().GetGeneration());
+      OEE_stats->Update(latest_gen, GetStats().GetUpdate());
+      oee_file.Update(latest_gen);
     }
   });
   OnUpdate([this](int ud){systematics_manager->Update(); phylodiversity_file.Update(ud); lineage_file.Update(ud); dom_file.Update(ud);});
@@ -310,7 +311,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   oee_file.AddCurrent(*OEE_stats->GetDataNode("complexity"), "complexity", "complexity potential");
   oee_file.PrintHeaderKeys();
   oee_file.SetTimingRepeat(m_conf->OEE_RES.Get());
-  
+
   systematics_manager->AddEvolutionaryDistinctivenessDataNode();
   systematics_manager->AddPairwiseDistanceDataNode();
   systematics_manager->AddPhylogeneticDiversityDataNode();
@@ -352,7 +353,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   lineage_file.SetTimingRepeat(m_conf->SYSTEMATICS_RES.Get());
 
   dom_file.AddFun(update_fun, "update", "Update");
-  
+
   std::function<double(void)> get_score = [this]() {
     best_tax = emp::FindDominant(*systematics_manager);
     return best_tax->GetData().GetFitness();
