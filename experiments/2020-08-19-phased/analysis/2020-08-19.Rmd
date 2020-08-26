@@ -1,0 +1,176 @@
+---
+title: "2020-08-19 2-phase Experiment Analysis"
+output:
+  html_document:
+    keep_md: no
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    collapsed: false
+    theme: default
+    code_folding: hide
+  pdf_document:
+    toc: true
+    toc_depth: 4
+---
+
+## Analysis Dependencies
+
+```{r, message=FALSE}
+library(ggplot2)   # (Wickham, 2016)
+library(tidyr)     # (Wickham and Henry, 2020)
+library(dplyr)     # (Wickham et al., 2020)
+library(reshape2)  # (Wickham, 2007)
+library(cowplot)   # (Wilke, 2019)
+library(patchwork) # (Pederson, 2020)
+library(viridis)   # (Garnier, 2018)
+library(hexbin)
+```
+
+We conducted these analyses using the following computing environment:
+
+```{r}
+print(version)
+```
+
+## Setup
+
+```{r}
+data_path <- "./data/aggregate.csv"
+agg_data <- read.csv(data_path, na.strings="NONE")
+
+agg_data$DISABLE_REACTION_SENSORS <- as.factor(agg_data$DISABLE_REACTION_SENSORS)
+agg_data$change_rate <- factor(
+  agg_data$change_rate,
+  levels=c("u0","u3","u10","u30","u100")
+)
+agg_data$changing_env <- as.factor(agg_data$changing_env)
+agg_data$phase_0_plastic_odd_even <- as.factor(agg_data$phase_0_plastic_odd_even)
+agg_data$phase_1_plastic_odd_even <- as.factor(agg_data$phase_1_plastic_odd_even)
+
+agg_data$sensors <- agg_data$DISABLE_REACTION_SENSORS == "0"
+
+```
+
+## Graphs!
+
+### Plasticity
+
+```{r}
+ggplot(filter(agg_data, phase_0_plastic_odd_even=="True"), aes(x=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  ylab("plastic final dominant (odd/even environment)") +
+  facet_wrap(~change_rate, nrow=1) +
+  ggtitle("Phase 0") +
+  ggsave("p0_dom_plastic.pdf")
+
+ggplot(filter(agg_data, phase_1_plastic_odd_even=="True"), aes(x=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  ylab("plastic final dominant (odd/even environment)") +
+  facet_wrap(~change_rate, nrow=1) +
+  ggtitle("Phase 1") +
+  ggsave("p1_dom_plastic.pdf")
+```
+
+### Equals
+
+```{r}
+ggplot(filter(agg_data, phase_1_equals_any=="True"), aes(x=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  ylim(0, 101) +
+  ylab("Replicates w/equals-capable final dom") +
+  facet_wrap(~change_rate, nrow=1) + 
+  ggtitle("Phase 1") +
+  ggsave("phase_1_dom_equals.pdf")
+```
+
+```{r}
+ggplot(filter(agg_data, equals_any_update!="None"), aes(x=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  ylab("Replicates w/Equals Along Lineage") +
+  facet_wrap(~change_rate, nrow=1) + 
+  ggtitle("Phase 1") +
+  ggsave("phase_1_equals_on_lineage.pdf")
+```
+
+```{r}
+ggplot(filter(agg_data, phase_1_pop_equals=="True"), aes(x=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  ylim(0, 101) +
+  ylab("Replicates w/equals-capable final dom") +
+  facet_wrap(~change_rate, nrow=1) + 
+  ggtitle("Phase 1") +
+  ggsave("phase_1_pop_equals.pdf")
+```
+
+### Misc
+
+```{r}
+ggplot(filter(agg_data), aes(x=sensors, y=phase_1_match_score_odd_even)) +
+  geom_boxplot()  +
+  facet_wrap(~change_rate) 
+```
+
+```{r}
+d <- filter(agg_data, equals_any_update!="None")
+d$equals_any_update <-
+  as.numeric(as.character(d$equals_any_update))
+
+ggplot(d, aes(x=sensors, y=equals_any_update)) +
+  geom_boxplot()  +
+  facet_wrap(~change_rate) 
+```
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=lineage_length)) +
+  geom_boxplot()  +
+  facet_wrap(~change_rate, nrow=1) +
+  ggsave("lineage_length.pdf")
+
+ggplot(agg_data, aes(x=sensors, y=phase_0_average_generation)) +
+  geom_boxplot()  +
+  facet_wrap(~change_rate, nrow=1) + 
+  ggsave("p0_average_generation.pdf")
+
+ggplot(agg_data, aes(x=sensors, y=phase_1_average_generation)) +
+  geom_boxplot()  +
+  facet_wrap(~change_rate, nrow=1) + 
+  ggsave("p1_average_generation.pdf")
+
+ggplot(agg_data, aes(x=sensors, y=phase_0_genome_length)) + 
+  geom_boxplot() +
+  facet_wrap(~change_rate, nrow=1) + 
+  ggsave("p0_genome_length.pdf")
+
+ggplot(agg_data, aes(x=sensors, y=phase_1_genome_length)) + 
+  geom_boxplot() +
+  facet_wrap(~change_rate, nrow=1) + 
+  ggsave("p1_genome_length.pdf")
+```
