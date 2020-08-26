@@ -1,3 +1,10 @@
+This is a version of Avida with the systematics tracker and open-ended evolution metrics from [Empirical](https://github.com/devosoft/Empirical).
+Specifically, it has been tested and is known to be compatible with [this release](https://github.com/emilydolson/Empirical/tree/OEE_metrics_paper_submission)
+of Empirical. The build file expects the directory containing that version of Empirical to be in the same directory as this
+repository (i.e. `ls` should show `Empirical` and `avida-empirical`).
+
+Other than that, this is the same as normal Avida. The README for normal Avida follows.
+
 Avida   http://avida.devosoft.org/
 --------------------------------------------------------------------------------
 Digital Evolution Laboratory at Michigan State University

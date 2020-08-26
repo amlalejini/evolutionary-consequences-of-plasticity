@@ -14,7 +14,7 @@ createdby = Aaron P Wagner
 email = apwagner@msu.edu
 
 [consistency]
-enabled = yes            ; Is this test a consistency test?
+enabled = no            ; Is this test a consistency test?
 long = no                ; Is this test a long test?
 
 [performance]

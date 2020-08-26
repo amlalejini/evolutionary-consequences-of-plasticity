@@ -46,7 +46,7 @@ private:
   cWorld* m_world;
   int m_cell_id;
   int m_deme_id;
-  
+
   int m_prevseen_cell_id;	// Previously-seen cell's ID
   int m_prev_task_cell;		// Cell ID of previous task
   int m_num_task_cells;		// Number of task cells seen
@@ -54,7 +54,7 @@ private:
   cPopulationInterface(); // @not_implemented
   cPopulationInterface(const cPopulationInterface&); // @not_implemented
   cPopulationInterface& operator=(const cPopulationInterface&); // @not_implemented
-  
+
 public:
   cPopulationInterface(cWorld* world);
   virtual ~cPopulationInterface();
@@ -76,7 +76,7 @@ public:
   void SetDemeID(int in_id) { m_deme_id = in_id; }
   int GetCellXPosition();
   int GetCellYPosition();
-  
+
   int GetCellData();
   int GetCellDataOrgID();
   int GetCellDataUpdate();
@@ -97,7 +97,7 @@ public:
 
   bool GetLGTFragment(cAvidaContext& ctx, int region, const Genome& dest_genome, InstructionSequence& seq);
 
-  bool Divide(cAvidaContext& ctx, cOrganism* parent, const Genome& offspring_genome);
+  bool Divide(cAvidaContext& ctx, cOrganism* parent, Genome& offspring_genome);
   cOrganism* GetNeighbor();
   bool IsNeighborCellOccupied();
   int GetNumNeighbors();
@@ -111,30 +111,30 @@ public:
   int GetInputAt(int& input_pointer);
   void ResetInputs(cAvidaContext& ctx);
   const Apto::Array<int>& GetInputs() const;
-  const Apto::Array<double>& GetResources(cAvidaContext& ctx); 
+  const Apto::Array<double>& GetResources(cAvidaContext& ctx);
   double GetResourceVal(cAvidaContext& ctx, int res_id);
   const Apto::Array<double>& GetFacedCellResources(cAvidaContext& ctx);
   double GetFacedResourceVal(cAvidaContext& ctx, int res_id);
-  const Apto::Array<double>& GetCellResources(int cell_id, cAvidaContext& ctx); 
+  const Apto::Array<double>& GetCellResources(int cell_id, cAvidaContext& ctx);
   const Apto::Array<double>& GetFrozenResources(cAvidaContext& ctx, int cell_id);
   double GetFrozenCellResVal(cAvidaContext& ctx, int cell_id, int res_id);
   double GetCellResVal(cAvidaContext& ctx, int cell_id, int res_id);
-  const Apto::Array<double>& GetDemeResources(int deme_id, cAvidaContext& ctx); 
+  const Apto::Array<double>& GetDemeResources(int deme_id, cAvidaContext& ctx);
   const Apto::Array< Apto::Array<int> >& GetCellIdLists();
-  int GetCurrPeakX(cAvidaContext& ctx, int res_id); 
+  int GetCurrPeakX(cAvidaContext& ctx, int res_id);
   int GetCurrPeakY(cAvidaContext& ctx, int res_id);
-  int GetFrozenPeakX(cAvidaContext& ctx, int res_id); 
+  int GetFrozenPeakX(cAvidaContext& ctx, int res_id);
   int GetFrozenPeakY(cAvidaContext& ctx, int res_id);
   cResourceCount* GetResourceCount();
   void TriggerDoUpdates(cAvidaContext& ctx);
   void UpdateResources(cAvidaContext& ctx, const Apto::Array<double>& res_change);
   void UpdateRandomResources(cAvidaContext& ctx, const Apto::Array<double>& res_change);
   void UpdateDemeResources(cAvidaContext& ctx, const Apto::Array<double>& res_change);
-  void Die(cAvidaContext& ctx); 
-  void KillCellID(int target, cAvidaContext& ctx); 
+  void Die(cAvidaContext& ctx);
+  void KillCellID(int target, cAvidaContext& ctx);
   void Kaboom(int distance, cAvidaContext& ctx);
   void Kaboom(int distance, cAvidaContext& ctx, double effect);
-  void SpawnDeme(cAvidaContext& ctx); 
+  void SpawnDeme(cAvidaContext& ctx);
   int ReceiveValue();
   void SellValue(const int data, const int label, const int sell_price, const int org_id);
   int BuyValue(const int label, const int buy_price);
@@ -146,16 +146,16 @@ public:
   //! Send a message to the organism in the given cell.
   bool SendMessage(cOrgMessage& msg, cPopulationCell& rcell);
   //! Send a message to the cell with the given cell id.
-  bool SendMessage(cOrgMessage& msg, int cellid);	
+  bool SendMessage(cOrgMessage& msg, int cellid);
   //! Broadcast a message.
   bool BroadcastMessage(cOrgMessage& msg, int depth);
-  bool BcastAlarm(int jump_label, int bcast_range);  
+  bool BcastAlarm(int jump_label, int bcast_range);
   void DivideOrgTestamentAmongDeme(double value);
   //! Send a flash to all neighboring organisms.
   void SendFlash();
 
   int GetStateGridID(cAvidaContext& ctx);
-	
+
   bool Move(cAvidaContext& ctx, int src_id, int dest_id);
 
   // Reputation
@@ -205,7 +205,7 @@ protected:
 	//! Place the fragment at the location of best match, with redundant instructions trimmed.
 	void HGTTrimmedPlacement(cAvidaContext& ctx, const InstructionSequence& offspring,
 													 fragment_list_type::iterator& selected,
-													 substring_match& location);	
+													 substring_match& location);
 	//! Place the fragment at a random location.
 	void HGTRandomPlacement(cAvidaContext& ctx, const InstructionSequence& offspring,
 													fragment_list_type::iterator& selected,
@@ -219,15 +219,15 @@ protected:
 	inline void InitHGTSupport() { if(!m_hgt_support) { m_hgt_support = new HGTSupport(); } }
 	//! Called when this organism is the receiver of an HGT donation.
 	void ReceiveHGTDonation(const InstructionSequence& fragment);
-  
+
 public:
-  void AddLiveOrg(); 
+  void AddLiveOrg();
   void RemoveLiveOrg();
 
   bool HasOpinion(cOrganism* in_organism);
   void SetOpinion(int opinion, cOrganism* in_organism);
   void ClearOpinion(cOrganism* in_organism);
-  
+
   void JoinGroup(int group_id);
   void MakeGroup();
   void LeaveGroup(int group_id);
@@ -235,8 +235,8 @@ public:
   int NumberGroupFemales(int group_id);
   int NumberGroupMales(int group_id);
   int NumberGroupJuvs(int group_id);
-  void ChangeGroupMatingTypes(cOrganism* org, int group_id, int old_type, int new_type); 
-  
+  void ChangeGroupMatingTypes(cOrganism* org, int group_id, int old_type, int new_type);
+
   // ----- Tolerance/Group support ------
   int IncTolerance(const int tolerance_type, cAvidaContext& ctx);
   int DecTolerance(const int tolerance_type, cAvidaContext& ctx);
@@ -248,7 +248,7 @@ public:
   bool AttemptImmigrateGroup(cAvidaContext& ctx, int group_id, cOrganism* org);
   void PushToleranceInstExe(int tol_inst, cAvidaContext& ctx);
   int& GetGroupIntolerances(int group_id, int tol_num, int mating_type);
-  
+
   void TryWriteGroupAttackBits(unsigned char raw_bits);
   void TryWriteGroupAttackString(cString& string);
   void DecNumPreyOrganisms();
@@ -258,7 +258,7 @@ public:
   void IncNumPredOrganisms();
   void IncNumTopPredOrganisms();
   void AttackFacedOrg(cAvidaContext& ctx, int loser);
-  
+
   void TryWriteBirthLocData(int org_idx);
   void InjectPreyClone(cAvidaContext& ctx, int gen_id);
   void KillRandPred(cAvidaContext& ctx, cOrganism* org);
@@ -267,7 +267,7 @@ public:
   void TryWriteLookOutput(cString& string);
   void TryWriteLookEXOutput(cString& string);
   Apto::Array<int> GetFormedGroupArray();
-  
+
 // -------- Avatar support -------- @JJB
 private:
   struct sIO_avatar
@@ -323,7 +323,7 @@ public:
   const Apto::Array<double>& GetAVFacedResources(cAvidaContext& ctx, int av_num = 0);
   double GetAVFacedResourceVal(cAvidaContext& ctx, int res_id, int av_num = 0);
   void UpdateAVResources(cAvidaContext& ctx, const Apto::Array<double>& res_change, int av_num = 0);
-  
+
   void BeginSleep();
   void EndSleep();
 };

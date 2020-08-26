@@ -1,4 +1,4 @@
 #!/bin/sh
 
-python avida-core/tests/_testrunner/testrunner.py $@ ---testrunner-name=./run_tests
+python2 avida-core/tests/_testrunner/testrunner.py $@ ---testrunner-name=./run_tests
 

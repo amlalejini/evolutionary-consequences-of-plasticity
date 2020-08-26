@@ -31,7 +31,7 @@ cPhenPlastGenotype::cPhenPlastGenotype(const Genome& in_genome, int num_trials, 
 : m_genome(in_genome), m_num_trials(num_trials), m_world(world)
 {
   // Override input mode if more than one recalculation requested
-  if (num_trials > 1)  
+  if (num_trials > 1)
     test_info.UseRandomInputs(true);
   Process(test_info, world, ctx);
 }
@@ -66,7 +66,7 @@ void cPhenPlastGenotype::Process(cCPUTestInfo& test_info, cWorld* world, cAvidaC
       }
     }
   }
-  
+
   // Update statistics
   UniquePhenotypes::iterator uit = m_unique.begin();
   int num_tasks = world->GetEnvironment().GetNumTasks();
@@ -98,14 +98,14 @@ void cPhenPlastGenotype::Process(cCPUTestInfo& test_info, cWorld* world, cAvidaC
     }
     m_avg_fitness += freq * fit;
     m_phenotypic_entropy -= freq * log(freq) / log(2.0);
-    
+
     for (int i = 0; i < num_tasks; i++)
       m_task_probabilities[i] += (this_phen->GetLastTaskCount()[i] > 0) ? freq : 0;
-    
+
     m_viable_probability += (this_phen->IsViable() > 0) ? freq : 0;
     ++uit;
   }
-  
+
   if (test_cpu) delete test_cpu;
 }
 
@@ -124,7 +124,7 @@ const cPlasticPhenotype* cPhenPlastGenotype::GetMostLikelyPhenotype() const
   UniquePhenotypes::const_iterator it = m_unique.begin();
   UniquePhenotypes::const_iterator ret_it = it;
   for (int k = 0; k < (int) m_unique.size(); k++, it++)
-    if ( static_cast<cPlasticPhenotype*>(*it)->GetFrequency() > 
+    if ( static_cast<cPlasticPhenotype*>(*it)->GetFrequency() >
          static_cast<cPlasticPhenotype*>(*ret_it)->GetFrequency() )
       ret_it = it;
   return static_cast<cPlasticPhenotype*>(*ret_it);
@@ -136,7 +136,7 @@ const cPlasticPhenotype* cPhenPlastGenotype::GetHighestFitnessPhenotype() const
   UniquePhenotypes::const_iterator it = m_unique.begin();
   UniquePhenotypes::const_iterator ret_it = it;
   for (int k = 0; k < (int) m_unique.size(); k++, it++)
-    if ( static_cast<cPlasticPhenotype*>(*it)->GetFitness() > 
+    if ( static_cast<cPlasticPhenotype*>(*it)->GetFitness() >
          static_cast<cPlasticPhenotype*>(*ret_it)->GetFitness() )
       ret_it = it;
   return static_cast<cPlasticPhenotype*>(*ret_it);
