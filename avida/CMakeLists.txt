@@ -15,7 +15,7 @@ SET(LIBRARY_OUTPUT_PATH
   "Built libraries are placed here before installation."
 )
 
-INCLUDE_DIRECTORIES(../Empirical/source)
+INCLUDE_DIRECTORIES(../../Empirical/source)
 
 ADD_SUBDIRECTORY(libs/apto)
 IF(NOT WIN32)

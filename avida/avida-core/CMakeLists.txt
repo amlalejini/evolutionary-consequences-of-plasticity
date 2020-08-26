@@ -38,18 +38,18 @@ SET(LIBRARY_OUTPUT_PATH
 # ------------------------------------------------------------------------------
 IF(UNIX)
   IF (CMAKE_CXX_COMPILER MATCHES ".*pathCC.*")
-    SET(COMPILER_WARNING_FLAGS "-std=c++14")
+    SET(COMPILER_WARNING_FLAGS "-std=c++17")
     SET(COMPILER_OPTIMIZATION_FLAGS "-funroll-loops -fstrict-aliasing -OPT:Olimit=0")
   ELSE (CMAKE_CXX_COMPILER MATCHES ".*pathCC.*")
     IF (CMAKE_CXX_COMPILER MATCHES ".*icpc.*")
-      SET(COMPILER_WARNING_FLAGS "-std=c++14")
+      SET(COMPILER_WARNING_FLAGS "-std=c++17")
       SET(COMPILER_OPTIMIZATION_FLAGS "-funroll-loops -mp1 -pc64")
     ELSE (CMAKE_CXX_COMPILER MATCHES ".*icpc.*")
       IF (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*")
-        SET(COMPILER_WARNING_FLAGS "-Wextra -Wno-unused-parameter -Wno-unknown-pragmas -Wno-trigraphs -std=c++14")
+        SET(COMPILER_WARNING_FLAGS "-Wextra -Wno-unused-parameter -Wno-unknown-pragmas -Wno-trigraphs -std=c++17")
         SET(COMPILER_OPTIMIZATION_FLAGS "-funroll-loops -fstrict-aliasing -fvisibility-inlines-hidden")
       ELSE (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*")
-        SET(COMPILER_WARNING_FLAGS "-Wextra -Wno-unused-parameter -Wno-unknown-pragmas -Wno-trigraphs -std=c++14")
+        SET(COMPILER_WARNING_FLAGS "-Wextra -Wno-unused-parameter -Wno-unknown-pragmas -Wno-trigraphs -std=c++17")
         SET(COMPILER_OPTIMIZATION_FLAGS "-funroll-loops -fstrict-aliasing -ftree-vectorize -fvisibility-inlines-hidden")
       ENDIF (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang.*")
     ENDIF (CMAKE_CXX_COMPILER MATCHES ".*icpc.*")
@@ -432,15 +432,15 @@ IF(AVD_CMDLINE)
   SOURCE_GROUP(target\\avida FILES ${AVIDA_CMDLINE_SOURCES})
   ADD_EXECUTABLE(avida ${AVIDA_CMDLINE_SOURCES})
 
-  SET(AVIDA_CMDLINE_LIBS aptostatic avida-core aptostatic)  
+  SET(AVIDA_CMDLINE_LIBS aptostatic avida-core aptostatic)
   IF(AVD_ENABLE_TCMALLOC)
     LIST(APPEND AVIDA_CMDLINE_LIBS tcmalloc-1.4)
-  ENDIF(AVD_ENABLE_TCMALLOC)  
+  ENDIF(AVD_ENABLE_TCMALLOC)
   IF(NOT MSVC)
     LIST(APPEND AVIDA_CMDLINE_LIBS pthread)
   ENDIF(NOT MSVC)
   TARGET_LINK_LIBRARIES(avida ${AVIDA_CMDLINE_LIBS})
-  
+
   INSTALL_TARGETS(/work avida)
 ENDIF(AVD_CMDLINE)
 
@@ -466,7 +466,7 @@ IF(AVD_GUI_NCURSES)
   IF(NCURSES_LIBRARY AND NCURSES_INCLUDE_PATH)
 
     INCLUDE_DIRECTORIES(${NCURSES_INCLUDE_PATH})
-    
+
     SET(AVIDA_VIEWER_DIR source/targets/avida-viewer)
     SET(AVIDA_VIEWER_SOURCES
       ${AVIDA_VIEWER_DIR}/cAnalyzeScreen.cc
@@ -490,7 +490,7 @@ IF(AVD_GUI_NCURSES)
     )
     SOURCE_GROUP(targets\\avida-viewer FILES ${AVIDA_VIEWER_SOURCES})
     ADD_EXECUTABLE(avida-viewer ${AVIDA_VIEWER_SOURCES})
-    
+
     SET(AVIDA_VIEWER_LIBS avida-core aptostatic ${NCURSES_LIBRARY})
     IF(NOT MSVC)
       LIST(APPEND AVIDA_VIEWER_LIBS pthread)
@@ -499,7 +499,7 @@ IF(AVD_GUI_NCURSES)
       LIST(APPEND AVIDA_VIEWER_LIBS tcmalloc-1.4)
     ENDIF(AVD_ENABLE_TCMALLOC)
     TARGET_LINK_LIBRARIES(avida-viewer ${AVIDA_VIEWER_LIBS})
-    
+
     INSTALL_TARGETS(/work avida-viewer)
 
   ENDIF(NCURSES_LIBRARY AND NCURSES_INCLUDE_PATH)
@@ -528,7 +528,7 @@ IF(AVD_GUI_PROTOTYPE_TEXT)
   IF(NCURSES_LIBRARY AND NCURSES_INCLUDE_PATH)
 
     INCLUDE_DIRECTORIES(${NCURSES_INCLUDE_PATH})
-    
+
     SET(AVIDA_TEXT_VIEWER_DIR source/targets/viewer-text)
     SET(AVIDA_TEXT_VIEWER_SOURCES
       ${AVIDA_TEXT_VIEWER_DIR}/cScreen_Map.cc
@@ -538,7 +538,7 @@ IF(AVD_GUI_PROTOTYPE_TEXT)
     )
     SOURCE_GROUP(targets\\viewer-text FILES ${AVIDA_TEXT_VIEWER_SOURCES})
     ADD_EXECUTABLE(avida-text ${AVIDA_TEXT_VIEWER_SOURCES} ${Viewer_SOURCES} ${COREGUI_SOURCES})
-    
+
     SET(AVIDA_TEXT_VIEWER_LIBS avida-core ${NCURSES_LIBRARY})
     IF(NOT MSVC)
       LIST(APPEND AVIDA_TEXT_VIEWER_LIBS pthread)
@@ -547,7 +547,7 @@ IF(AVD_GUI_PROTOTYPE_TEXT)
       LIST(APPEND AVIDA_TEXT_VIEWER_LIBS tcmalloc-1.4)
     ENDIF(AVD_ENABLE_TCMALLOC)
     TARGET_LINK_LIBRARIES(avida-text ${AVIDA_TEXT_VIEWER_LIBS})
-    
+
     INSTALL_TARGETS(/work avida-text)
 
   ENDIF(NCURSES_LIBRARY AND NCURSES_INCLUDE_PATH)
@@ -603,6 +603,6 @@ SET(CFG_FILES
   ${CFG_FILES_DIR}/instset-transsmt.cfg
   ${CFG_FILES_DIR}/default-heads.org
   ${CFG_FILES_DIR}/default-heads-sex.org
-  ${CFG_FILES_DIR}/default-transsmt.org 
+  ${CFG_FILES_DIR}/default-transsmt.org
 )
 INSTALL_FILES(/work FILES ${CFG_FILES})
