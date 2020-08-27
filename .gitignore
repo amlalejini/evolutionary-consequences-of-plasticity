@@ -8,4 +8,4 @@ install_manifest.txt
 .DS_Store
 wbuild
 DerivedData
-
+*.swp
