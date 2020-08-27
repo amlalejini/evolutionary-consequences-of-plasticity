@@ -82,3 +82,15 @@ Experiments
 - Evolutionary consequences: genetic architecture, position in fitness landscape
 - Evolutionary consequences: novel metabolic pathways.
 - Evolutionary consequences: hitchhiking
+  - try both Inst_Poison and Inst_Prob_Die (be sure to include nop-X)
+- Supplemental experiments
+  - Qualitatively reproduce results at different reward structures.
+
+Decisions to be made
+
+- What level of rewards/punishments do we use?
+- Use two phase or one phase experimental design?
+  - Two phase is more complicated, but will probably be cleaner.
+  - One phase is simpler, but does not guarantee all sensor+ populations actually exhibit plasticity.
+- Which novel metabolic pathways (i.e., tasks) should we include for relevant experiments?
+- What supplemental experiments will we need to evaluate the robustness of results?
