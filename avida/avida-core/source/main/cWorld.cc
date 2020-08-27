@@ -283,7 +283,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     systematics_manager->SetNextParent(pos);});
   OnOffspringReady([this](Avida::InstructionSequence seq){
     // systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate(), false);
-    systematics_manager->AddOrg(seq, next_cell_id, GetStats().GetUpdate());
+    systematics_manager->AddOrg(seq, {next_cell_id, int(false)}, GetStats().GetUpdate());
     emp::Ptr<taxon_t> tax = systematics_manager->GetMostRecent();
     if (tax->GetData().GetPhenotype().gestation_time == -1) {
       eval_fun(tax);
@@ -297,9 +297,31 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
       oee_file.Update(latest_gen);
     }
   });
-  OnUpdate([this](int ud){systematics_manager->Update(); phylodiversity_file.Update(ud); lineage_file.Update(ud); dom_file.Update(ud);});
-  // --- bookmark ---
-  OnUpdate([this](int ud) { if (GetStats().GetUpdate() % m_conf->PHYLOGENY_SNAPSHOT_RES.Get() == 0) { systematics_manager->Snapshot("phylogeny-snapshot-" + emp::to_string(GetStats().GetUpdate()) + ".csv" ); } });
+
+  OnUpdate(
+    [this](int ud){
+      // update the systematics manager
+      systematics_manager->Update();
+      // did the mrca change? if so, record it
+      emp::Ptr<taxon_t> cur_taxa = systematics_manager->GetMRCA();
+      if (cur_taxa != mrca_ptr) {
+        ++mrca_changes;
+        mrca_ptr = cur_taxa;
+      }
+      // update output files
+      phylodiversity_file.Update(ud);
+      lineage_file.Update(ud);
+      dom_file.Update(ud);
+    }
+  );
+
+  OnUpdate(
+    [this](int ud) {
+      if (GetStats().GetUpdate() % m_conf->PHYLOGENY_SNAPSHOT_RES.Get() == 0) {
+        systematics_manager->Snapshot("phylogeny-snapshot-" + emp::to_string(GetStats().GetUpdate()) + ".csv" );
+      }
+    }
+  );
 
   std::function<int()> gen_fun = [this](){return std::round(GetStats().GetGeneration());};
   std::function<int()> update_fun = [this](){return GetStats().GetUpdate();};
@@ -317,7 +339,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   systematics_manager->AddPhylogeneticDiversityDataNode();
   phylodiversity_file.AddFun(update_fun, "update", "Update");
   phylodiversity_file.AddStats(*systematics_manager->GetDataNode("evolutionary_distinctiveness") , "evolutionary_distinctiveness", "evolutionary distinctiveness for a single update", true, true);
-  phylodiversity_file.AddStats(*systematics_manager->GetDataNode("pairwise_distances"), "pairwise_distance", "pairwise distance for a single update", true, true);
+  phylodiversity_file.AddStats(*systematics_manager->GetDataNode("pairwise_distance"), "pairwise_distance", "pairwise distance for a single update", true, true);
   phylodiversity_file.AddCurrent(*systematics_manager->GetDataNode("phylogenetic_diversity"), "current_phylogenetic_diversity", "current phylogenetic_diversity", true, true);
 
   phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetNumActive(); }, "num_taxa", "Number of unique taxonomic groups currently active." );
@@ -326,25 +348,25 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetNumRoots(); }, "num_roots", "Number of independent roots for phlogenies." );
   phylodiversity_file.template AddFun<int>(    [this](){ return systematics_manager->GetMRCADepth(); }, "mrca_depth", "Phylogenetic Depth of the Most Recent Common Ancestor (-1=none)." );
   phylodiversity_file.template AddFun<double>( [this](){ return systematics_manager->CalcDiversity(); }, "diversity", "Genotypic Diversity (entropy of taxa in population)." );
-
+  phylodiversity_file.template AddFun<size_t>( [this](){ return mrca_changes; }, "mrca_changes", "Number of times the MRCA has changed.");
 
   phylodiversity_file.PrintHeaderKeys();
   phylodiversity_file.SetTimingRepeat(m_conf->SYSTEMATICS_RES.Get());
 
-  emp::vector<std::string> mut_types = {"substitution"};
+  // emp::vector<std::string> mut_types = {"substitution"};
 
-  for (size_t i = 0; i < mut_types.size(); i++) {
-      systematics_manager->AddMutationCountDataNode(mut_types[i]+"_mut_count", mut_types[i]);
-  }
+  // for (size_t i = 0; i < mut_types.size(); i++) {
+  //     systematics_manager->AddMutationCountDataNode(mut_types[i]+"_mut_count", mut_types[i]);
+  // }
 
   systematics_manager->AddDeleteriousStepDataNode();
   systematics_manager->AddVolatilityDataNode();
   systematics_manager->AddUniqueTaxaDataNode();
 
   lineage_file.AddFun(update_fun, "update", "Update");
-  for (size_t i = 0; i < mut_types.size(); i++) {
-      lineage_file.AddStats(*systematics_manager->GetDataNode(mut_types[i]+"_mut_count"), mut_types[i] + "_mutations_on_lineage", "counts of" + mut_types[i] + "mutations along each lineage", true, true);
-  }
+  // for (size_t i = 0; i < mut_types.size(); i++) {
+  //     lineage_file.AddStats(*systematics_manager->GetDataNode(mut_types[i]+"_mut_count"), mut_types[i] + "_mutations_on_lineage", "counts of" + mut_types[i] + "mutations along each lineage", true, true);
+  // }
 
   lineage_file.AddStats(*systematics_manager->GetDataNode("deleterious_steps"), "deleterious_steps", "counts of deleterious steps along each lineage", true, true);
   lineage_file.AddStats(*systematics_manager->GetDataNode("volatility"), "taxon_volatility", "counts of changes in taxon along each lineage", true, true);
