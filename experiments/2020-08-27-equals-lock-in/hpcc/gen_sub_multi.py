@@ -19,7 +19,7 @@ combos.register_var('EVENT_FILE')
 combos.add_val('EVENT_FILE', [\
         'events-const-all.cfg',        \
         'events-const-all-equal.cfg',  \
-        'events-const-all-greater.cfg' \
+        'events-const-all-greater.cfg', \
         'events-chg-u300.cfg',         \
         'events-chg-u300-equal.cfg',   \
         'events-chg-u300-greater.cfg', \
