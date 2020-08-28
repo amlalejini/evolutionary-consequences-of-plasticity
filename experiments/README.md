@@ -43,6 +43,7 @@ Hitchhiker instruction options
   - Relevant configuration parameter: POISON_PENALTY
 - NOTE: we'll also want a completely neutral instruction to compare prevalence with.
   - Neutral instructions (we only need one): nop-X, nop-Y
+  - Useful event: PrintInstructionData
 
 Expected changes in population dynamics as a result of access to plasticity
 
@@ -54,6 +55,9 @@ Expected changes in population dynamics as a result of access to plasticity
 Consequences of change in population dynamics
 
 - Increased hitchhiking in non-plastic populations?
+  - Measure hitchhiking instruction prevalence (as compared to nop-x) population-wide over time and
+    along lineage (for lineage, need to output all instructions...).
+  - Measure number of deleterious steps in lineage.
 - Plastic populations see fewer bottleneck events. We expect to see more standing variation in
   plastic populations?
 - Are plastic populations able to support low-payoff and more complex additional metabolic activity?
@@ -77,8 +81,8 @@ Experiments
     - Standing variation (number of distinct genotypes) over time
     - Phylogenetic diversity
   - Number of replicates: 50?
-- [maybe] Expectations for population dynamics
-  - Two phase experiment.
+- [maybe] Test expectations for population dynamics.
+  - Same as above, but use two-phase experiment.
 - Evolutionary consequences: genetic architecture, position in fitness landscape
 - Evolutionary consequences: novel metabolic pathways.
 - Evolutionary consequences: hitchhiking
@@ -93,4 +97,14 @@ Decisions to be made
   - Two phase is more complicated, but will probably be cleaner.
   - One phase is simpler, but does not guarantee all sensor+ populations actually exhibit plasticity.
 - Which novel metabolic pathways (i.e., tasks) should we include for relevant experiments?
+  - if we just fluctuate the first 6 tasks, we have the next 3 logic 9 tasks to use
+  - we could also use all of the 3-input logic tasks as extra pathways (just make sure the sum of their rewards don’t exceed the reward for doing a single of the rewarded fluctuating tasks)
 - What supplemental experiments will we need to evaluate the robustness of results?
+
+Supplemental experiments
+
+- Numerical model & maybe simplified agent-based model (bitstrings?)
+- Reward structure
+- What if the type of environmental fluctuation was different?
+  - e.g., rewards varied smoothly instead of discrete reward & punishment stages
+- If we were to make environments A and B less different (e.g., only cycle rewards / punishments for four "easiest" tasks), would we see this difference shrink?
