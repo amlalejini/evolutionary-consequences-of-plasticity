@@ -342,7 +342,9 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   phylodiversity_file.AddStats(*systematics_manager->GetDataNode("pairwise_distance"), "pairwise_distance", "pairwise distance for a single update", true, true);
   phylodiversity_file.AddCurrent(*systematics_manager->GetDataNode("phylogenetic_diversity"), "current_phylogenetic_diversity", "current phylogenetic_diversity", true, true);
 
-  phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetNumActive(); }, "num_taxa", "Number of unique taxonomic groups currently active." );
+  phylodiversity_file.template AddFun<double>( [this](){ return systematics_manager->GetSumPairwiseDistance(); }, "sum_pairwise_distance", "Sum of pairwise distance for single update." );
+  phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetTreeSize(); }, "num_taxa_tree", "Number of unique taxonomic groups in tree." );
+  phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetNumActive(); }, "num_taxa_extant", "Number of unique taxonomic groups currently active." );
   phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetTotalOrgs(); }, "total_orgs", "Number of organisms tracked." );
   phylodiversity_file.template AddFun<double>( [this](){ return systematics_manager->GetAveDepth(); }, "ave_depth", "Average Phylogenetic Depth of Organisms." );
   phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetNumRoots(); }, "num_roots", "Number of independent roots for phlogenies." );
