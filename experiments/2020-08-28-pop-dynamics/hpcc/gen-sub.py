@@ -72,7 +72,10 @@ cp ${CONFIG_DIR}/${EXEC} .
 
 <<ANALYSIS_COMMANDS>>
 
+rm *.cfg
+rm *.org
 rm ${EXEC}
+rm *.csv
 
 """
 
@@ -158,7 +161,8 @@ def main():
     if run_exp:
         print("Configuring slurm script to run experiment.")
         run_commands += 'echo "./${EXEC} ${RUN_PARAMS}" > cmd.log\n'
-        run_commands += './${EXEC} ${RUN_PARAMS} > run.log'
+        run_commands += './${EXEC} ${RUN_PARAMS} > run.log\n'
+        run_commands += 'mv ./*.csv ./data/ \n'
     script = script.replace("<<RUN_COMMANDS>>", run_commands)
 
     analysis_commands = ""
