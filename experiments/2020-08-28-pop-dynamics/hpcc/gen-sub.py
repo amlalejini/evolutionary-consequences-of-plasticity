@@ -8,7 +8,7 @@ import argparse, os, sys, errno, subprocess, csv
 
 seed_offset = 3000
 default_num_replicates = 50
-job_time_request = "48:00:00"
+job_time_request = "24:00:00"
 job_memory_request = "4G"
 job_name = "avida"
 executable = "avida"
