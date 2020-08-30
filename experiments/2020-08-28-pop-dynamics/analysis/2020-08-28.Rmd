@@ -1,0 +1,154 @@
+---
+title: "2020-08-28 Experiment Analysis"
+output:
+  html_document:
+    keep_md: no
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    collapsed: false
+    theme: default
+    code_folding: hide
+  pdf_document:
+    toc: true
+    toc_depth: 4
+---
+
+## Analysis Dependencies
+
+```{r, message=FALSE}
+library(ggplot2)   # (Wickham, 2016)
+library(tidyr)     # (Wickham and Henry, 2020)
+library(dplyr)     # (Wickham et al., 2020)
+library(reshape2)  # (Wickham, 2007)
+library(cowplot)   # (Wilke, 2019)
+library(patchwork) # (Pederson, 2020)
+library(viridis)   # (Garnier, 2018)
+library(hexbin)
+```
+
+We conducted these analyses using the following computing environment:
+
+```{r}
+print(version)
+```
+
+## Setup
+
+```{r}
+data_path <- "./data/aggregate.csv"
+agg_data <- read.csv(data_path, na.strings="NONE")
+
+agg_data$DISABLE_REACTION_SENSORS <- as.factor(agg_data$DISABLE_REACTION_SENSORS)
+agg_data$environment <- factor(
+  agg_data$environment,
+  levels=c("a-u0", "b-u0", "all-u0",
+           "chg-u3", "chg-u10","chg-u30",
+           "chg-u100","chg-u300","chg-u1000")
+)
+agg_data$chg_env <- as.factor(agg_data$chg_env)
+agg_data$plastic_odd_even <- as.factor(agg_data$plastic_odd_even)
+agg_data$sensors <- agg_data$DISABLE_REACTION_SENSORS == "0"
+
+theme_set(theme_cowplot())
+```
+
+## Graphs!
+
+### Plasticity
+
+```{r}
+ggplot(filter(agg_data, plastic_odd_even=="True"), aes(x=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  ylab("plastic final dominant (odd/even environment)") +
+  ylim(0, 50) +
+  facet_wrap(~environment, nrow=1) +
+  ggtitle("Plastic?") +
+  ggsave("dom_plastic.pdf", width=10, height=7)
+```
+
+```{r}
+ggplot(filter(agg_data, optimal_plastic=="True"), aes(x=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  ylab("plastic final dominant (odd/even environment)") +
+  ylim(0, 50) +
+  facet_wrap(~environment, nrow=1) +
+  ggtitle("Optimal plastic?") +
+  ggsave("dom_plastic_optimal.pdf")
+```
+
+### Match scores
+
+```{r}
+ggplot(filter(agg_data, chg_env=="True"), aes(x=sensors, y=match_score_odd_even)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_wrap(~environment, nrow=1) 
+```
+
+### MRCA Changes
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=phylo_mrca_changes, color=sensors)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_wrap(~environment, nrow=1) +
+  ggsave("mrca_changes.pdf", width=10, height=7)
+```
+
+### Lineage Length (genotypes)
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=lineage_length_genotypes, color=sensors)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_wrap(~environment, nrow=1) +
+  # theme(
+  #   panel.border = element_rect(colour = "black", fill=NA, size=1)
+  # ) +
+  ggsave("lineage_length_genotypes.pdf", width=10, height=7)
+```
+
+### Mutation Accumulation
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=total_mut_cnt, color=sensors)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_wrap(~environment, ncol=1, scales="free") +
+  ggsave("total_mutations_accumulated.pdf", width=5, height=20)
+```
+
+### Phylogenetic Diversity
+
+Current phylogentic diversity = size of phylogentic tree (number of active taxa + ancestral taxa represented in phylogeny).
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=phylo_current_phylogenetic_diversity)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_wrap(~environment, nrow=1) 
+```
+
+### Taxa Entropy (diversity)
+
+Extant diversity measured as entropy of taxa in population.
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=phylo_diversity)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_wrap(~environment, nrow=1) 
+```
