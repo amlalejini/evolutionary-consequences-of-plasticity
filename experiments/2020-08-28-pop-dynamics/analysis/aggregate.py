@@ -220,7 +220,6 @@ def main():
         ins_mut_cnt = 0
         dels_mut_cnt = 0
         for i in range(len(lineage_env_all)):
-            update = lineage_env_all[i]["update_born"]
             muts_from_parent = lineage_env_all[i]["mutations_from_parent"].split(",")
             for mut in muts_from_parent:
                 if (len(mut) == 0): continue
