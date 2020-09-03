@@ -100,10 +100,23 @@ def main():
     # - get id, get command line configuration settings
     summary_header = None
     summary_content_lines = []
+
+    lineage_ot_header = None
+    lineage_ot_write_header = True
+    with open(os.path.join(dump_dir, "lineages_ot.csv"), "w") as fp:
+        fp.write("")
+
+    phylo_ot_header = None
+    phylo_ot_write_header = True
+    with open(os.path.join(dump_dir, "phylodiversity_ot.csv"), "w") as fp:
+        fp.write("")
+
     for run_dir in run_dirs:
         print(f"processing {run_dir}")
         run_path = os.path.join(data_dir, run_dir)
-        info = {}
+
+        summary_info = {} # Hold summary information about run. (one entry per run)
+        # lineage_info = {} # Hold information about lineage over time. (one entry per time step per run)
         ############################################################
         # Extract commandline configuration settings (from cmd.log file)
         cmd_log_path = os.path.join(run_path, "cmd.log")
@@ -111,11 +124,11 @@ def main():
         # Infer environmental change and change rate from events file
         chg_env = "chg" in cmd_params["EVENT_FILE"]
         env_cond = cmd_params["EVENT_FILE"].split(".")[0].replace("events-", "").lower()
-        info["chg_env"] = chg_env
-        info["environment"] = env_cond
-        info["update"] = update
+        summary_info["chg_env"] = chg_env
+        summary_info["environment"] = env_cond
+        summary_info["update"] = update
         for field in cmd_params:
-            info[field] = cmd_params[field]
+            summary_info[field] = cmd_params[field]
         ############################################################
 
         ############################################################
@@ -127,6 +140,36 @@ def main():
         phylo_header = phylo_content[0].split(",")
         phylo_content = phylo_content[1:]
         phylodiversity = [ {phylo_header[i]:l[i] for i in range(len(l))} for l in csv.reader(phylo_content, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True) ]
+
+        ###################
+        # Write out phylodiversity over time
+        phylo_ot_lines = []
+        for timestep in phylodiversity:
+            # add: chg_env, environment, cmd_params
+            phylo_info = {}
+            phylo_info["chg_env"] = chg_env
+            phylo_info["environment"] = env_cond
+            for field in cmd_params:
+                phylo_info[field] = cmd_params[field]
+            for field in timestep:
+                phylo_info[field] = timestep[field]
+            fields = list(phylo_info.keys())
+            fields.sort()
+            if phylo_ot_header == None:
+                phylo_ot_header = fields
+            elif phylo_ot_header != fields:
+                print("Header mismatch!")
+            phylo_ot_lines.append(",".join([str(phylo_info[field]) for field in fields]))
+        # write out lines
+        with open(os.path.join(dump_dir, "phylodiversity_ot.csv"), "a") as fp:
+            if phylo_ot_write_header:
+                phylo_ot_write_header = False
+                fp.write(",".join(phylo_ot_header) + "\n")
+            fp.write("\n".join(phylo_ot_lines))
+        phylo_ot_lines = None
+        ###################
+
+        # Keep only final phylodiversity data.
         phylodiversity = [line for line in filter(lambda x: int(x["update"]) == update, phylodiversity) ]
         if len(phylodiversity) != 1:
             print("Failed to find requested update in phylodiversity data file.")
@@ -136,7 +179,7 @@ def main():
 
         for field in phylodiversity:
             if field == "update": continue
-            info[f"phylo_{field}"] = phylodiversity[field]
+            summary_info[f"phylo_{field}"] = phylodiversity[field]
         ############################################################
 
         ############################################################
@@ -157,14 +200,14 @@ def main():
 
         for field in lineage_data:
             if field == "update": continue
-            info[f"lineages_{field}"] = lineage_data[field]
+            summary_info[f"lineages_{field}"] = lineage_data[field]
         ############################################################
 
         ############################################################
         # Extract time information
         time_data = read_avida_dat_file(os.path.join(run_path, "data", "time.dat"))
         # average generation
-        info["average_generation"] = [line["average_generation"] for line in time_data if int(line["update"]) == update][0]
+        summary_info["average_generation"] = [line["average_generation"] for line in time_data if int(line["update"]) == update][0]
         ############################################################
 
         ############################################################
@@ -183,7 +226,7 @@ def main():
         dom_env_even = dom_env_even[0]
 
         # Collect dominant genotype data.
-        info["genome_length"] = dom_env_all["genome_length"]
+        summary_info["genome_length"] = dom_env_all["genome_length"]
 
         phenotype_even = "".join([dom_env_even[trait] for trait in phenotypic_traits])
         phenotype_odd = "".join([dom_env_odd[trait] for trait in phenotypic_traits])
@@ -199,23 +242,23 @@ def main():
 
         optimal_plastic = match_score_even == len(even_profile) and match_score_odd == len(odd_profile)
 
-        info["phenotype_even"] = phenotype_even
-        info["phenotype_odd"] = phenotype_odd
-        info["phenotype_all"] = phenotype_all
-        info["phenotype_task_order"] = phenotype_task_order
-        info["plastic_odd_even"] = plastic_odd_even
-        info["match_score_even"] = match_score_even
-        info["match_score_odd"] = match_score_odd
-        info["match_score_all"] = match_score_all
-        info["match_score_odd_even"] = match_score_odd_even
-        info["optimal_plastic"] = optimal_plastic
+        summary_info["phenotype_even"] = phenotype_even
+        summary_info["phenotype_odd"] = phenotype_odd
+        summary_info["phenotype_all"] = phenotype_all
+        summary_info["phenotype_task_order"] = phenotype_task_order
+        summary_info["plastic_odd_even"] = plastic_odd_even
+        summary_info["match_score_even"] = match_score_even
+        summary_info["match_score_odd"] = match_score_odd
+        summary_info["match_score_all"] = match_score_all
+        summary_info["match_score_odd_even"] = match_score_odd_even
+        summary_info["optimal_plastic"] = optimal_plastic
         ############################################################
 
         ############################################################
         # Extract mutation accumulation data from lineage
         # - mutation information will be the same for all lineage data files.
         lineage_env_all = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_all", "lineage_tasks.dat"))
-        info["lineage_length_genotypes"] = len(lineage_env_all)
+        summary_info["lineage_length_genotypes"] = len(lineage_env_all)
         sub_mut_cnt = 0
         ins_mut_cnt = 0
         dels_mut_cnt = 0
@@ -228,23 +271,31 @@ def main():
                 elif (mut[0] == "D"): dels_mut_cnt += 1
                 else: print("Unknown mutation type (" + str(mut) + ")!")
         total_muts = sub_mut_cnt + ins_mut_cnt + dels_mut_cnt
-        info["substitution_mut_cnt"] = sub_mut_cnt
-        info["insertion_mut_cnt"] = ins_mut_cnt
-        info["deletion_mut_cnt"] = dels_mut_cnt
-        info["total_mut_cnt"] = total_muts
+        summary_info["substitution_mut_cnt"] = sub_mut_cnt
+        summary_info["insertion_mut_cnt"] = ins_mut_cnt
+        summary_info["deletion_mut_cnt"] = dels_mut_cnt
+        summary_info["total_mut_cnt"] = total_muts
         ############################################################
 
         ############################################################
-        # Add info to aggregate content
-        summary_fields = list(info.keys())
+        # Add summary_info to aggregate content
+        summary_fields = list(summary_info.keys())
         summary_fields.sort()
         if summary_header == None:
             summary_header = summary_fields
         elif summary_header != summary_fields:
             print("Header mismatch!")
             exit(-1)
-        summary_line = [str(info[field]) for field in summary_fields]
+        summary_line = [str(summary_info[field]) for field in summary_fields]
         summary_content_lines.append(",".join(summary_line))
+        ############################################################
+
+        ############################################################
+        # Write out lineage over time data.
+        lineage_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "lineage_tasks.dat"))
+        lineage_env_even = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_even", "lineage_tasks.dat"))
+        for i in range(len(lineage_env_all)):
+            pass
         ############################################################
 
     # write out aggregate data
