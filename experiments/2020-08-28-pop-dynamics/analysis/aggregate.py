@@ -101,10 +101,10 @@ def main():
     summary_header = None
     summary_content_lines = []
 
-    lineage_ot_header = None
-    lineage_ot_write_header = True
-    with open(os.path.join(dump_dir, "lineages_ot.csv"), "w") as fp:
-        fp.write("")
+    # lineage_ot_header = None
+    # lineage_ot_write_header = True
+    # with open(os.path.join(dump_dir, "lineages_ot.csv"), "w") as fp:
+    #     fp.write("")
 
     phylo_ot_header = None
     phylo_ot_write_header = True
@@ -114,9 +114,7 @@ def main():
     for run_dir in run_dirs:
         print(f"processing {run_dir}")
         run_path = os.path.join(data_dir, run_dir)
-
         summary_info = {} # Hold summary information about run. (one entry per run)
-        # lineage_info = {} # Hold information about lineage over time. (one entry per time step per run)
         ############################################################
         # Extract commandline configuration settings (from cmd.log file)
         cmd_log_path = os.path.join(run_path, "cmd.log")
@@ -292,10 +290,11 @@ def main():
 
         ############################################################
         # Write out lineage over time data.
-        lineage_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "lineage_tasks.dat"))
-        lineage_env_even = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_even", "lineage_tasks.dat"))
-        for i in range(len(lineage_env_all)):
-            pass
+        # lineage_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "lineage_tasks.dat"))
+        # lineage_env_even = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_even", "lineage_tasks.dat"))
+
+        # for i in range(len(lineage_env_all)):
+        #     pass
         ############################################################
 
     # write out aggregate data
