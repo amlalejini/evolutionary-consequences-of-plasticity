@@ -127,6 +127,7 @@ def main():
             transition_commands += '\tcp ${CONFIG_DIR}/${EXEC} .\n'
             transition_commands += '\tcp ${PHASE_1_DIR}/data/analysis/env_all/final_dominant.gen ./seed_org.gen\n'
             transition_commands += 'fi \n'
+            transition_commands += 'cd ${PHASE_1_DIR}\n'
             transition_commands += 'if [ ! -s is_perfectly_plastic.txt ] \n'
             transition_commands += 'then \n'
             transition_commands += '\techo "Replicate did not reach perfect plasticity!" \n'
