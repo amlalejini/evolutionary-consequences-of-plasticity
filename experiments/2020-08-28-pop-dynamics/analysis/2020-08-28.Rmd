@@ -152,3 +152,102 @@ ggplot(agg_data, aes(x=sensors, y=phylo_diversity)) +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
   facet_wrap(~environment, nrow=1) 
 ```
+
+### Genome length
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=genome_length, color=sensors)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_wrap(~environment, nrow=1) 
+```
+
+## Diversity over time data
+
+```{r}
+
+phylo_diversity_path <- "./data/phylodiversity_ot.csv"
+phylo_ot_data <- read.csv(phylo_diversity_path, na.strings="NONE")
+
+phylo_ot_data$DISABLE_REACTION_SENSORS <- as.factor(phylo_ot_data$DISABLE_REACTION_SENSORS)
+phylo_ot_data$environment <- factor(
+  phylo_ot_data$environment,
+  levels=c("a-u0", "b-u0", "all-u0",
+           "chg-u3", "chg-u10","chg-u30",
+           "chg-u100","chg-u300","chg-u1000")
+)
+phylo_ot_data$chg_env <- as.factor(phylo_ot_data$chg_env)
+# phylo_ot_data$plastic_odd_even <- as.factor(phylo_ot_data$plastic_odd_even)
+phylo_ot_data$sensors <- phylo_ot_data$DISABLE_REACTION_SENSORS == "0"
+
+phylo_ot_data$diversity <- as.numeric(as.character(phylo_ot_data$diversity))
+phylo_ot_data$variance_pairwise_distance <- as.numeric(as.character(phylo_ot_data$variance_pairwise_distance))
+
+```
+
+```{r}
+graph_diversity_ot <- function(env) {
+  ot_data <- filter(phylo_ot_data, environment==env)
+  
+  ggplot(
+    ot_data, 
+    aes(x=update, y=diversity, fill=sensors, color=sensors)
+    ) +
+    stat_summary(fun.y="mean", geom="line") +
+    stat_summary(fun.data="mean_cl_boot", 
+                 fun.args=list(conf.int=0.95), 
+                 geom="ribbon", 
+                 alpha=0.2,
+                 linetype=0) +
+    ggtitle(env) +
+    ggsave(paste("diversity_ot_",env,".pdf", sep=""), width=20, height=10)
+  
+  ggplot(
+    ot_data, 
+    aes(x=update, y=mean_pairwise_distance, fill=sensors, color=sensors)
+    ) +
+    stat_summary(fun.y="mean", geom="line") +
+    stat_summary(fun.data="mean_cl_boot", 
+                 fun.args=list(conf.int=0.95), 
+                 geom="ribbon", 
+                 alpha=0.2,
+                 linetype=0) +
+    ggtitle(env) +
+    ggsave(paste("mean_pairwise_dist_ot_",env,".pdf", sep=""), width=20, height=10)
+  
+  ggplot(
+    ot_data, 
+    aes(x=update, y=sum_pairwise_distance, fill=sensors, color=sensors)
+    ) +
+    stat_summary(fun.y="mean", geom="line") +
+    stat_summary(fun.data="mean_cl_boot", 
+                 fun.args=list(conf.int=0.95), 
+                 geom="ribbon", 
+                 alpha=0.2,
+                 linetype=0) +
+    ggtitle(env) +
+    ggsave(paste("sum_pairwise_dist_ot_",env,".pdf", sep=""), width=20, height=10)
+
+}
+
+graph_diversity_ot("chg-u30")
+graph_diversity_ot("chg-u300")
+graph_diversity_ot("chg-u1000")
+graph_diversity_ot("chg-u10")
+# "a-u0", "b-u0", "all-u0",
+#            "chg-u3", "chg-u10","chg-u30",
+#            "chg-u100","chg-u300","chg-u1000"
+
+ggplot(
+  filter(ot_data, environment=="chg-u100" & update <= 199000), 
+  aes(x=update, y=variance_pairwise_distance, fill=sensors, color=sensors)
+  ) +
+  stat_summary(fun.y="mean", geom="line") +
+  stat_summary(fun.data="mean_cl_boot", 
+               fun.args=list(conf.int=0.95), 
+               geom="ribbon", 
+               alpha=0.2,
+               linetype=0) +
+  ggtitle("chg-u100") +
+  ggsave("variance_pairwise_dist_ot_chg-u100.pdf", width=20, height=10)
+```
