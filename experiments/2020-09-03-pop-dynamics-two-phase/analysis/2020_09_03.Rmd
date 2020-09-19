@@ -256,6 +256,7 @@ graph_diversity_ot <- function(env) {
 graph_diversity_ot("chg-u300")
 graph_diversity_ot("chg-u1000")
 graph_diversity_ot("chg-u10")
+graph_diversity_ot("chg-u30")
 graph_diversity_ot("chg-u100")
 # "a-u0", "b-u0", "all-u0",
 #            "chg-u3", "chg-u10","chg-u30",
