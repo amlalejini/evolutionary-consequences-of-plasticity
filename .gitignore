@@ -9,3 +9,4 @@ install_manifest.txt
 wbuild
 DerivedData
 *.swp
+.vscode
