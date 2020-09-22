@@ -16,6 +16,8 @@ Two-phase experiment
   - Add extra (more complex) tasks (i.e., more rewarded metabolic pathways)
     - Two possible setups:
       - (1) the remaining 3 logic-9 tasks (NOR, XOR, EQU)
-      - (2) all 3 input tasks
+        - extra tasks increase merit by 1.1 multiplier
+      - (2) all 3 input tasks (+ 3 extra logic-9 tasks)
+        - extra tasks increase merit by 1.01 multiplier
 
 Narrow range of change rates (use constant, 30, 100)
