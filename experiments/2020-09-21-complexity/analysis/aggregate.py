@@ -57,6 +57,10 @@ def read_avida_dat_file(path):
         if line == "":
             legend_end = line_i
             break
+        # patch 3-input logic tasks because avida file format is nonsense
+        if "Logic 3" in line:
+            line = line.split("(")[0]
+
         fields.append( line.split(":")[-1].strip().lower().replace(" ", "_") )
     data = []
     for line_i in range(legend_end, len(content)):
