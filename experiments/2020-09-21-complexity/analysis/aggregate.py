@@ -103,8 +103,9 @@ def main():
     summary_header = None
     summary_content_lines = []
     for run_dir in run_dirs:
+        run_path = os.path.join(data_dir, run_dir)
         # Skip over (but make note of) incomplete runs.
-        if not os.path.exists(os.path.join(run_dir, 'data', 'analysis')):
+        if not os.path.exists(os.path.join(run_path, 'data', 'analysis')):
             print('Skipping: ', run_dir)
             continue
         summary_info = {} # Hold summary information about run. (one entry per run)
