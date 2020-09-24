@@ -106,14 +106,14 @@ def main():
         run_path = os.path.join(data_dir, run_dir)
         # Skip over (but make note of) incomplete runs.
         if not os.path.exists(os.path.join(run_path, 'data', 'analysis')):
-            print('Skipping: ', run_dir)
+            print('Skipping: ', run_path)
             continue
         summary_info = {} # Hold summary information about run. (one entry per run)
-        print(f"Processing: {run_dir}")
+        print(f"Processing: {run_path}")
 
         ############################################################
         # Extract commandline configuration settings (from cmd.log file)
-        cmd_log_path = os.path.join(run_dir, "cmd.log")
+        cmd_log_path = os.path.join(run_path, "cmd.log")
         cmd_params = extract_params_cmd_log(cmd_log_path)
         # Infer environmental change and change rate from events file
         chg_env = "chg" in cmd_params["EVENT_FILE"]
@@ -154,8 +154,8 @@ def main():
 
         ############################################################
         # Extract time information
-        time_data = read_avida_dat_file(os.path.join(run_dir, "data", "time.dat"))
-        task_data = read_avida_dat_file(os.path.join(run_dir, "data", "tasks.dat"))
+        time_data = read_avida_dat_file(os.path.join(run_path, "data", "time.dat"))
+        task_data = read_avida_dat_file(os.path.join(run_path, "data", "tasks.dat"))
         # average generation
         summary_info["average_generation"] = [line["average_generation"] for line in time_data if int(line["update"]) == update][0]
 
@@ -169,9 +169,9 @@ def main():
 
         ############################################################
         # Extract environment-specific final dominant information.
-        dom_env_all = read_avida_dat_file(os.path.join(run_dir, "data", "analysis", "env_all", "final_dominant.dat"))
-        dom_env_odd = read_avida_dat_file(os.path.join(run_dir, "data", "analysis", "env_odd", "final_dominant.dat"))
-        dom_env_even = read_avida_dat_file(os.path.join(run_dir, "data", "analysis", "env_even", "final_dominant.dat"))
+        dom_env_all = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_all", "final_dominant.dat"))
+        dom_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "final_dominant.dat"))
+        dom_env_even = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_even", "final_dominant.dat"))
         # (each of these files should only have one genotype in them)
 
         if len(dom_env_all) != 1 and len(dom_env_even) != 1 and len(dom_env_odd) != 1:
