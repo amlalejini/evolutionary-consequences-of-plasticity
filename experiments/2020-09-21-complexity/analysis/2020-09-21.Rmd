@@ -1,0 +1,108 @@
+---
+title: "2020-09-21 Experiment Analysis"
+output:
+  html_document:
+    keep_md: no
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    collapsed: false
+    theme: default
+    code_folding: hide
+  pdf_document:
+    toc: true
+    toc_depth: 4
+---
+
+## Analysis Dependencies
+
+```{r, message=FALSE}
+library(ggplot2)   # (Wickham, 2016)
+library(tidyr)     # (Wickham and Henry, 2020)
+library(dplyr)     # (Wickham et al., 2020)
+library(reshape2)  # (Wickham, 2007)
+library(cowplot)   # (Wilke, 2019)
+library(patchwork) # (Pederson, 2020)
+library(viridis)   # (Garnier, 2018)
+library(hexbin)
+```
+
+We conducted these analyses using the following computing environment:
+
+```{r}
+print(version)
+```
+
+## Setup
+
+```{r}
+data_path <- "./data/aggregate.csv"
+agg_data <- read.csv(data_path, na.strings="NONE")
+
+agg_data$DISABLE_REACTION_SENSORS <- as.factor(agg_data$DISABLE_REACTION_SENSORS)
+agg_data$environment <- factor(
+  agg_data$environment,
+  levels=c("a-u0", "b-u0", "all-u0",
+           "chg-u3", "chg-u10","chg-u30",
+           "chg-u100","chg-u300","chg-u1000")
+)
+agg_data$chg_env <- as.factor(agg_data$chg_env)
+agg_data$task_set <- as.factor(agg_data$task_set)
+agg_data$phase <- as.factor(agg_data$phase)
+agg_data$dom_plastic_odd_even <- as.factor(agg_data$dom_plastic_odd_even)
+agg_data$sensors <- agg_data$DISABLE_REACTION_SENSORS == "0"
+
+theme_set(theme_cowplot())
+```
+
+## Graphs!
+
+```{r}
+ggplot(filter(agg_data), aes(x=sensors, fill=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  ylab("number of phase 2 runs") +
+  ylim(0, 52) +
+  facet_grid(task_set~environment) +
+  ggtitle("Made it to phase 2?") +
+  ggsave("plots/num_runs.pdf", width=10, height=7)
+```
+
+```{r}
+ggplot(filter(agg_data, dom_optimal_plastic=="True"), aes(x=sensors, fill=sensors)) +
+  geom_bar(position=position_dodge(0.9)) +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9), vjust=0
+  )  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  ylab("plastic final dominant (odd/even environment)") +
+  ylim(0, 52) +
+  facet_grid(task_set~environment) +
+  ggtitle("Optimal plastic?") +
+  ggsave("plots/dom_plastic_optimal.pdf")
+```
+
+### Extra tasks
+
+```{r}
+ggplot(filter(agg_data, task_set=="l77"), aes(x=sensors, y=dom_extra_tasks, color=sensors)) +
+  geom_boxplot() +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_grid(task_set~environment) +
+  ggsave("plots/dom_extra_tasks.pdf", height=7, width=10)
+```
+
+```{r}
+ggplot(filter(agg_data, task_set=="l77"), aes(x=sensors, y=pop_extra_tasks, color=sensors)) +
+  geom_boxplot() +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_grid(task_set~environment, scales = "free_y") +
+  ggsave("plots/pop_extra_tasks.pdf", width=10, height=7)
+```
