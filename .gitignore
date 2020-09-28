@@ -10,3 +10,4 @@ wbuild
 DerivedData
 *.swp
 .vscode
+.Rhistory
