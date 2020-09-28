@@ -92,7 +92,7 @@ ggplot(filter(agg_data, dom_optimal_plastic=="True"), aes(x=sensors, fill=sensor
 ### Extra tasks
 
 ```{r}
-ggplot(filter(agg_data, task_set=="l77"), aes(x=sensors, y=dom_extra_tasks, color=sensors)) +
+ggplot(filter(agg_data), aes(x=sensors, y=dom_extra_tasks, color=sensors)) +
   geom_boxplot() +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
   facet_grid(task_set~environment) +
@@ -100,7 +100,7 @@ ggplot(filter(agg_data, task_set=="l77"), aes(x=sensors, y=dom_extra_tasks, colo
 ```
 
 ```{r}
-ggplot(filter(agg_data, task_set=="l77"), aes(x=sensors, y=pop_extra_tasks, color=sensors)) +
+ggplot(filter(agg_data), aes(x=sensors, y=pop_extra_tasks, color=sensors)) +
   geom_boxplot() +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
   facet_grid(task_set~environment, scales = "free_y") +
