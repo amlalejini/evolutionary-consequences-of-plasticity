@@ -265,7 +265,13 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     return ss.str();
   };
 
-  systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);});
+  // Systematics tracking resolution
+  if (m_conf->SYSTEMATICS_TRACK_ALL.Get()) {
+    systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);}, true, true, true);
+  } else {
+    systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);});
+  }
+
   // systematics_manager->PrintStatus();
   systematics_manager->AddSnapshotFun([](const taxon_t & tax) {
       return emp::to_string(tax.GetInfo().AsString().GetCString());
