@@ -97,6 +97,20 @@ Experiments
   - try both Inst_Poison and Inst_Prob_Die (be sure to include nop-X)
 - Supplemental experiments
   - Qualitatively reproduce results at different reward structures.
+- Bottlenecking experiment?
+  - Instead of fluctuating environment, bottleneck population at regular intervals.
+  - Relevant avida parameter: KillProb
+
+Investigating the consequences of plasticity
+
+- Testing sweeps
+  - use intermittent culls/bottlenecking events
+  - contingency experiments
+    - seed phase two with ancestor just before it evolves plasticity and just after it evolves plasticity (disallow plasticity too?)
+  - Genome length
+    - Look at genome length, can control with fixed length genomes
+  - Execution length
+  - Is it the fact that the plastic genomes have more building blocks in the genome?
 
 Decisions to be made
 
