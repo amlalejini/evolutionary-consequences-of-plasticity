@@ -1,0 +1,141 @@
+# Thu Sep 10 15:32:37 2020
+# Filename........: analysis/env_all/final_dominant.gen
+# Update Output...: N/A
+# Is Viable.......: 1
+# Repro Cycle Size: 0
+# Depth to Viable.: 0
+# 
+# Generation: 0
+# Merit...........: 6976.000000
+# Gestation Time..: 205
+# Fitness.........: 34.029268
+# Errors..........: 3
+# Genome Size.....: 112
+# Copied Size.....: 112
+# Executed Size...: 109
+# Offspring.......: SELF
+# 
+# Tasks Performed:
+# not 1 (1.000000)
+# nand 1 (1.000000)
+# and 1 (1.000000)
+# orn 1 (1.000000)
+# or 1 (1.000000)
+# andn 1 (1.000000)
+# nor 0 (0.000000)
+# xor 0 (0.000000)
+# equ 0 (0.000000)
+
+
+nop-A
+h-alloc
+h-divide
+shift-l
+set-flow
+nop-A
+mov-head
+nop-C
+h-copy
+shift-r
+sense-react-ORN
+sense-react-NAND
+sense-react-ANDN
+nop-A
+nop-C
+h-alloc
+h-copy
+h-copy
+swap
+nop-B
+sense-react-AND
+h-copy
+h-search
+IO
+nop-A
+push
+nand
+sense-react-ANDN
+jmp-head
+IO
+nop-A
+shift-r
+push
+nop-C
+IO
+nop-C
+push
+sub
+swap
+nop-B
+nop-C
+swap-stk
+push
+nop-C
+swap
+nop-C
+sense-react-NAND
+nand
+swap
+nop-C
+push
+sub
+h-alloc
+IO
+IO
+nop-C
+set-flow
+nop-B
+pop
+sense-react-AND
+nand
+nop-C
+sense-react-NOT
+IO
+if-label
+h-copy
+shift-l
+pop
+sense-react-OR
+h-copy
+nand
+nop-A
+IO
+nop-C
+nop-B
+nand
+add
+inc
+get-head
+nop-A
+IO
+h-search
+nop-A
+h-copy
+h-alloc
+if-less
+nop-C
+jmp-head
+h-copy
+h-copy
+IO
+nop-A
+if-n-equ
+pop
+push
+h-copy
+h-search
+h-copy
+h-copy
+h-copy
+h-copy
+h-copy
+h-copy
+h-copy
+if-label
+nop-C
+nop-A
+h-divide
+h-copy
+mov-head
+nop-A
+nop-B

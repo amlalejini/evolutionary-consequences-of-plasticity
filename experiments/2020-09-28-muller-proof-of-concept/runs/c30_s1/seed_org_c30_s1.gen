@@ -1,0 +1,191 @@
+# Wed Sep 16 21:29:56 2020
+# Filename........: analysis/env_all/final_dominant.gen
+# Update Output...: N/A
+# Is Viable.......: 1
+# Repro Cycle Size: 0
+# Depth to Viable.: 0
+# 
+# Generation: 0
+# Merit...........: 632.000000
+# Gestation Time..: 337
+# Fitness.........: 1.875371
+# Errors..........: 4
+# Genome Size.....: 162
+# Copied Size.....: 162
+# Executed Size...: 158
+# Offspring.......: SELF
+# 
+# Tasks Performed:
+# not 1 (1.000000)
+# nand 0 (0.000000)
+# and 0 (0.000000)
+# orn 0 (0.000000)
+# or 1 (1.000000)
+# andn 0 (0.000000)
+# nor 0 (0.000000)
+# xor 0 (0.000000)
+# equ 0 (0.000000)
+
+
+swap-stk
+h-divide
+IO
+h-alloc
+nop-B
+swap
+add
+pop
+set-flow
+nop-A
+sense-react-OR
+nop-C
+shift-r
+mov-head
+nop-C
+inc
+sense-react-OR
+pop
+nop-C
+add
+nop-C
+jmp-head
+nand
+IO
+sub
+sense-react-AND
+IO
+nop-C
+nand
+nop-C
+sense-react-ANDN
+nand
+IO
+nop-B
+nand
+nand
+IO
+set-flow
+add
+inc
+IO
+IO
+nop-C
+nand
+swap
+inc
+swap-stk
+add
+push
+nop-B
+sense-react-OR
+if-n-equ
+nop-C
+sub
+h-alloc
+shift-l
+set-flow
+add
+sense-react-ORN
+if-n-equ
+swap-stk
+push
+add
+nand
+sense-react-NAND
+sense-react-ANDN
+set-flow
+nop-C
+h-copy
+if-label
+add
+dec
+dec
+h-alloc
+swap-stk
+shift-l
+if-n-equ
+sense-react-NAND
+if-n-equ
+sub
+pop
+sense-react-ANDN
+sense-react-NAND
+nand
+nop-C
+h-copy
+nand
+dec
+nop-B
+sense-react-ORN
+h-copy
+sense-react-ANDN
+sense-react-NAND
+IO
+nop-C
+if-label
+add
+add
+nop-B
+push
+h-search
+h-copy
+h-copy
+h-copy
+h-copy
+h-copy
+h-copy
+if-label
+nop-C
+if-less
+mov-head
+sense-react-ORN
+sense-react-OR
+nop-A
+inc
+swap
+nop-C
+h-copy
+sense-react-OR
+shift-r
+inc
+swap
+dec
+pop
+sense-react-AND
+pop
+nop-C
+inc
+nop-C
+jmp-head
+set-flow
+IO
+sub
+IO
+nop-C
+h-copy
+nand
+swap
+nand
+sense-react-AND
+sense-react-NAND
+h-alloc
+set-flow
+inc
+nop-A
+IO
+nand
+h-alloc
+nand
+IO
+IO
+sense-react-AND
+set-flow
+IO
+nop-C
+h-copy
+pop
+sense-react-ANDN
+nop-A
+sense-react-ANDN
+get-head
+sense-react-OR
