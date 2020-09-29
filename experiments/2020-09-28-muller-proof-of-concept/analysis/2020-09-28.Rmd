@@ -1,0 +1,41 @@
+---
+title: "2020-09-28"
+output:
+  html_document:
+    keep_md: no
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    collapsed: false
+    theme: default
+    code_folding: hide
+  pdf_document:
+    toc: true
+    toc_depth: 4
+---
+
+## Analysis Dependencies
+
+```{r, message=FALSE}
+library(ggplot2)   # (Wickham, 2016)
+library(tidyr)     # (Wickham and Henry, 2020)
+library(dplyr)     # (Wickham et al., 2020)
+library(reshape2)  # (Wickham, 2007)
+library(cowplot)   # (Wilke, 2019)
+library(ggmuller)
+library(readr)
+```
+
+## Muller plots!
+
+```{r}
+c100_s0_adjacency <- read_csv("c100-s0-test_adjacency.csv")
+c100_s0_pop_info <- read_csv("c100-s0-test_pop_info.csv")
+
+c100_s0_adjacency <- c100_s0_adjacency[c("Parent", "Identity")]
+
+c100_s0_muller_df <- get_Muller_df(c100_s0_adjacency, c100_s0_pop_info)
+
+Muller_plot(c100_s0_muller_df, colour_by = "Phenotype", add_legend = TRUE) +
+  ggsave("plots/c100_s0_muller.pdf")
+```
