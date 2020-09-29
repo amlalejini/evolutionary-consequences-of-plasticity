@@ -8,7 +8,7 @@ run_identifier = "RUN_"
 
 primary_traits = ["not","nand","and","ornot","or","andnot"]#,"nor","xor","equals"]
 even_traits = {"not", "and", "or"}#, "nor", "equals"}
-odd_traits = {"nand", "ornot", "andnot", "xor"}#, "equals"}
+odd_traits = {"nand", "ornot", "andnot"}#, "xor"}#, "equals"}
 even_profile = "101010"#101"
 odd_profile = "010101"#011"
 all_profile = "111111"#111"
