@@ -34,8 +34,9 @@ c100_s0_pop_info <- read_csv("c100-s0-test_pop_info.csv")
 
 c100_s0_adjacency <- c100_s0_adjacency[c("Parent", "Identity")]
 
-c100_s0_muller_df <- get_Muller_df(c100_s0_adjacency, c100_s0_pop_info)
+c100_s0_muller_df <- get_Muller_df(c100_s0_adjacency, c100_s0_pop_info, cutoff = 0.05)
 
 Muller_plot(c100_s0_muller_df, colour_by = "Phenotype", add_legend = TRUE) +
+  ggtitle("c100 s0") +
   ggsave("plots/c100_s0_muller.pdf")
 ```

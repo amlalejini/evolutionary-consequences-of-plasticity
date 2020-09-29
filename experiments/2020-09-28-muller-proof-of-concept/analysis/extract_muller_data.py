@@ -35,7 +35,8 @@ def compress_phylogeny(root, nodes):
     new_id_map[root] = 0
     frontier = nodes[root].children
 
-    adj_file = pd.DataFrame({"Identity":[], "Parent":[]})
+    # adj_file = pd.DataFrame({"Identity":[], "Parent":[]})
+    adj_file_contents = {"Identity":[], "Parent":[]}
 
     while frontier:
         #print("fontier:", frontier)
@@ -51,7 +52,9 @@ def compress_phylogeny(root, nodes):
             else:
                 # print(nodes[n].phenotype, nodes[nodes[n].parent].phenotype)
                 nodes[n].new_id = next_id
-                adj_file = adj_file.append({"Identity":next_id, "Parent":nodes[nodes[n].parent].new_id}, ignore_index=True)
+                # adj_file = adj_file.append({"Identity":next_id, "Parent":nodes[nodes[n].parent].new_id}, ignore_index=True)
+                adj_file_contents["Identity"].append(next_id)
+                adj_file_contents["Parent"].append(nodes[nodes[n].parent].new_id)
                 next_id += 1
 
             new_id_map[nodes[n].id] = nodes[n].new_id
@@ -60,15 +63,18 @@ def compress_phylogeny(root, nodes):
 
         frontier = new_frontier
 
+    adj_file = pd.DataFrame(adj_file_contents)
     return adj_file, new_id_map
 
 def main():
     parser = argparse.ArgumentParser(description="Standards phylogeny file to ggmuller input files converter.")
     parser.add_argument("--run_dir", type=str, help="run directory")
     parser.add_argument("--output_prefix", "-out", type=str, help="Prefix to add to output file names")
+    parser.add_argument("--update", type=int, help="max update to pull data from")
     # Parse command line arguments.
     args = parser.parse_args()
     run_dir = args.run_dir
+    update = args.update
 
     if (args.output_prefix != None):
         adj_file_name = args.output_prefix + "_adjacency.csv"
@@ -79,7 +85,8 @@ def main():
 
 
     # adj_file = adj_file.astype(dtype={"Identity":"object","Parent":"object"})
-    pop_file = pd.DataFrame({"Identity":[], "Population":[], "Time":[]})
+    # pop_file = pd.DataFrame({"Identity":[], "Population":[], "Time":[]})
+    pop_file_contents = {"Identity":[], "Population":[], "Time":[]}
 
     genotype_bank_path = os.path.join(args.run_dir, f"phylogeny-snapshot-genotype-phenotype-table.csv")
     genotype_bank = ""
@@ -89,12 +96,22 @@ def main():
     root = ""
 
     snapshot_files = [fname for fname in os.listdir(args.run_dir) if "phylogeny-snapshot-" in fname and ".csv" in fname and len(fname.split("-")) == 3]
+    snapshot_files.sort(key = lambda x: int(x.split(".")[-2].split("-")[-1]))
     print(f"Found {len(snapshot_files)} files:")
     print("- " + "\n- ".join(snapshot_files))
 
+    print("============")
+    snapshot_i = 0
     for filename in snapshot_files:
         snapshot_path = os.path.join(run_dir, filename)
+
+        snapshot_i += 1
+        print(f"Processing ({snapshot_i}/{len(snapshot_files)}): {snapshot_path}")
+
         time = filename.split(".")[-2].split("-")[-1]
+        if int(time) > update:
+            print("  skip file")
+            continue
 
         df = pd.read_csv(snapshot_path)
 
@@ -125,14 +142,18 @@ def main():
                 nodes[parent] = Node(parent)
                 nodes[parent].children.append(row["id"])
 
+            pop_file_contents["Identity"].append(row["id"])
+            pop_file_contents["Population"].append(row["num_orgs"])
+            pop_file_contents["Time"].append(time)
+            # pop_file = pop_file.append({"Identity":row["id"], "Population":row["num_orgs"], "Time":time}, ignore_index=True)
 
-            pop_file = pop_file.append({"Identity":row["id"], "Population":row["num_orgs"], "Time":time}, ignore_index=True)
 
     # # for node in nodes:
     # #     print("====")
     # #     print(f"{node}:")
     # #     nodes[node].Print()
 
+    pop_file = pd.DataFrame(pop_file_contents)
     adj_file, new_id_map = compress_phylogeny(root, nodes)
 
     phenotypes = []
@@ -150,9 +171,6 @@ def main():
 
     # adj_file.drop_duplicates(inplace=True)
     # print(adj_file)
-
-
-
 
 
 if __name__ == "__main__":
