@@ -52,6 +52,8 @@ agg_data$phase <- as.factor(agg_data$phase)
 agg_data$dom_plastic_odd_even <- as.factor(agg_data$dom_plastic_odd_even)
 agg_data$sensors <- agg_data$DISABLE_REACTION_SENSORS == "0"
 
+agg_data <- filter(agg_data, task_set=="l77")
+
 theme_set(theme_cowplot())
 ```
 
