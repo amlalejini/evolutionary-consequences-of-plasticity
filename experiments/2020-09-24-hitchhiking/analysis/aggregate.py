@@ -159,6 +159,11 @@ def main():
         if not os.path.exists(os.path.join(run_path, 'data', 'analysis')):
             print('Skipping: ', run_path)
             continue
+        if not all([os.path.exists(os.path.join(run_path, "data", "analysis", e, "final_dominant.dat")) for e in ["env_all", "env_even", "env_odd"]]):
+            print("Skipping: ", run_path)
+            print("  missing analysis")
+            continue
+
         summary_info = {} # Hold summary information about run. (one entry per run)
         print(f"Processing: {run_path}")
 
