@@ -203,9 +203,11 @@ def main():
         focal_instruction_data = [line for line in instruction_data if line["update"] == str(update)]
         assert(len(focal_instruction_data) == 1)
         focal_instruction_data = focal_instruction_data[0]
-        for field in focal_instruction_data:
-            if not field in instructions_of_interest: continue
-            summary_info[f"pop_inst_count_{field}"] = focal_instruction_data[field]
+        for instr in instructions_of_interest:
+            if not instr in instructions_of_interest:
+                summary_info[f"pop_inst_count_{instr}"] = "0"
+            else:
+                summary_info[f"pop_inst_count_{instr}"] = focal_instruction_data[instr]
         ############################################################
 
         ############################################################
@@ -219,8 +221,8 @@ def main():
             instr_info["hitchhiker_magnitude"] = hitchhiker_magnitude
             for field in cmd_params:
                 instr_info[field] = cmd_params[field]
-            for field in line:
-                instr_info[field] = line[field]
+            for instr in instructions_of_interest:
+                instr_info[instr] = line[instr] if instr in line else "0"
             fields = list(instr_info.keys())
             fields.sort()
             if instr_over_time_header == None:
