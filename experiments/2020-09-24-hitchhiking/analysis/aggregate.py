@@ -144,7 +144,7 @@ def main():
     mkdir_p(dump_dir)
 
     # Aggregate run directories.
-    run_dirs = [run_dir for run_dir in os.listdir(data_dir) if run_identifier in run_dir][:3]
+    run_dirs = [run_dir for run_dir in os.listdir(data_dir) if run_identifier in run_dir]
     print(f"Found {len(run_dirs)} run directories.")
 
     # For each run directory:
