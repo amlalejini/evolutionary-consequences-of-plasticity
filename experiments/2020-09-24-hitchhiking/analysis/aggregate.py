@@ -14,9 +14,9 @@ odd_profile = "010101"
 all_profile = "111111"
 
 instructions_of_interest = {
- "nop-A",
- "nop-B",
- "nop-C",
+ "nop-a",
+ "nop-b",
+ "nop-c",
  "if-n-equ",
  "if-less",
  "if-label",
@@ -38,15 +38,15 @@ instructions_of_interest = {
  "h-copy",
  "h-alloc",
  "h-divide",
- "IO",
+ "io",
  "h-search",
- "sense-react-NAND",
- "sense-react-NOT",
- "sense-react-AND",
- "sense-react-ORN",
- "sense-react-OR",
- "sense-react-ANDN",
- "nop-X",
+ "sense-react-nand",
+ "sense-react-not",
+ "sense-react-and",
+ "sense-react-orn",
+ "sense-react-or",
+ "sense-react-andn",
+ "nop-x",
  "poison",
  "prob-die"
 }
