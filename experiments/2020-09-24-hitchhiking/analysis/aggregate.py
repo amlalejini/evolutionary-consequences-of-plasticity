@@ -63,12 +63,14 @@ def mkdir_p(path):
         else: raise
 
 def extract_params_cmd_log(path):
+    # ./avida -c avida-prob-die.cfg -set KABOOM_PROB 0.01 -set POISON_PENALTY 0.01 -set EVENT_FILE events-chg-u30_phase-two.cfg -set COPY_MUT_PROB 0.0025 -set DISABLE_REACTION_SENSORS 1 -set REACTION_SENSORS_NEUTRAL 0.0 -set PHYLOGENY_SNAPSHOT_RES 200000 -set RANDOM_SEED 32507
+
     content = None
     with open(path, "r") as fp:
         content = fp.read().strip()
     content = content.replace("./avida", "")
     if "-c" in content:
-        avida_cfg = content.split("-c")[-1].split(" ")[0]
+        avida_cfg = content.split("-c")[-1].split(" ")[0].strip()
         content = content.replace(f"-c {avida_cfg}", "")
         # temp = content.split("-c")
         # content = temp[0] + " ".join(temp[-1].split(" ")[1:])
