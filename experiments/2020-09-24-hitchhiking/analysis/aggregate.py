@@ -68,13 +68,11 @@ def extract_params_cmd_log(path):
     content = None
     with open(path, "r") as fp:
         content = fp.read().strip()
-    print("Content: ", content)
+    # print("Content: ", content)
     content = content.replace("./avida", "")
     if " -c " in content:
         avida_cfg = content.split(" -c ")[-1].split(" ")[0].strip()
         content = content.replace(f"-c {avida_cfg}", "")
-        # temp = content.split("-c")
-        # content = temp[0] + " ".join(temp[-1].split(" ")[1:])
     else:
         avida_cfg = "avida.cfg"
     params = [param.strip() for param in content.split("-set") if param.strip() != ""]
@@ -177,7 +175,6 @@ def main():
         # Extract commandline configuration settings (from cmd.log file)
         cmd_log_path = os.path.join(run_path, "cmd.log")
         cmd_params = extract_params_cmd_log(cmd_log_path)
-        print(cmd_params)
         # Infer environmental change and change rate from events file
         chg_env = "chg" in cmd_params["EVENT_FILE"]
         env_cond = cmd_params["EVENT_FILE"].split("_")[0].replace("events-", "").lower()
@@ -241,7 +238,7 @@ def main():
                 instr_over_time_header = fields
             elif instr_over_time_header != fields:
                 print("Header mismatch!")
-            instr_ot_lines.append(",".join([str(instr_info[field]) for field in instr_info]))
+            instr_ot_lines.append(",".join([str(instr_info[field]) for field in fields]))
         with open(os.path.join(dump_dir, "instructions_ot.csv"), "a") as fp:
             if instr_over_time_write_header:
                 instr_over_time_write_header = False
