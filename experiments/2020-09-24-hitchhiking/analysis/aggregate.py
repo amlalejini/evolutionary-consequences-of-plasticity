@@ -70,9 +70,8 @@ def extract_params_cmd_log(path):
         content = fp.read().strip()
     print("Content: ", content)
     content = content.replace("./avida", "")
-    if "-c" in content:
-        avida_cfg = content.split("-c")[-1].split(" ")[0].strip()
-        print(content.split("-c"))
+    if " -c " in content:
+        avida_cfg = content.split(" -c ")[-1].split(" ")[0].strip()
         content = content.replace(f"-c {avida_cfg}", "")
         # temp = content.split("-c")
         # content = temp[0] + " ".join(temp[-1].split(" ")[1:])
