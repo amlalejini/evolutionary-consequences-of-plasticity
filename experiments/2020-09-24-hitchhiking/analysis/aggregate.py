@@ -68,15 +68,16 @@ def extract_params_cmd_log(path):
     content = None
     with open(path, "r") as fp:
         content = fp.read().strip()
+    print("Content: ", content)
     content = content.replace("./avida", "")
     if "-c" in content:
         avida_cfg = content.split("-c")[-1].split(" ")[0].strip()
+        print(content.split("-c"))
         content = content.replace(f"-c {avida_cfg}", "")
         # temp = content.split("-c")
         # content = temp[0] + " ".join(temp[-1].split(" ")[1:])
     else:
         avida_cfg = "avida.cfg"
-    print("Content: ", content)
     params = [param.strip() for param in content.split("-set") if param.strip() != ""]
     cfg = {param.split(" ")[0]:param.split(" ")[1] for param in params}
     cfg["avida_cfg"] = avida_cfg
