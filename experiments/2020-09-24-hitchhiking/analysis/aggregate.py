@@ -204,7 +204,7 @@ def main():
         assert(len(focal_instruction_data) == 1)
         focal_instruction_data = focal_instruction_data[0]
         for instr in instructions_of_interest:
-            if not instr in instructions_of_interest:
+            if not instr in focal_instruction_data:
                 summary_info[f"pop_inst_count_{instr}"] = "0"
             else:
                 summary_info[f"pop_inst_count_{instr}"] = focal_instruction_data[instr]
