@@ -76,7 +76,7 @@ def extract_params_cmd_log(path):
         # content = temp[0] + " ".join(temp[-1].split(" ")[1:])
     else:
         avida_cfg = "avida.cfg"
-
+    print("Content: ", content)
     params = [param.strip() for param in content.split("-set") if param.strip() != ""]
     cfg = {param.split(" ")[0]:param.split(" ")[1] for param in params}
     cfg["avida_cfg"] = avida_cfg
@@ -146,7 +146,7 @@ def main():
     mkdir_p(dump_dir)
 
     # Aggregate run directories.
-    run_dirs = [run_dir for run_dir in os.listdir(data_dir) if run_identifier in run_dir]
+    run_dirs = [run_dir for run_dir in os.listdir(data_dir) if run_identifier in run_dir][:3]
     print(f"Found {len(run_dirs)} run directories.")
 
     # For each run directory:
@@ -177,6 +177,7 @@ def main():
         # Extract commandline configuration settings (from cmd.log file)
         cmd_log_path = os.path.join(run_path, "cmd.log")
         cmd_params = extract_params_cmd_log(cmd_log_path)
+        print(cmd_params)
         # Infer environmental change and change rate from events file
         chg_env = "chg" in cmd_params["EVENT_FILE"]
         env_cond = cmd_params["EVENT_FILE"].split("_")[0].replace("events-", "").lower()
