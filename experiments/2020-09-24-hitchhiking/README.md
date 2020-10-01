@@ -24,3 +24,8 @@ Relevant avida parameters
 - KABOOM_PROB
 - POISON_PENALTY
   - `double poison_multiplier = 1.0 - m_world->GetConfig().POISON_PENALTY.Get();`
+
+Takeaways
+
+- Need to control genome length!
+- Poison and prob-die similar dynamics. Probably do subsequent experiments with poison instruction (simpler dynamics).
