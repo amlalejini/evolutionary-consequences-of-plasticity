@@ -36,6 +36,9 @@ combos.add_val(
 )
 combos.add_val('SENSORS', ['0','1'])
 
+combos.add_exception({'EVENT_FILE_PREFIX': 'events-chg-u100', 'EXTRA_TASK_REWARD' : 'NONE'})
+
+
 # Load in the base slurm file
 with open(base_script_filename, 'r') as fp:
     base_sub_script = fp.read()
