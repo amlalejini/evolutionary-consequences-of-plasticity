@@ -22,6 +22,8 @@ pip3 install -r requirements.txt
 
 ## Plans
 
+### Initial
+
 Experimental knobs and levers
 
 - Nutrients/tasks configurations
@@ -122,6 +124,7 @@ Decisions to be made
   - if we just fluctuate the first 6 tasks, we have the next 3 logic 9 tasks to use
   - we could also use all of the 3-input logic tasks as extra pathways (just make sure the sum of their rewards don’t exceed the reward for doing a single of the rewarded fluctuating tasks)
 - What supplemental experiments will we need to evaluate the robustness of results?
+- Probabilistic environmental change
 
 Supplemental experiments
 
@@ -130,3 +133,25 @@ Supplemental experiments
 - What if the type of environmental fluctuation was different?
   - e.g., rewards varied smoothly instead of discrete reward & punishment stages
 - If we were to make environments A and B less different (e.g., only cycle rewards / punishments for four "easiest" tasks), would we see this difference shrink?
+
+Controls
+
+- Phase 1 => phase 2 (50% like phase 1, 50% w/constant environment)
+
+### 2020-10-07
+
+Experiments
+
+- (1) Extra metabolic tasks
+  - Constant, u100
+  - Try different reward levels for extra tasks
+    - null rewards, too
+- (2) Bottlenecking control
+  - Is it that plasticity is stabilizing the population against repeated bottlenecking (due to frequent sweeps)?
+  - Periodically cull the plastic population in phase 2
+    - Keep 10, 20, 50%
+- (3) architecture evolvability
+  - Is it that the non-plastic architectures are less evolvable than the plastic architectures?
+  - Is it that the plastic architectures are move evolvable than non-plastic architectures?
+  - Move non-plastic and plastic architectures to
+    - constant phase 2
