@@ -179,17 +179,20 @@ def main():
             print(f"Final tasks update {final_tasks_data['update']} does not match requested analysis update {update}")
             exit(-1)
 
-        # find extra tasks performed > given threshold
+        final_discovered_tasks = {proportion:set([]) for proportion in extra_trait_thresholds}
+        for line in task_data:
+            for trait in extra_traits:
+                if not trait in line: continue
+                for proportion in extra_trait_thresholds:
+                    threshold = extra_trait_thresholds[proportion]
+                    if int(line[trait]) >= threshold:
+                        final_discovered_tasks[proportion].add(trait)
+
         for proportion in extra_trait_thresholds:
             threshold = extra_trait_thresholds[proportion]
             summary_info[f"pop_extra_tasks_{proportion}"] = sum([int(int(final_tasks_data[trait]) > threshold) for trait in extra_traits if trait in final_tasks_data])
-            discovered_tasks = set()
-            for line in task_data:
-                for trait in extra_traits:
-                    if not trait in line: continue
-                    if int(line[trait]) >= threshold:
-                        discovered_tasks.add(trait)
-            summary_info[f"extra_tasks_discovered_{proportion}"] = len(discovered_tasks)
+            summary_info[f"extra_tasks_discovered_{proportion}"] = len(final_discovered_tasks[proportion])
+
         ############################################################
 
         ############################################################
