@@ -202,57 +202,48 @@ def main():
         # update
         # num_discovered
         # num_performed
-        task_ot_info = []
+        # task_ot_info = []
 
-        num_discovered = {prop: set([]) for prop in extra_trait_thresholds}
-        for line in task_data:
-            info = {}
-            info["environment"] = summary_info["environment"]
-            info["seed"] = cmd_params["RANDOM_SEED"]
-            info["DISABLE_REACTION_SENSORS"] = cmd_params["DISABLE_REACTION_SENSORS"]
-            info["extra_task_value"] = summary_info["extra_task_value"]
-            info["update"] = line["update"]
+        # num_discovered = {prop: set([]) for prop in extra_trait_thresholds}
+        # for line in task_data:
+        #     info = {}
+        #     info["environment"] = summary_info["environment"]
+        #     info["seed"] = cmd_params["RANDOM_SEED"]
+        #     info["DISABLE_REACTION_SENSORS"] = cmd_params["DISABLE_REACTION_SENSORS"]
+        #     info["extra_task_value"] = summary_info["extra_task_value"]
+        #     info["update"] = line["update"]
 
-            # update num discovered
-            num_performed = {prop: 0 for prop in extra_trait_thresholds}
-            for trait in extra_traits:
-                if not trait in line: continue
-                for prop in extra_trait_thresholds:
-                    threshold = extra_trait_thresholds[prop]
-                    if int(line[trait]) >= threshold:
-                        num_performed[prop] += 1
-                        num_discovered[prop].add(trait)
-            for prop in extra_trait_thresholds:
-                info[f"extra_tasks_discovered_{prop}"] = len(num_discovered[prop])
-                info[f"extra_tasks_performed_{prop}"] = num_discovered[prop]
+        #     # update num discovered
+        #     num_performed = {prop: 0 for prop in extra_trait_thresholds}
+        #     for trait in extra_traits:
+        #         if not trait in line: continue
+        #         for prop in extra_trait_thresholds:
+        #             threshold = extra_trait_thresholds[prop]
+        #             if int(line[trait]) >= threshold:
+        #                 num_performed[prop] += 1
+        #                 num_discovered[prop].add(trait)
+        #     for prop in extra_trait_thresholds:
+        #         info[f"extra_tasks_discovered_{prop}"] = len(num_discovered[prop])
+        #         info[f"extra_tasks_performed_{prop}"] = num_discovered[prop]
 
-            task_ot_info.append(info)
+        #     task_ot_info.append(info)
 
-        task_ot_header_fields = [field for field in task_ot_info[0]]
-        task_ot_header_fields.sort()
-        task_ot_header = ",".join(task_ot_header_fields)
-
-
-        task_ot_content = "\n".join([ ",".join([str(info[field]) for field in task_ot_header_fields]) for info in task_ot_info ])
-
-        with open(os.path.join(dump_dir, "extra_tasks_ot.csv"), "a") as fp:
-            if extra_tasks_over_time_write_header:
-                extra_tasks_over_time_write_header = False
-                extra_tasks_over_time_header = task_ot_header
-                fp.write(task_ot_header + "\n")
-            elif extra_tasks_over_time_header != task_ot_header:
-                print("task ot header mismatch!")
-                exit(-1)
-            fp.write(task_ot_content)
+        # task_ot_header_fields = [field for field in task_ot_info[0]]
+        # task_ot_header_fields.sort()
+        # task_ot_header = ",".join(task_ot_header_fields)
 
 
+        # task_ot_content = "\n".join([ ",".join([str(info[field]) for field in task_ot_header_fields]) for info in task_ot_info ])
 
-
-
-
-
-
-
+        # with open(os.path.join(dump_dir, "extra_tasks_ot.csv"), "a") as fp:
+        #     if extra_tasks_over_time_write_header:
+        #         extra_tasks_over_time_write_header = False
+        #         extra_tasks_over_time_header = task_ot_header
+        #         fp.write(task_ot_header + "\n")
+        #     elif extra_tasks_over_time_header != task_ot_header:
+        #         print("task ot header mismatch!")
+        #         exit(-1)
+        #     fp.write(task_ot_content)
         ############################################################
 
 
