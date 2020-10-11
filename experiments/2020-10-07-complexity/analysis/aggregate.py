@@ -133,7 +133,10 @@ def main():
         env_cond = cmd_params["EVENT_FILE"].split("_")[0].replace("events-", "").lower()
         phase = "1" if "phase-one" in cmd_params["EVENT_FILE"] else "2"
         env_tasks = cmd_params["ENVIRONMENT_FILE"].split("_")[0].replace("environment-","").lower()
-        extra_task_val = "0." + cmd_params["ENVIRONMENT_FILE"].replace(".cfg", "").split("_")[-1].replace("val_", "")
+        if "val" in cmd_params["ENVIRONMENT_FILE"]:
+            extra_task_val = "0." + cmd_params["ENVIRONMENT_FILE"].replace(".cfg", "").split("_")[-1].replace("val-", "")
+        else:
+            extra_task_val = "0.0"
 
         summary_info["chg_env"] = chg_env
         summary_info["environment"] = env_cond
