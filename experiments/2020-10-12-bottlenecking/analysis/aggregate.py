@@ -329,7 +329,7 @@ def main():
 
         ############################################################
         # Extract phylodiversity file information
-        phylo_path = os.path.join(run_dir, "data", "phylodiversity.csv")
+        phylo_path = os.path.join(run_path, "data", "phylodiversity.csv")
         phylo_content = None
         with open(phylo_path, "r") as fp:
             phylo_content = fp.read().strip().split("\n")
