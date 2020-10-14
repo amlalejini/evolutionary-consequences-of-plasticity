@@ -328,6 +328,19 @@ def main():
         ############################################################
 
         ############################################################
+        # Keep only final phylodiversity data.
+        phylodiversity = [line for line in filter(lambda x: int(x["update"]) == update, phylodiversity) ]
+        if len(phylodiversity) != 1:
+            print("Failed to find requested update in phylodiversity data file.")
+            exit(-1)
+        phylodiversity = phylodiversity[0]
+
+        for field in phylodiversity:
+            if field == "update": continue
+            summary_info[f"phylo_{field}"] = phylodiversity[field]
+        ############################################################
+
+        ############################################################
         # Add summary_info to aggregate content
         summary_fields = list(summary_info.keys())
         summary_fields.sort()
