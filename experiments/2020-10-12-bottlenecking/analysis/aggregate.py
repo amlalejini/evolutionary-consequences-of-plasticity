@@ -137,7 +137,7 @@ def main():
             extra_task_val = "0." + cmd_params["ENVIRONMENT_FILE"].replace(".cfg", "").split("_")[-1].replace("val-", "")
         else:
             extra_task_val = "0.0"
-        kill_prob = cmd_params.split("_")[-1].replace(".cfg", "").replace("kp-", "")
+        kill_prob = cmd_params["EVENT_FILE"].split("_")[-1].replace(".cfg", "").replace("kp-", "")
         kill_prob = f"0.{kill_prob}"
 
         summary_info["chg_env"] = chg_env
