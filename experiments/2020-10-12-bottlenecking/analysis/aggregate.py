@@ -328,6 +328,15 @@ def main():
         ############################################################
 
         ############################################################
+        # Extract phylodiversity file information
+        phylo_path = os.path.join(run_dir, "data", "phylodiversity.csv")
+        phylo_content = None
+        with open(phylo_path, "r") as fp:
+            phylo_content = fp.read().strip().split("\n")
+        phylo_header = phylo_content[0].split(",")
+        phylo_content = phylo_content[1:]
+        phylodiversity = [ {phylo_header[i]:l[i] for i in range(len(l))} for l in csv.reader(phylo_content, quotechar='"', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True) ]
+
         # Keep only final phylodiversity data.
         phylodiversity = [line for line in filter(lambda x: int(x["update"]) == update, phylodiversity) ]
         if len(phylodiversity) != 1:
