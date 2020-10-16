@@ -138,7 +138,7 @@ def main():
         else:
             extra_task_val = "0.0"
         kill_prob = cmd_params["EVENT_FILE"].split("_")[-1].replace(".cfg", "").replace("kp-", "")
-        kill_prob = f"0.{kill_prob}"
+        kill_prob = f"{kill_prob}"
 
         summary_info["chg_env"] = chg_env
         summary_info["environment"] = env_cond
@@ -146,7 +146,7 @@ def main():
         summary_info["phase"] = phase
         summary_info["task_set"] = env_tasks
         summary_info["extra_task_value"] = extra_task_val
-        summary_info["kill_prob"] = kill_prob
+        summary_info["bottleneck_size"] = kill_prob
         for field in cmd_params:
             summary_info[field] = cmd_params[field]
         ############################################################
