@@ -155,3 +155,16 @@ Experiments
   - Is it that the plastic architectures are move evolvable than non-plastic architectures?
   - Move non-plastic and plastic architectures to
     - constant phase 2
+
+## 2021-01-07 - validation
+
+In these runs, we confirm our expectation that plasticity will evolve in a fluctuating environment when populations have access to sensory instructions.
+
+Conditions
+
+- Constant environment
+  - sensors, no sensors
+- Changing environment
+  - sensors, no sensors
+
+We only expect adaptive plasticity to evolve in the changing environment with sensors. In all other conditions, we do not expect to observe the evolution of adaptive plasticity.
