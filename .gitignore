@@ -11,3 +11,5 @@ DerivedData
 *.swp
 .vscode
 .Rhistory
+
+data/
