@@ -17,8 +17,12 @@ jobs:
         |
           docker pull amlalejini/evolutionary-consequences-of-plasticity
           docker container create --name pages_build  amlalejini/evolutionary-consequences-of-plasticity:latest
-          docker cp supplemental:/opt/evolutionary-consequences-of-plasticity/_book ./_book
+          docker cp pages_build:/opt/evolutionary-consequences-of-plasticity/_book ./_book
           ls ./_book/
+      # - name: deploy to github pages
+      #   uses: JamesIves/github-pages-deploy-action@3.7.1
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: docker build
       #   run:
       #   |
