@@ -1,0 +1,17 @@
+---
+title: "Supplemental Material"
+author: "Alexander Lalejini, Austin J. Ferguson, and Charles Ofria"
+date: "`r Sys.Date()`"
+output: bookdown::gitbook
+documentclass: book
+bibliography: ["packages.bib", "supplemental.bib"]
+biblio-style: apalike
+nocite: '@*'
+link-citations: yes
+github-repo: amlalejini/evolutionary-consequences-of-plasticity
+description: "Supplemental material"
+---
+
+# Introduction
+
+TODO
