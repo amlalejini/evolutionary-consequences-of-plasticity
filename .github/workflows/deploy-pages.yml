@@ -15,8 +15,8 @@ jobs:
       - name: docker build
         run:
         |
-          docker pull amlalejini/evolutionary-consequences-of-plasticity
-          docker container create --name pages_build  amlalejini/evolutionary-consequences-of-plasticity:latest
+          docker build . --file Dockerfile --tag supplemental
+          docker container create --name pages_build supplemental:latest
           docker cp pages_build:/opt/evolutionary-consequences-of-plasticity/_book ./_book
       - name: deploy to github pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
@@ -25,15 +25,9 @@ jobs:
           BRANCH: gh-pages # The branch the action should deploy to
           FOLDER: _book # The folder the action should deploy
           CLEAN: true # Automatically remove deleted files from the deploy branch
-      # - name: docker build
-      #   run:
-      #   |
-      #     docker build . --file Dockerfile --tag supplemental
-      #     docker cp supplemental:/opt/evolutionary-consequences-of-plasticity/_book ./_book
-      #     ls ./_book/
-      # - name: pages deploy
-      #   run:
-      #   |
-      #     git config --global user.email "actions@github.com"
-      #     git config --global user.name "GitHub Actions"
+
+# To speed up workflow debugging, replace docker build commands with (i.e., pull docker image from hub instead of building):
+# - docker pull amlalejini/evolutionary-consequences-of-plasticity
+# - docker container create --name pages_build  amlalejini/evolutionary-consequences-of-plasticity:latest
+# - docker cp pages_build:/opt/evolutionary-consequences-of-plasticity/_book ./_book
 
