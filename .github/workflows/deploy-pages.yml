@@ -15,9 +15,16 @@ jobs:
       - name: docker build
         run:
         |
-          docker build . --file Dockerfile --tag supplemental
+          docker pull amlalejini/evolutionary-consequences-of-plasticity
+          docker container create --name pages_build  amlalejini/evolutionary-consequences-of-plasticity:latest
           docker cp supplemental:/opt/evolutionary-consequences-of-plasticity/_book ./_book
           ls ./_book/
+      # - name: docker build
+      #   run:
+      #   |
+      #     docker build . --file Dockerfile --tag supplemental
+      #     docker cp supplemental:/opt/evolutionary-consequences-of-plasticity/_book ./_book
+      #     ls ./_book/
       # - name: pages deploy
       #   run:
       #   |
