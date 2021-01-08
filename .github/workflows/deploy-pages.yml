@@ -1,0 +1,26 @@
+name: Build and deploy to GitHub Pages
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: docker build
+        run:
+        |
+          docker build . --file Dockerfile --tag supplemental
+          docker cp supplemental:/opt/evolutionary-consequences-of-plasticity/_book ./_book
+          ls ./_book/
+      # - name: pages deploy
+      #   run:
+      #   |
+      #     git config --global user.email "actions@github.com"
+      #     git config --global user.name "GitHub Actions"
+
