@@ -1,0 +1,16 @@
+# R
+.RData
+.Rhistory
+
+# data
+experiments/*/analysis/data
+experiments/*/analysis/imgs
+experiments/*/analysis/plots
+
+# avida
+avida/cbuild
+
+# misc
+_site/
+.vscode/
+_book/
