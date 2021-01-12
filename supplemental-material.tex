@@ -34,6 +34,46 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs}
 % Fix footnotes in tables (requires footnote package)
 \IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
@@ -83,6 +123,231 @@
 \chapter{Introduction}\label{introduction}}
 
 TODO
+
+\hypertarget{validation-experiment}{%
+\chapter{Validation experiment}\label{validation-experiment}}
+
+In this experiment, we validate that
+(1) we observe the evolution of phenotypic plasticity in a changing environment when digital organisms have access to sensory instructions (capable of differentiating environmental states)
+and (2) that adaptive phenotypic plasticity does not evolve when populations lack access to sensory instructions.
+
+\hypertarget{overview}{%
+\section{Overview}\label{overview}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{total_updates <-}\StringTok{ }\DecValTok{200000}
+\NormalTok{replicates <-}\StringTok{ }\DecValTok{100}
+
+\NormalTok{all_traits <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"not"}\NormalTok{,}\StringTok{"nand"}\NormalTok{,}\StringTok{"and"}\NormalTok{,}\StringTok{"ornot"}\NormalTok{,}\StringTok{"or"}\NormalTok{,}\StringTok{"andnot"}\NormalTok{)}
+\NormalTok{traits_set_a <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"not"}\NormalTok{, }\StringTok{"and"}\NormalTok{, }\StringTok{"or"}\NormalTok{)}
+\NormalTok{traits_set_b <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"nand"}\NormalTok{, }\StringTok{"ornot"}\NormalTok{, }\StringTok{"andnot"}\NormalTok{)}
+
+\CommentTok{# Relative location of data.}
+\NormalTok{working_directory <-}\StringTok{ "experiments/2021-01-07-validation/analysis/"} \CommentTok{# << For bookdown}
+\CommentTok{# working_directory <- "./"                                              # << For local analysis}
+\end{Highlighting}
+\end{Shaded}
+
+We evolved populations of digital organisms under four conditions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A fluctuating environment with access to sensory instructions
+\item
+  A fluctuating environment without access to sensory instructions (i.e., sensory instructions are no-operations)
+\item
+  A constant environment with access to sensory instructions
+\item
+  A constant environment without access to sensory instructions
+\end{enumerate}
+
+In fluctuating environments, we alternate between rewarding and punishing different sets of computational tasks.
+In one environment, we reward tasks not, and, or and punish tasks nand, ornot, andnot.
+In the alternative environment, we reward tasks nand, ornot, andnot and punish tasks not, and, or.
+In constant environments, we reward all tasks (not, nand, and, ornot, or, andnot).
+
+For each replicate of each condition, we extract the dominant (i.e., most numerous) genotype at the end of the run to analyze further.
+We expect to observe the evolution of adaptive phenotypic plasticity in only the first experimental condition.
+In conditions without sensors, plasticity in any form should be unable to evolve.
+
+\hypertarget{analysis-dependencies}{%
+\section{Analysis dependencies}\label{analysis-dependencies}}
+
+Load all required R libraries.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(cowplot)}
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These analyses were conducted/knitted with the following computing environment:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(version)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          0.3                         
+## year           2020                        
+## month          10                          
+## day            10                          
+## svn rev        79318                       
+## language       R                           
+## version.string R version 4.0.3 (2020-10-10)
+## nickname       Bunny-Wunnies Freak Out
+\end{verbatim}
+
+\hypertarget{setup}{%
+\section{Setup}\label{setup}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"data/aggregate.csv"}\NormalTok{)}
+\NormalTok{data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(data_loc, }\DataTypeTok{na.strings=}\StringTok{"NONE"}\NormalTok{)}
+
+\NormalTok{data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{chg_env <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(data}\OperatorTok{$}\NormalTok{chg_env)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{dom_plastic_odd_even <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(data}\OperatorTok{$}\NormalTok{dom_plastic_odd_even)}
+\NormalTok{data}\OperatorTok{$}\NormalTok{sensors <-}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS }\OperatorTok{==}\StringTok{ "0"}
+\NormalTok{data}\OperatorTok{$}\NormalTok{is_plastic <-}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{dom_plastic_odd_even }\OperatorTok{==}\StringTok{ "True"}
+
+\NormalTok{env_label_fun <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(chg_env) \{}
+  \ControlFlowTok{if}\NormalTok{ (chg_env) \{}
+    \KeywordTok{return}\NormalTok{(}\StringTok{"Fluctuating"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \KeywordTok{return}\NormalTok{(}\StringTok{"Constant"}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\NormalTok{sensors_label_fun <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(has_sensors) \{}
+  \ControlFlowTok{if}\NormalTok{ (has_sensors) \{}
+    \KeywordTok{return}\NormalTok{(}\StringTok{"Sensors"}\NormalTok{)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \KeywordTok{return}\NormalTok{(}\StringTok{"No sensors"}\NormalTok{)}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\CommentTok{# Count observed plasticity for each condition (I'm sure there's a 'tidier' way to do this..)}
+\NormalTok{observed_plasticity <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
+  \DataTypeTok{environment=}\KeywordTok{character}\NormalTok{(),}
+  \DataTypeTok{sensors=}\KeywordTok{character}\NormalTok{(),}
+  \DataTypeTok{plastic=}\KeywordTok{integer}\NormalTok{(),}
+  \DataTypeTok{nonplastic=}\KeywordTok{integer}\NormalTok{(),}
+  \DataTypeTok{plastic_adaptive=}\KeywordTok{integer}\NormalTok{(),}
+  \DataTypeTok{plastic_optimal=}\KeywordTok{integer}\NormalTok{(),}
+  \DataTypeTok{plastic_nonadaptive=}\KeywordTok{integer}\NormalTok{()}
+\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ (env_chg }\ControlFlowTok{in} \KeywordTok{levels}\NormalTok{(data}\OperatorTok{$}\NormalTok{chg_env)) \{}
+  \ControlFlowTok{for}\NormalTok{ (disabled_sensors }\ControlFlowTok{in} \KeywordTok{levels}\NormalTok{(data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS)) \{}
+\NormalTok{    cond_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, chg_env }\OperatorTok{==}\StringTok{ }\NormalTok{env_chg }\OperatorTok{&}\StringTok{ }\NormalTok{data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS }\OperatorTok{==}\StringTok{ }\NormalTok{disabled_sensors)}
+\NormalTok{    environment_label <-}\StringTok{ }\KeywordTok{env_label_fun}\NormalTok{(env_chg)}
+\NormalTok{    sensors_label <-}\StringTok{ }\KeywordTok{sensors_label_fun}\NormalTok{(disabled_sensors }\OperatorTok{==}\StringTok{ "0"}\NormalTok{)}
+
+\NormalTok{    observed_plasticity <-}\StringTok{ }\NormalTok{observed_plasticity }\OperatorTok{%>%}\StringTok{ }\KeywordTok{add_row}\NormalTok{(}
+      \DataTypeTok{environment=}\NormalTok{environment_label,}
+      \DataTypeTok{sensors=}\NormalTok{sensors_label,}
+      \DataTypeTok{plastic=}\KeywordTok{nrow}\NormalTok{(}\KeywordTok{filter}\NormalTok{(cond_data, is_plastic}\OperatorTok{==}\OtherTok{TRUE}\NormalTok{)),}
+      \DataTypeTok{nonplastic=}\KeywordTok{nrow}\NormalTok{(}\KeywordTok{filter}\NormalTok{(cond_data, is_plastic}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{)),}
+      \DataTypeTok{plastic_adaptive=}\KeywordTok{nrow}\NormalTok{(}\KeywordTok{filter}\NormalTok{(cond_data, dom_adaptive_plasticity}\OperatorTok{==}\StringTok{"True"}\NormalTok{)),}
+      \DataTypeTok{plastic_optimal=}\KeywordTok{nrow}\NormalTok{(}\KeywordTok{filter}\NormalTok{(cond_data, dom_optimal_plastic}\OperatorTok{==}\StringTok{"True"}\NormalTok{)),}
+      \DataTypeTok{plastic_nonadaptive=}\KeywordTok{nrow}\NormalTok{(}\KeywordTok{filter}\NormalTok{(cond_data, is_plastic}\OperatorTok{==}\OtherTok{TRUE} \OperatorTok{&}\StringTok{ }\NormalTok{dom_adaptive_plasticity}\OperatorTok{==}\StringTok{"False"}\NormalTok{))}
+\NormalTok{    )}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\NormalTok{observed_plasticity <-}\StringTok{ }\KeywordTok{pivot_longer}\NormalTok{(}
+\NormalTok{  observed_plasticity,}
+  \DataTypeTok{cols=}\KeywordTok{c}\NormalTok{(}\StringTok{"plastic"}\NormalTok{, }\StringTok{"plastic_adaptive"}\NormalTok{, }\StringTok{"plastic_optimal"}\NormalTok{, }\StringTok{"plastic_nonadaptive"}\NormalTok{, }\StringTok{"nonplastic"}\NormalTok{),}
+  \DataTypeTok{names_to=}\StringTok{"phenotype"}\NormalTok{,}
+  \DataTypeTok{values_to=}\StringTok{"phenotype_cnt"}
+\NormalTok{)}
+
+\CommentTok{####### misc #######}
+\CommentTok{# Configure our default graphing theme}
+\KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{evolution-of-phenotypic-plasticity}{%
+\section{Evolution of phenotypic plasticity}\label{evolution-of-phenotypic-plasticity}}
+
+For each experimental condition, do we observe the evolution of phenotypic plasticity? To test for phenotypic plasticity, we culture digital organisms in both environments from the fluctuating condition (including organisms evolved in a constant environment).
+Any plasticity that we observe from digital organisms evolved under constant conditions is cryptic variation (as these organisms were never exposed to these culturing environments).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(observed_plasticity, phenotype }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"plastic"}\NormalTok{, }\StringTok{"nonplastic"}\NormalTok{)), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{phenotype, }\DataTypeTok{y=}\NormalTok{phenotype_cnt, }\DataTypeTok{fill=}\NormalTok{phenotype)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}
+    \DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{,}
+    \DataTypeTok{position=}\KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.9}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_text}\NormalTok{(}
+    \DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{,}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label=}\NormalTok{phenotype_cnt),}
+    \DataTypeTok{vjust=}\FloatTok{0.05}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}\DataTypeTok{palette=}\StringTok{"Accent"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Phenotype"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"plastic"}\NormalTok{, }\StringTok{"nonplastic"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Plastic"}\NormalTok{, }\StringTok{"Non-plastic"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(sensors}\OperatorTok{~}\NormalTok{environment) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+Indeed, we do not observe the evolution of phenotypic plasticity in any replicates in which digital organisms do not have access to sensory instructions.
+We do observe the evolution of plasticity (not necessarily adaptive plasticity) in both constant and fluctuating environments where sensors are enabled.
+
+To what extent is the observed phenotypic plasticity adaptive?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(observed_plasticity, environment}\OperatorTok{==}\StringTok{"Fluctuating"} \OperatorTok{&}\StringTok{ }\NormalTok{sensors }\OperatorTok{==}\StringTok{ "Sensors"} \OperatorTok{&}\StringTok{ }\NormalTok{phenotype }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"plastic"}\NormalTok{, }\StringTok{"plastic_adaptive"}\NormalTok{, }\StringTok{"plastic_optimal"}\NormalTok{, }\StringTok{"plastic_nonadaptive"}\NormalTok{)), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{phenotype, }\DataTypeTok{y=}\NormalTok{phenotype_cnt, }\DataTypeTok{fill=}\NormalTok{phenotype)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}
+    \DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{,}
+    \DataTypeTok{position=}\KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.9}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_text}\NormalTok{(}
+    \DataTypeTok{stat=}\StringTok{"identity"}\NormalTok{,}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label=}\NormalTok{phenotype_cnt),}
+    \DataTypeTok{vjust=}\FloatTok{0.05}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}\DataTypeTok{palette=}\StringTok{"Accent"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Phenotype"}\NormalTok{,}
+    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\StringTok{"plastic"}\NormalTok{,  }\StringTok{"plastic_adaptive"}\NormalTok{, }\StringTok{"plastic_optimal"}\NormalTok{, }\StringTok{"plastic_nonadaptive"}\NormalTok{),}
+    \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Total plastic"}\NormalTok{, }\StringTok{"Adaptive plasticity"}\NormalTok{, }\StringTok{"Optimal plasticity"}\NormalTok{, }\StringTok{"Non-adaptive plasticity"}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(sensors}\OperatorTok{~}\NormalTok{environment) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-6-1.pdf}
 
 \bibliography{packages.bib,supplemental.bib}
 
