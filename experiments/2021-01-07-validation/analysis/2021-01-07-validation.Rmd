@@ -154,7 +154,7 @@ We do observe the evolution of plasticity (not necessarily adaptive plasticity) 
 To what extent is the observed phenotypic plasticity adaptive?
 
 ```{r}
-ggplot(filter(observed_plasticity, sensors == "Sensors" & phenotype %in% c("plastic", "plastic_adaptive", "plastic_optimal", "plastic_nonadaptive")), aes(x=phenotype, y=phenotype_cnt, fill=phenotype)) +
+ggplot(filter(observed_plasticity, environment=="Fluctuating" & sensors == "Sensors" & phenotype %in% c("plastic", "plastic_adaptive", "plastic_optimal", "plastic_nonadaptive")), aes(x=phenotype, y=phenotype_cnt, fill=phenotype)) +
   geom_bar(
     stat="identity",
     position=position_dodge(0.9)
