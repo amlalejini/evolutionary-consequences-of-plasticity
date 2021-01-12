@@ -16,3 +16,4 @@ data/
 *.sb
 *.csv
 _book
+*.tar.gz
