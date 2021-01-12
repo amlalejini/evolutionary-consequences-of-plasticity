@@ -155,11 +155,11 @@ def main():
         info["dom_adaptive_plasticity"] = False
         if info["dom_plastic_odd_even"]:
             # is being plastic better than being non-plastic during even=>odd environment change?
-            even_in_odd_match_score = simple_match_coeff(info["dom_phenotype_even"], odd_profile)
+            even_in_odd_match_score = simple_match_coeff(info["dom_phenotype_even"], odd_profile if chg_env else all_profile)
             adaptive_in_odd = dom_match_score_odd > even_in_odd_match_score
             maladaptive_in_odd = dom_match_score_odd < even_in_odd_match_score
             # is being plastic better than being non-plastic during odd=>even environment change?
-            odd_in_even_match_score = simple_match_coeff(info["dom_phenotype_odd"], even_profile)
+            odd_in_even_match_score = simple_match_coeff(info["dom_phenotype_odd"], even_profile if chg_env else all_profile)
             adaptive_in_even = dom_match_score_even > odd_in_even_match_score
             maladaptive_in_even = dom_match_score_even < odd_in_even_match_score
             info["dom_adaptive_plasticity"] = (not (maladaptive_in_odd or maladaptive_in_even) ) and ( adaptive_in_even or adaptive_in_odd )
