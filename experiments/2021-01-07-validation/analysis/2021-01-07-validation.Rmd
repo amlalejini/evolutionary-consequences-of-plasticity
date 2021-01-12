@@ -39,7 +39,7 @@ In conditions without sensors, plasticity in any form should be unable to evolve
 
 Load all required R libraries.
 
-```{r}
+```{r, message=FALSE}
 library(ggplot2)
 library(tidyverse)
 library(cowplot)
