@@ -40,7 +40,7 @@ RUN \
     texlive-latex-extra \
     lmodern \
     && \
-  echo "install base dependencies"
+  echo "installed base dependencies"
 
 # alias wire g++-10 up to g++ ln -s gcc-10 gcc &&
 RUN cd /usr/bin/ && ln -s g++-10 g++ && cd /
@@ -104,12 +104,17 @@ RUN \
 # download Empirical @ appropriate commit
 ########################################################
 RUN \
-  git clone https://github.com/amlalejini/Empirical.git /opt/Empirical && \
-  cd /opt/Empirical && \
-  git checkout 68d17bff67dde19472f7a0b9b4bdff1dc3e846f7 && \
-  git submodule init && \
-  git submodule update && \
-  echo "download Empirical"
+  git clone https://github.com/amlalejini/Empirical.git /opt/Empirical \
+    && \
+  cd /opt/Empirical \
+    && \
+  git checkout 68d17bff67dde19472f7a0b9b4bdff1dc3e846f7 \
+    && \
+  git submodule init \
+    && \
+  git submodule update \
+    && \
+  echo "downloaded Empirical"
 
 ########################################################
 # compile experiment code (modified avida)
