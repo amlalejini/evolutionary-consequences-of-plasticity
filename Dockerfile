@@ -61,7 +61,16 @@ RUN \
 # download experiment data using python osfclient
 # move data into expected directories
 ########################################################
-# TODO
+RUN \
+  export OSF_PROJECT=sav2c \
+    && \
+  export PROJECT_PATH=/opt/evolutionary-consequences-of-plasticity \
+    && \
+  cd ${PROJECT_PATH} \
+    && \
+  export EXP_TAG=2021-01-07-validation \
+    && \
+  ./download_exp_data.sh
 
 ########################################################
 # install r

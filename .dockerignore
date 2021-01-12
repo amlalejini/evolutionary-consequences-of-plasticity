@@ -14,3 +14,4 @@ avida/cbuild
 _site/
 .vscode/
 _book/
+*.tar.gz
