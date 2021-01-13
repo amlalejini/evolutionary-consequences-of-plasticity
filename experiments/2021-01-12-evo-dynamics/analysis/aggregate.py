@@ -275,7 +275,7 @@ def main():
         dom_env_even = dom_env_even[0]
 
         # Collect dominant genotype data.
-        summary_info["dominant_genome_length"] = dom_env_all["dom_genome_length"]
+        summary_info["dominant_genome_length"] = dom_env_all["genome_length"]
 
         phenotype_even = "".join([dom_env_even[trait] for trait in primary_traits])
         phenotype_odd = "".join([dom_env_odd[trait] for trait in primary_traits])
