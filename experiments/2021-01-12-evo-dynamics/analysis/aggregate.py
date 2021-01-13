@@ -226,7 +226,7 @@ def main():
         # Extract information from dominant.csv
         dominant_path = os.path.join(run_path, "data", "dominant.csv")
         dominant_data = read_csv(dominant_path)
-        dominant_summary_data = [line for line in dominant_data if int(line["update"] == update)][0]
+        dominant_summary_data = [line for line in dominant_data if int(line["update"]) == update][0]
 
         summary_info["dominant_lineage_length_taxa"] = dominant_summary_data["dominant_lineage_length"]
         summary_info["dominant_lineage_deleterious_steps"] = dominant_summary_data["dominant_deleterious_steps"]
