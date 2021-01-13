@@ -189,7 +189,7 @@ def main():
         def keep_line(u): return u <= time_series_range[1] and u >= time_series_range[0]
         lineage_data = {line["update"]: line for line in lineage_data if keep_line(int(line["update"])) }
         # Grab the set of updates we have for our time series to check against other time series data for consistency
-        time_series_updates = {line["update"] for line in lineage_data}
+        time_series_updates = set(lineage_data.keys())
         # initialize info dictionary for each  time series update
         for u in time_series_updates: time_series_info[u] = {}
 
