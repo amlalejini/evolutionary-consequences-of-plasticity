@@ -162,7 +162,7 @@ def main():
         cmd_params = extract_params_cmd_log(cmd_log_path)
         # Infer environmental change and change rate from events file
         chg_env = "chg" in cmd_params["EVENT_FILE"]
-        env_cond = cmd_params["EVENT_FILE"].split("_")[0].replace("events_", "").lower()
+        env_cond = cmd_params["EVENT_FILE"].replace("events_").split("_phase")[0].lower()
         phase = "1" if "phase-one" in cmd_params["EVENT_FILE"] else "2"
 
         summary_info["chg_env"] = chg_env
