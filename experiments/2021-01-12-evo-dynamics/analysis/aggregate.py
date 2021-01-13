@@ -346,8 +346,10 @@ def main():
             print("Time series header mismatch!")
             exit(-1)
         time_series_content = []
-        for u in time_series_info:
-            time_series_content.append(",".join([str(time_series_info[u][field]) for field in time_series_fields]))
+        update_order = list(map(int, time_series_info.keys()))
+        update_order.sort()
+        for u in update_order:
+            time_series_content.append(",".join([str(time_series_info[str(u)][field]) for field in time_series_fields]))
         with open(time_series_fpath, "a") as fp:
             if write_header: fp.write(time_series_header + "\n")
             fp.write("\n".join(time_series_content))
