@@ -176,7 +176,7 @@ def main():
 
         ############################################################
         # Extract lineage file data
-        lineage_path = os.path.join(run_dir, "data", "lineage.csv")
+        lineage_path = os.path.join(run_path, "data", "lineage.csv")
         lineage_data = read_csv(lineage_path)
         # Extract summary info (for specified update)
         lineage_summary_data = [line for line in lineage_data if int(line["update"]) == update][0]
@@ -201,7 +201,7 @@ def main():
 
         ############################################################
         # Extract phylodiversity time series data
-        phylodiversity_path = os.path.join(run_dir, "data", "phylodiversity.csv")
+        phylodiversity_path = os.path.join(run_path, "data", "phylodiversity.csv")
         phylodiversity_data = read_csv(phylodiversity_path)
         # Extract summary info
         phylo_summary_data = [line for line in phylodiversity_data if int(line["update"]) == update][0]
@@ -224,7 +224,7 @@ def main():
 
         ############################################################
         # Extract information from dominant.csv
-        dominant_path = os.path.join(run_dir, "data", "dominant.csv")
+        dominant_path = os.path.join(run_path, "data", "dominant.csv")
         dominant_data = read_csv(dominant_path)
         dominant_summary_data = [line for line in dominant_data if int(line["update"] == update)][0]
 
@@ -306,7 +306,7 @@ def main():
         ############################################################
         # Extract mutation accumulation data from dominant lineage
         # - mutation information will be the same for all lineage data files.
-        lineage_env_all = read_avida_dat_file(os.path.join(run_dir, "data", "analysis", "env_all", "lineage_tasks.dat"))
+        lineage_env_all = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_all", "lineage_tasks.dat"))
         summary_info["dominant_lineage_length_genotypes"] = len(lineage_env_all)
         sub_mut_cnt = 0
         ins_mut_cnt = 0
