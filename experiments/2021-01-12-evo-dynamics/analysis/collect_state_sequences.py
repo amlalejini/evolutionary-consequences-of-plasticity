@@ -261,7 +261,7 @@ def main():
         ############################################################
 
     # Write out sequences to file
-    with open("lineage_sequences.csv", "w") as fp:
+    with open(os.path.join(dump_dir, "lineage_sequences.csv"), "w") as fp:
         fp.write(content_header + "\n")
         fp.write("\n".join(content_lines))
 
