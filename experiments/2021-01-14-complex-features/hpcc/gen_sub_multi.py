@@ -18,7 +18,7 @@ combos = CombinationCollector()
 combos.register_var('EVENT_FILE_PREFIX')
 combos.register_var('DISABLE_SENSORS')
 combos.register_var('EXTRA_TASK_REWARD')
-combos.register_var('GENOME_CONTROL')
+# combos.register_var('GENOME_CONTROL')
 
 combos.add_val(
     'EVENT_FILE_PREFIX',
@@ -38,13 +38,13 @@ combos.add_val(
     ["00", "03", "10", "30"]
 )
 
-combos.add_val(
-    'GENOME_CONTROL',
-    [
-        "CONSTANT_LENGTH",
-        "VARIABLE_LENGTH"
-    ]
-)
+# combos.add_val(
+#     'GENOME_CONTROL',
+#     [
+#         "CONSTANT_LENGTH",
+#         "VARIABLE_LENGTH"
+#     ]
+# )
 
 combos.add_exception(
     {'EVENT_FILE_PREFIX': 'events_env-all_rate-u0', 'DISABLE_SENSORS': '0'}
@@ -119,17 +119,17 @@ def main():
         run_param_info["SYSTEMATICS_RES"] = '10000'
         run_param_info["RANDOM_SEED"] = '${SEED}'
 
-        if condition_dict["GENOME_CONTROL"] == "CONSTANT_LENGTH":
-            run_param_info["DIVIDE_INS_PROB"] = "0.0"
-            run_param_info["DIVIDE_DEL_PROB"] = "0.0"
-            run_param_info["OFFSPRING_SIZE_RANGE"] = "1.0"
-        elif condition_dict["GENOME_CONTROL"] == "VARIABLE_LENGTH":
-            run_param_info["DIVIDE_INS_PROB"] = "0.05"
-            run_param_info["DIVIDE_DEL_PROB"] = "0.05"
-            run_param_info["OFFSPRING_SIZE_RANGE"] = "2.0"
-        else:
-            print("Invalid genome control variable.")
-            exit(-1)
+        # if condition_dict["GENOME_CONTROL"] == "CONSTANT_LENGTH":
+        #     run_param_info["DIVIDE_INS_PROB"] = "0.0"
+        #     run_param_info["DIVIDE_DEL_PROB"] = "0.0"
+        #     run_param_info["OFFSPRING_SIZE_RANGE"] = "1.0"
+        # elif condition_dict["GENOME_CONTROL"] == "VARIABLE_LENGTH":
+        #     run_param_info["DIVIDE_INS_PROB"] = "0.05"
+        #     run_param_info["DIVIDE_DEL_PROB"] = "0.05"
+        #     run_param_info["OFFSPRING_SIZE_RANGE"] = "2.0"
+        # else:
+        #     print("Invalid genome control variable.")
+        #     exit(-1)
 
         fields = list(run_param_info.keys())
         fields.sort()
@@ -203,19 +203,17 @@ def main():
         run_param_info["SYSTEMATICS_RES"] = '10000'
         run_param_info["RANDOM_SEED"] = '${SEED}'
 
-        if condition_dict["GENOME_CONTROL"] == "CONSTANT_LENGTH":
-            run_param_info["DIVIDE_INS_PROB"] = "0.0"
-            run_param_info["DIVIDE_DEL_PROB"] = "0.0"
-            run_param_info["OFFSPRING_SIZE_RANGE"] = "1.0"
-            run_param_info["STERILIZE_UNSTABLE"] = "1"
-        elif condition_dict["GENOME_CONTROL"] == "VARIABLE_LENGTH":
-            run_param_info["DIVIDE_INS_PROB"] = "0.05"
-            run_param_info["DIVIDE_DEL_PROB"] = "0.05"
-            run_param_info["OFFSPRING_SIZE_RANGE"] = "2.0"
-            run_param_info["STERILIZE_UNSTABLE"] = "0"
-        else:
-            print("Invalid genome control variable.")
-            exit(-1)
+        # if condition_dict["GENOME_CONTROL"] == "CONSTANT_LENGTH":
+        #     run_param_info["DIVIDE_INS_PROB"] = "0.0"
+        #     run_param_info["DIVIDE_DEL_PROB"] = "0.0"
+        #     run_param_info["OFFSPRING_SIZE_RANGE"] = "1.0"
+        # elif condition_dict["GENOME_CONTROL"] == "VARIABLE_LENGTH":
+        #     run_param_info["DIVIDE_INS_PROB"] = "0.05"
+        #     run_param_info["DIVIDE_DEL_PROB"] = "0.05"
+        #     run_param_info["OFFSPRING_SIZE_RANGE"] = "2.0"
+        # else:
+        #     print("Invalid genome control variable.")
+        #     exit(-1)
 
         fields = list(run_param_info.keys())
         fields.sort()

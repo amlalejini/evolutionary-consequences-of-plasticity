@@ -15,7 +15,7 @@ Extra task values
 - x1.10
 - x1.30
 
-Extra controls
+Extra controls (still need to run)
 
 - Genome length (constant length)
   - DIVIDE_INS_PROB 0.0
