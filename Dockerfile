@@ -106,11 +106,13 @@ RUN \
     && \
   R -e "install.packages('bookdown', dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
-  R -e "install.packages('tidyverse',dependencies=NA, repos='http://cran.rstudio.com/')" \
+  R -e "install.packages('tidyverse', dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
-  R -e "install.packages('cowplot',dependencies=NA, repos='http://cran.rstudio.com/')" \
+  R -e "install.packages('cowplot', dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
-  R -e "install.packages('Hmisc',dependencies=NA, repos='http://cran.rstudio.com/')" \
+  R -e "install.packages('plyr', dependencies=NA, repos='http://cran.rstudio.com/')" \
+    && \
+  R -e "install.packages('Hmisc', dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
   echo "installed r and configured r environment"
 
