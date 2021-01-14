@@ -351,7 +351,8 @@ def main():
         for u in update_order:
             time_series_content.append(",".join([str(time_series_info[str(u)][field]) for field in time_series_fields]))
         with open(time_series_fpath, "a") as fp:
-            if write_header: fp.write(time_series_header + "\n")
+            if write_header: fp.write(time_series_header)
+            fp.write("\n")
             fp.write("\n".join(time_series_content))
         time_series_content = []
         ############################################################
