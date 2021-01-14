@@ -164,9 +164,9 @@ def main():
             dels_mut_from_parent_cnt = 0
             for mut in muts_from_parent:
                 if (len(mut) == 0): continue
-                if (mut[0] == "M"): sub_mut_cnt += 1
-                elif (mut[0] == "I"): ins_mut_cnt += 1
-                elif (mut[0] == "D"): dels_mut_cnt += 1
+                if (mut[0] == "M"): sub_mut_from_parent_cnt += 1
+                elif (mut[0] == "I"): ins_mut_from_parent_cnt += 1
+                elif (mut[0] == "D"): dels_mut_from_parent_cnt += 1
                 else: print("Unknown mutation type (" + str(mut) + ")!")
             total_muts_from_parent = sub_mut_from_parent_cnt + ins_mut_from_parent_cnt + dels_mut_from_parent_cnt
             muts_from_ancestor += total_muts_from_parent
