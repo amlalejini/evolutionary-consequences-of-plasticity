@@ -6,5 +6,6 @@ delete_merged_file: true
 rmd_files: [
   "index.Rmd",
   "experiments/2021-01-07-validation/analysis/2021-01-07-validation.Rmd",
+  "experiments/2021-01-12-evo-dynamics/analysis/2021-01-12-evo-dynamics.Rmd",
   "tail.Rmd"
   ]

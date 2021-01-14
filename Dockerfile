@@ -70,6 +70,10 @@ RUN \
     && \
   export EXP_TAG=2021-01-07-validation \
     && \
+  ./download_exp_data.sh \
+    && \
+  export EXP_TAG=2021-01-12-evo-dynamics \
+    && \
   ./download_exp_data.sh
 
 ########################################################
@@ -105,6 +109,8 @@ RUN \
   R -e "install.packages('tidyverse',dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
   R -e "install.packages('cowplot',dependencies=NA, repos='http://cran.rstudio.com/')" \
+    && \
+  R -e "install.packages('Hmisc',dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
   echo "installed r and configured r environment"
 
