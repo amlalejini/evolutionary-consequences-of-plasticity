@@ -180,3 +180,15 @@ Conditions
 - Non-plastic (no-sensors), constant environment
 
 This experiment is conducted in two phases. In the first phase, we evolve populations for 200K updates. In the second phase, we evolve populations for another 200K updates; however, for sensor-enabled populations in fluctuating environments, we only transfer plastic populations to the second phase.
+
+# 2021-01-14 - complex features
+
+In these runs, we compare the capacity for plastic and non-plastic populations to evolve and retain complex features in fluctuating environments.
+
+Conditions
+
+- Non-plastic (no-sensors), fluctuating environment
+- Plastic (sensors), fluctuating environment
+- Non-plastic (no-sensors), constant environment
+
+This experiment is conducted in two phases. In the first phase, we evolve populations for 200K updates. In the second phase, we evolve populations for another 200K updates; however, for sensor-enabled populations in fluctuating environments, we only transfer plastic populations to the second phase.
