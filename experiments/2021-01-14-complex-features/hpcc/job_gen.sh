@@ -6,8 +6,8 @@ BASE_DATA_DIR=/mnt/scratch/lalejini/data/avida-plasticity/${EXP_TAG}
 
 REPLICATES=200
 CONFIG_DIR=${EXP_DIR}/hpcc/config
-# JOB_DIR=${BASE_DATA_DIR}/jobs
-JOB_DIR=./jobs
+JOB_DIR=${BASE_DATA_DIR}/jobs
+# JOB_DIR=./jobs
 PHASE_ONE_DIR=${BASE_DATA_DIR}/phase-1
 PHASE_TWO_DIR=${BASE_DATA_DIR}/phase-2
 
