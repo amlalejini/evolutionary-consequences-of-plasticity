@@ -123,12 +123,10 @@ def main():
             run_param_info["DIVIDE_INS_PROB"] = "0.0"
             run_param_info["DIVIDE_DEL_PROB"] = "0.0"
             run_param_info["OFFSPRING_SIZE_RANGE"] = "1.0"
-            run_param_info["STERILIZE_UNSTABLE"] = "1"
         elif condition_dict["GENOME_CONTROL"] == "VARIABLE_LENGTH":
             run_param_info["DIVIDE_INS_PROB"] = "0.05"
             run_param_info["DIVIDE_DEL_PROB"] = "0.05"
             run_param_info["OFFSPRING_SIZE_RANGE"] = "2.0"
-            run_param_info["STERILIZE_UNSTABLE"] = "0"
         else:
             print("Invalid genome control variable.")
             exit(-1)
