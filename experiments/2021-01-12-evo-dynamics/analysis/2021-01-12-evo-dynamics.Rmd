@@ -346,6 +346,35 @@ median(filter(summary_data, condition=="Non-plastic (constant)")$phylo_mrca_chan
 median(filter(summary_data, condition=="Non-plastic (fluctuating)")$phylo_mrca_changes)
 ```
 
+## Genome length
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_genome_length, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Genome length") +
+  theme(
+    legend.position="none"
+  )
+```
+
 ## Diversity over time
 
 ### Shannon entropy over time
