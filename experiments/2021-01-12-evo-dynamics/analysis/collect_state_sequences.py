@@ -142,7 +142,7 @@ def main():
         if (len(lineage_env_all) != len(lineage_env_even)) or (len(lineage_env_all) != len(lineage_env_odd)):
             print("Lineage length mismatch!")
             exit(-1)
-        updates = [int(line["update"]) for line in lineage_env_all]
+        updates = [int(line["update_born"]) for line in lineage_env_all]
         if updates != sorted(updates):
             print("lineage isn't ordered")
             exit(-1)
