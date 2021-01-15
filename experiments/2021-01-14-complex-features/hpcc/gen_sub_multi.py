@@ -146,9 +146,10 @@ def main():
         file_str = file_str.replace("<<PHASE_1_RUN_COMMANDS>>", run_commands)
 
         # Add commands to run avida analyze mode
+        analysis_fname = "avida-analysis-L77.cfg"
         analysis_commands = ''
         analysis_commands += f'RUN_PARAMS="{run_params}"\n'
-        analysis_commands += './${EXEC} ${RUN_PARAMS} -set ANALYZE_FILE avida_analysis_final_dom.cfg -a\n'
+        analysis_commands += './${EXEC} ${RUN_PARAMS} -set ANALYZE_FILE '+analysis_fname+' -a\n'
         file_str = file_str.replace("<<PHASE_1_ANALYSIS_COMMANDS>>", analysis_commands)
 
         # ====================================================
@@ -231,7 +232,7 @@ def main():
         analysis_commands = ''
         analysis_commands += f'RUN_PARAMS="{run_params}"\n'
         analysis_commands += './${EXEC} ${RUN_PARAMS}'
-        analysis_commands += f' -set ANALYZE_FILE avida_analysis_final_dom.cfg'
+        analysis_commands += f' -set ANALYZE_FILE {analysis_fname}'
         analysis_commands += ' -a\n'
         file_str = file_str.replace("<<PHASE_2_ANALYSIS_COMMANDS>>", analysis_commands)
 
