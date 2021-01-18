@@ -34,7 +34,8 @@ var vis_config = {
     return( (!d.sensors && d.environment == "env-chg_rate-u100") && d.index < max_replicates);
   },
 
-  seeds_by_condition: {}
+  seeds_by_condition: {},
+  expressed_states: new Set()
 
 };
 
@@ -96,8 +97,14 @@ var LineageStateSequenceDataAccessor = function(row) {
         env_b_tasks.add(vis_config.tasks[t]);
       }
     }
+    var plastic = true;
+    if (env_a_profile == env_b_profile) {
+      state = env_a_profile;
+      plastic = false;
+    }
     phen_seq.push({
       state: state,
+      plastic: plastic,
       env_a_profile: env_a_profile,
       env_b_profile: env_b_profile,
       env_a_tasks: env_a_tasks,
@@ -149,6 +156,14 @@ var BuildVisualization = function(data) {
   console.log("BuildVisualization!");
   // Filter data
   data = data.filter(vis_config.data_filter);
+  vis_config.expressed_states = new Set();
+  console.log(data);
+  for (di = 0; di < data.length; di++) {
+    for (pi = 0; pi < data[di].phenotype_seq.length; pi++) {
+      vis_config.expressed_states.add(data[di].phenotype_seq[pi].state);
+    }
+  }
+
   // Setup the canvas
   var chart_area = d3.select("#"+vis_config.lineage_states_div_id);
   var frame = chart_area.append("svg").attr("class", "lineage-frame");
