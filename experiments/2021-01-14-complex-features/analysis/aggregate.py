@@ -372,7 +372,7 @@ def main():
                 extra_traits_lost += len(lost_traits)
         summary_info["dominant_lineage_extra_traits_gained"] = extra_traits_gained
         summary_info["dominant_lineage_extra_traits_lost"] = extra_traits_lost
-        summary_info["dominant_lineage_extra_traits_discovered"] = extra_traits_discovered
+        summary_info["dominant_lineage_extra_traits_discovered"] = len(extra_traits_discovered)
 
         lineage_env_all = None
         lineage_env_odd = None
