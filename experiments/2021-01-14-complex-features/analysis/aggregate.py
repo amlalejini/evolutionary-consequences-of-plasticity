@@ -360,13 +360,14 @@ def main():
         for i in range(len(lineage_tasks_ot)):
             current_traits = lineage_tasks_ot[i]
             if not i:
-                traits_gained += len(current_traits)
+                extra_traits_gained += len(current_traits)
             else:
                 previous_traits = lineage_tasks_ot[i-1]
                 # gained traits are traits in current_traits but not in previous traits
                 gained_traits = current_traits - previous_traits
                 # lost traits are traits in previous traits but not in current traits
                 lost_traits = previous_traits - current_traits
+                # update gain/lost information
                 extra_traits_gained += len(gained_traits)
                 extra_traits_lost += len(lost_traits)
         summary_info["dominant_lineage_extra_traits_gained"] = extra_traits_gained
