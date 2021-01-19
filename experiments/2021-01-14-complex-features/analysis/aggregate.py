@@ -15,7 +15,7 @@ all_profile = "111111"
 
 max_pop_size = 3600
 
-extra_traits = {"nor","xor","equ","logic_3aa","logic_3ab","logic_3ac","logic_3ad","logic_3ae","logic_3af","logic_3ag","logic_3ah","logic_3ai","logic_3aj","logic_3ak","logic_3al","logic_3am","logic_3an","logic_3ao","logic_3ap","logic_3aq","logic_3ar","logic_3as","logic_3at","logic_3au","logic_3av","logic_3aw","logic_3ax","logic_3ay","logic_3az","logic_3ba","logic_3bb","logic_3bc","logic_3bd","logic_3be","logic_3bf","logic_3bg","logic_3bh","logic_3bi","logic_3bj","logic_3bk","logic_3bl","logic_3bm","logic_3bn","logic_3bo","logic_3bp","logic_3bq","logic_3br","logic_3bs","logic_3bt","logic_3bu","logic_3bv","logic_3bw","logic_3bx","logic_3by","logic_3bz","logic_3ca","logic_3cb","logic_3cc","logic_3cd","logic_3ce","logic_3cf","logic_3cg","logic_3ch","logic_3ci","logic_3cj","logic_3ck","logic_3cl","logic_3cm","logic_3cn","logic_3co","logic_3cp"}
+extra_traits = {"nor","xor","equals","logic_3aa","logic_3ab","logic_3ac","logic_3ad","logic_3ae","logic_3af","logic_3ag","logic_3ah","logic_3ai","logic_3aj","logic_3ak","logic_3al","logic_3am","logic_3an","logic_3ao","logic_3ap","logic_3aq","logic_3ar","logic_3as","logic_3at","logic_3au","logic_3av","logic_3aw","logic_3ax","logic_3ay","logic_3az","logic_3ba","logic_3bb","logic_3bc","logic_3bd","logic_3be","logic_3bf","logic_3bg","logic_3bh","logic_3bi","logic_3bj","logic_3bk","logic_3bl","logic_3bm","logic_3bn","logic_3bo","logic_3bp","logic_3bq","logic_3br","logic_3bs","logic_3bt","logic_3bu","logic_3bv","logic_3bw","logic_3bx","logic_3by","logic_3bz","logic_3ca","logic_3cb","logic_3cc","logic_3cd","logic_3ce","logic_3cf","logic_3cg","logic_3ch","logic_3ci","logic_3cj","logic_3ck","logic_3cl","logic_3cm","logic_3cn","logic_3co","logic_3cp"}
 extra_trait_thresholds = {prop: (max_pop_size * prop) for prop in [0.01, 0.05, 0.1] }
 extra_trait_thresholds["0"] = 1
 
@@ -237,6 +237,11 @@ def main():
         if (final_tasks_data["update"] != str(update)):
             print(f"Final tasks update {final_tasks_data['update']} does not match requested analysis update {update}")
             exit(-1)
+
+        tasks_found = set([])
+        for task in extra_traits:
+            if task in final_tasks_data: tasks_found.add(task)
+        print(f"  Found {len(tasks_found)} / {len(extra_traits)} possible tasks in tasks.dat")
 
         final_discovered_tasks = {proportion:set([]) for proportion in extra_trait_thresholds}
         for line in task_data:
