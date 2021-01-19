@@ -319,6 +319,15 @@ def main():
         summary_info["dominant_match_score_all"] = match_score_all
         summary_info["dominant_match_score_odd_even"] = match_score_odd_even
         summary_info["dominant_optimal_plastic"] = optimal_plastic
+
+        # collect extra task information
+        extra_traits_expressed = set([])
+        for trait in extra_traits:
+            even_expressed = int(dom_env_even[trait]) > 0
+            odd_expressed = int(dom_env_odd[trait]) > 0
+            if even_expressed or odd_expressed:
+                extra_traits_expressed.add(trait)
+        summary_info["dominant_extra_tasks"] = len(extra_traits_expressed)
         ############################################################
 
         ############################################################
