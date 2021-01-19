@@ -124,6 +124,7 @@ def main():
     time_series_fpath = os.path.join(dump_dir, f"time_series_u{time_series_range[0]}-u{time_series_range[1]}.csv")
     with open(time_series_fpath, "w") as fp:
         fp.write("")
+
     # Only keep lines that fall within specified time series range.
     def keep_line(u): return u <= time_series_range[1] and u >= time_series_range[0]
 
@@ -131,7 +132,9 @@ def main():
     # - get id, get command line configuration settings
     summary_header = None
     summary_content_lines = []
+    progress_counter = 0
     for run_dir in run_dirs:
+        progress_counter += 1
         run_path = os.path.join(data_dir, run_dir)
         # Skip over (but make note of) incomplete runs.
         if not os.path.exists(os.path.join(run_path, 'data', 'analysis')):
@@ -140,7 +143,7 @@ def main():
 
         summary_info = {} # Hold summary information about run. (one entry per run)
         time_series_info = {}
-        print(f"Processing: {run_path}")
+        print(f"Processing ({progress_counter}/{len(run_dirs)}): {run_path}")
 
         ############################################################
         # Extract commandline configuration settings (from cmd.log file)
