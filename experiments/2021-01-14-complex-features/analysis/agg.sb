@@ -1,0 +1,16 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+
+#SBATCH --time="04:00:00"          # limit of wall clock time - how long the job will run (same as -t)
+#SBATCH --mem=4G       # memory required per node - amount of memory (in bytes)
+#SBATCH --job-name aggregate         # you can give your job a name for easier identification (same as -J)
+#SBATCH --account=devolab
+
+
+EXP_DIR=/mnt/home/lalejini/devo_ws/evolutionary-consequences-of-plasticity/experiments/2021-01-14-complex-features
+ANALYSIS_DIR=${EXP_DIR}/analysis
+DUMP_DIR=${ANALYSIS_DIR}/dump
+DATA_DIR=/mnt/scratch/lalejini/data/avida-plasticity/2021-01-14-complex-features/phase-2
+
+cd ${ANALYSIS_DIR}
+python3 aggregate.py --data_dir ${DATA_DIR} --dump ${DUMP_DIR} --update 200000 --time_series_range 0 200000
