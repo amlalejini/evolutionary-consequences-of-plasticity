@@ -130,6 +130,16 @@ ggplot(agg_data, aes(x=sensors, y=phylo_mrca_changes, color=sensors)) +
   ggsave("mrca_changes.pdf", width=10, height=7)
 ```
 
+### MRCA Depth
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=phylo_mrca_depth, color = sensors)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  scale_color_manual(values = c("FALSE" = color_false, "TRUE" = color_true)) + 
+  facet_wrap(~environment, nrow=1) 
+```
+
 ### Lineage Length (genotypes)
 
 ```{r}
@@ -155,12 +165,31 @@ ggplot(agg_data, aes(x=sensors, y=total_mut_cnt, color=sensors)) +
   ggsave("total_mutations_accumulated.pdf", width=5, height=20)
 ```
 
+### Lineages - mean taxon volitility
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=lineages_mean_taxon_volatility, color = sensors)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  scale_color_manual(values = c("FALSE" = color_false, "TRUE" = color_true)) + 
+  facet_wrap(~environment, nrow=1) 
+```
+
 ### Phylogenetic Diversity
 
 Current phylogentic diversity = size of phylogentic tree (number of active taxa + ancestral taxa represented in phylogeny).
 
 ```{r}
 ggplot(agg_data, aes(x=sensors, y=phylo_current_phylogenetic_diversity, color = sensors)) +
+  geom_boxplot()  +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  scale_color_manual(values = c("FALSE" = color_false, "TRUE" = color_true)) + 
+  facet_wrap(~environment, nrow=1) 
+```
+### Sum pairwise distance
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=phylo_sum_pairwise_distance, color = sensors)) +
   geom_boxplot()  +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
   scale_color_manual(values = c("FALSE" = color_false, "TRUE" = color_true)) + 

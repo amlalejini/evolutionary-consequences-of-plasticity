@@ -21,3 +21,5 @@ Two-phase experiment
         - extra tasks increase merit by 1.01 multiplier
 
 Narrow range of change rates (use constant, 30, 100)
+
+Regrets: only running 50 replicates of each condition

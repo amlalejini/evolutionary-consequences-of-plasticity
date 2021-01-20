@@ -104,7 +104,15 @@ ggplot(filter(agg_data), aes(x=sensors, y=extra_tasks_discovered_0.01, color=sen
 ```{r}
 ggplot(filter(agg_data), aes(x=sensors, y=pop_extra_tasks_0.01, color=sensors)) +
   geom_boxplot() +
-  geom_jitter() +
+  geom_jitter(alpha = 0.5) +
+  scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
+  facet_grid(environment~kill_prob)
+```
+
+```{r}
+ggplot(agg_data, aes(x=sensors, y=phylo_mrca_changes, color=sensors)) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5) +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
   facet_grid(environment~kill_prob)
 ```

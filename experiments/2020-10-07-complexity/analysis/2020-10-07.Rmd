@@ -36,7 +36,7 @@ print(version)
 ## Setup
 
 ```{r}
-data_path <- "./data/aggregate.csv"
+data_path <- "experiments/2020-10-07-complexity/analysis/data/aggregate.csv"
 agg_data <- read.csv(data_path, na.strings="NONE")
 
 agg_data$DISABLE_REACTION_SENSORS <- as.factor(agg_data$DISABLE_REACTION_SENSORS)
@@ -60,7 +60,7 @@ theme_set(theme_cowplot())
 ## Graphs!
 
 ```{r}
-ggplot(filter(agg_data), aes(x=sensors, fill=sensors)) +
+ggplot(agg_data, aes(x=sensors, fill=sensors)) +
   geom_bar(position=position_dodge(0.9)) +
   geom_text(
     stat="count",
@@ -69,7 +69,7 @@ ggplot(filter(agg_data), aes(x=sensors, fill=sensors)) +
   )  +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
   ylab("number of phase 2 runs") +
-  ylim(0, 105) + 
+  ylim(0, 105) +
   facet_grid(extra_task_value~environment) +
   ggtitle("Made it to phase 2?") #+
   # ggsave("plots/num_runs.pdf", width=10, height=7)
@@ -87,14 +87,14 @@ ggplot(filter(agg_data, dom_optimal_plastic=="True"), aes(x=sensors, fill=sensor
   ylab("plastic final dominant (odd/even environment)") +
   ylim(0, 105) +
   facet_grid(extra_task_value~environment) +
-  ggtitle("Optimal plastic?") 
+  ggtitle("Optimal plastic?")
   # ggsave("plots/dom_plastic_optimal.pdf")
 ```
 
 ### Extra tasks discovered
 
 ```{r}
-ggplot(filter(agg_data), aes(x=sensors, y=extra_tasks_discovered_0, color=sensors)) +
+ggplot(filter(agg_data), aes(x=sensors, y=extra_tasks_discovered_0.1, color=sensors)) +
   geom_boxplot() +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
   facet_grid(environment~extra_task_value)
@@ -105,5 +105,5 @@ ggplot(filter(agg_data), aes(x=sensors, y=extra_tasks_discovered_0, color=sensor
 ggplot(agg_data, aes(x=sensors, y=pop_extra_tasks_0.1, color=sensors)) +
   geom_boxplot() +
   scale_x_discrete(name="Sensors", limits=c(TRUE, FALSE), labels=c("T","F")) +
-  facet_grid(environment~extra_task_value, scales = "free_y") 
+  facet_grid(environment~extra_task_value, scales = "free_y")
 ```

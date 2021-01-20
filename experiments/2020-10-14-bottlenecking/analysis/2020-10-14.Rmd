@@ -22,7 +22,6 @@ library(tidyr)     # (Wickham and Henry, 2020)
 library(dplyr)     # (Wickham et al., 2020)
 library(reshape2)  # (Wickham, 2007)
 library(cowplot)   # (Wilke, 2019)
-library(patchwork) # (Pederson, 2020)
 library(viridis)   # (Garnier, 2018)
 library(hexbin)
 ```
@@ -60,7 +59,7 @@ theme_set(theme_cowplot())
 ## Graphs!
 
 ```{r}
-ggplot(agg_data, aes(x=environment, fill=environment)) +
+ggplot(agg_data, aes(x=environment, fill=sensors)) +
   geom_bar(position=position_dodge(0.9)) +
   geom_text(
     stat="count",
