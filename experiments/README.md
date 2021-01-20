@@ -192,3 +192,8 @@ Conditions
 - Non-plastic (no-sensors), constant environment
 
 This experiment is conducted in two phases. In the first phase, we evolve populations for 200K updates. In the second phase, we evolve populations for another 200K updates; however, for sensor-enabled populations in fluctuating environments, we only transfer plastic populations to the second phase.
+
+Controls/next steps
+
+- control genome length
+- repeat experiment with more extreme rewards/punishments for fluctuating tasks
