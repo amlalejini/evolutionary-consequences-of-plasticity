@@ -21,3 +21,6 @@ _bookdown_files
 
 .sass-cache/
 css/
+plots/
+avida
+*.spop
