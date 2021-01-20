@@ -168,20 +168,10 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   )
 ```
 
-## Extra task performance at the end of the experiment (population)
+## Genome length
 
 ```{r}
-
-final_performed_data <- pivot_longer(
-  summary_data,
-  cols=starts_with("final_pop_extra_tasks_"),
-  names_prefix="final_pop_extra_tasks_",
-  names_to="final_pop_extra_tasks_threshold",
-  values_to="final_pop_extra_tasks"
-)
-
-
-ggplot(filter(final_performed_data, extra_task_value=="0" & final_pop_extra_tasks_threshold=="0.05"), aes(x=condition, y=final_pop_extra_tasks, fill=condition)) +
+ggplot(summary_data, aes(x=condition, y=dominant_genome_length, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -201,249 +191,7 @@ ggplot(filter(final_performed_data, extra_task_value=="0" & final_pop_extra_task
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Extra tasks performed in final population") +
-  facet_grid(
-    final_pop_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  ) +
-  theme(
-    legend.position="none"
-  )
-
-
-
-pop_threshold <- "0.05"
-final_performed_data_v0 <- filter(final_performed_data, extra_task_value=="0" & final_pop_extra_tasks_threshold==pop_threshold)
-ggplot(final_performed_data_v0, aes(x=condition, y=final_pop_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    final_pop_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=final_pop_extra_tasks~condition,
-  data=final_performed_data_v0
-)
-pairwise.wilcox.test(
-  x=final_performed_data_v0$final_pop_extra_tasks,
-  g=final_performed_data_v0$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-
-final_performed_data_v03 <- filter(final_performed_data, extra_task_value=="0.03" & final_pop_extra_tasks_threshold==pop_threshold)
-ggplot(final_performed_data_v03, aes(x=condition, y=final_pop_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    final_pop_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=final_pop_extra_tasks~condition,
-  data=final_performed_data_v03
-)
-pairwise.wilcox.test(
-  x=final_performed_data_v03$final_pop_extra_tasks,
-  g=final_performed_data_v03$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-
-final_performed_data_v10 <- filter(final_performed_data, extra_task_value=="0.1" & final_pop_extra_tasks_threshold==pop_threshold)
-ggplot(final_performed_data_v10, aes(x=condition, y=final_pop_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    final_pop_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=final_pop_extra_tasks~condition,
-  data=final_performed_data_v10
-)
-pairwise.wilcox.test(
-  x=final_performed_data_v10$final_pop_extra_tasks,
-  g=final_performed_data_v10$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-
-final_performed_data_v30 <- filter(final_performed_data, extra_task_value=="0.3" & final_pop_extra_tasks_threshold==pop_threshold)
-ggplot(final_performed_data_v30, aes(x=condition, y=final_pop_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    final_pop_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=final_pop_extra_tasks~condition,
-  data=final_performed_data_v30
-)
-pairwise.wilcox.test(
-  x=final_performed_data_v30$final_pop_extra_tasks,
-  g=final_performed_data_v30$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-```
-
-## Extra task performance at the end of the experiment (dominant)
-
-
-## Extra task discovery
-
-```{r}
-discovery_data <- pivot_longer(
-  summary_data,
-  cols=starts_with("discovered_extra_tasks_"),
-  names_prefix="discovered_extra_tasks_",
-  names_to="discovered_extra_tasks_threshold",
-  values_to="discovered_extra_tasks"
-)
-
-ggplot(filter(discovery_data, discovered_extra_tasks_threshold=="0.05"), aes(x=condition, y=discovered_extra_tasks, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Extra tasks discovered by population") +
-  facet_grid(
-    discovered_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  ) +
-  theme(
-    legend.position="none"
-  )
-
-pop_threshold <- "0.05"
-##############################################################################
-discovery_data_v0 <- filter(discovery_data, extra_task_value=="0" & discovered_extra_tasks_threshold==pop_threshold)
-ggplot(discovery_data_v0, aes(x=condition, y=discovered_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    discovered_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=discovered_extra_tasks~condition,
-  data=discovery_data_v0
-)
-pairwise.wilcox.test(
-  x=discovery_data_v0$discovered_extra_tasks,
-  g=discovery_data_v0$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-
-##############################################################################
-discovery_data_v03 <- filter(discovery_data, extra_task_value=="0.03" & discovered_extra_tasks_threshold==pop_threshold)
-ggplot(discovery_data_v03, aes(x=condition, y=discovered_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    discovered_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=discovered_extra_tasks~condition,
-  data=discovery_data_v03
-)
-pairwise.wilcox.test(
-  x=discovery_data_v03$discovered_extra_tasks,
-  g=discovery_data_v03$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-
-##############################################################################
-discovery_data_v10 <- filter(discovery_data, extra_task_value=="0.1" & discovered_extra_tasks_threshold==pop_threshold)
-ggplot(discovery_data_v10, aes(x=condition, y=discovered_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    discovered_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=discovered_extra_tasks~condition,
-  data=discovery_data_v10
-)
-
-##############################################################################
-discovery_data_v30 <- filter(discovery_data, extra_task_value=="0.3" & discovered_extra_tasks_threshold==pop_threshold)
-ggplot(discovery_data_v30, aes(x=condition, y=discovered_extra_tasks, color=condition)) +
-  geom_boxplot() +
-  geom_jitter(alpha=0.25) +
-  facet_grid(
-    discovered_extra_tasks_threshold~extra_task_value,
-    labeller=labeller(.cols=label_both, .rows=label_value)
-  )
-kruskal.test(
-  formula=discovered_extra_tasks~condition,
-  data=discovery_data_v30
-)
-pairwise.wilcox.test(
-  x=discovery_data_v30$discovered_extra_tasks,
-  g=discovery_data_v30$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-
-```
-
-## Extra tasks along lineage of final dominant genotype
-
-```{r}
-# dominant_lineage_extra_traits_gained
-# dominant_lineage_extra_traits_lost
-# dominant_lineage_extra_traits_discovered
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Extra tasks gained along dominant lineage") +
+  ylab("Genome length of final dominant") +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -451,7 +199,65 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fi
   theme(
     legend.position="none"
   )
+```
 
+## Extra task performance at the end of the experiment (dominant)
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_extra_tasks, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Extra traits final dominant") +
+  facet_wrap(
+    ~extra_task_value,
+    labeller=label_both
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-extra-tasks.pdf"),
+    width=15,
+    height=10
+  )
+
+pop_threshold <- 0.3
+dom_task_data <- filter(summary_data, extra_task_value==pop_threshold)
+kruskal.test(
+  formula=dominant_extra_tasks~condition,
+  data=dom_task_data
+)
+pairwise.wilcox.test(
+  x=dom_task_data$dominant_extra_tasks,
+  g=dom_task_data$condition,
+  p.adjust.method="bonferroni",
+  conf.int=TRUE,
+  conf.level=0.95
+)
+```
+
+## Extra tasks along lineage of final dominant genotype
+
+### Tasks discovered
+
+```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -479,8 +285,55 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered
   ) +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-extra-tasks-discovered.pdf"),
+    width=15,
+    height=10
   )
+```
 
+### Tasks gained
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Extra tasks gained along dominant lineage") +
+  facet_wrap(
+    ~extra_task_value,
+    labeller=label_both
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-extra-tasks-gained.pdf"),
+    width=15,
+    height=10
+  )
+```
+
+### Tasks lost
+
+```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -508,6 +361,11 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost, fill
   ) +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-extra-tasks-lost.pdf"),
+    width=15,
+    height=10
   )
 ```
 
