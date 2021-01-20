@@ -1,0 +1,58 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+
+#SBATCH --time=<<TIME_REQUEST>>          # limit of wall clock time - how long the job will run (same as -t)
+#SBATCH --array=<<ARRAY_ID_RANGE>>
+#SBATCH --mem=<<MEMORY_REQUEST>>        # memory required per node - amount of memory (in bytes)
+#SBATCH --job-name <<JOB_NAME>>         # you can give your job a name for easier identification (same as -J)
+#SBATCH --account=devolab
+
+########## Command Lines to Run ##########
+
+module load GCCcore/9.1.0
+
+JOB_SEED_OFFSET=<<JOB_SEED_OFFSET>>
+SEED=$((JOB_SEED_OFFSET + SLURM_ARRAY_TASK_ID - 1))
+
+EXEC=<<EXEC>>
+CONFIG_DIR=<<CONFIG_DIR>>
+
+# Setup all directories at the beginning
+PHASE_1_DIR=<<PHASE_1_DIR>>
+PHASE_2_DIR=<<PHASE_2_DIR>>
+
+mkdir -p ${PHASE_1_DIR}
+cd ${PHASE_1_DIR}
+cp ${CONFIG_DIR}/*.cfg .
+cp ${CONFIG_DIR}/*.org .
+cp ${CONFIG_DIR}/*.py .
+cp ${CONFIG_DIR}/${EXEC} .
+
+######## Phase 1 ########
+cd ${PHASE_1_DIR}
+
+<<PHASE_1_RUN_COMMANDS>>
+
+<<PHASE_1_ANALYSIS_COMMANDS>>
+
+######## Phase Transition ########
+<<PHASE_TRANSITION>>
+
+# Cleanup phase one cruft
+rm ${PHASE_1_DIR}/*.cfg
+rm ${PHASE_1_DIR}/*.org
+rm ${PHASE_1_DIR}/*.py
+rm ${PHASE_1_DIR}/${EXEC}
+
+######## Phase 2 ########
+cd ${PHASE_2_DIR}
+
+<<PHASE_2_RUN_COMMANDS>>
+
+<<PHASE_2_ANALYSIS_COMMANDS>>
+
+# Cleanup phase two cruft
+rm ${PHASE_2_DIR}/*.cfg
+rm ${PHASE_2_DIR}/*.org
+rm ${PHASE_2_DIR}/*.py
+rm ${PHASE_2_DIR}/${EXEC}

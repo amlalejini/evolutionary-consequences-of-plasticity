@@ -197,3 +197,7 @@ Controls/next steps
 
 - control genome length
 - repeat experiment with more extreme rewards/punishments for fluctuating tasks
+
+# 2021-01-20 - complex features - fixed genome length
+
+In these runs, we repeat our 2021-01-14 experiments, except we fix genome lengths of digital organisms. Additionally, we reduce the number of replicates due to constraints on computational resources.
