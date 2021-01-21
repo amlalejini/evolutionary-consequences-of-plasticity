@@ -181,7 +181,7 @@ Conditions
 
 This experiment is conducted in two phases. In the first phase, we evolve populations for 200K updates. In the second phase, we evolve populations for another 200K updates; however, for sensor-enabled populations in fluctuating environments, we only transfer plastic populations to the second phase.
 
-# 2021-01-14 - complex features
+## 2021-01-14 - complex features
 
 In these runs, we compare the capacity for plastic and non-plastic populations to evolve and retain complex features in fluctuating environments.
 
@@ -198,6 +198,10 @@ Controls/next steps
 - control genome length
 - repeat experiment with more extreme rewards/punishments for fluctuating tasks
 
-# 2021-01-20 - complex features - fixed genome length
+## 2021-01-20 - complex features - fixed genome length
 
 In these runs, we repeat our 2021-01-14 experiments, except we fix genome lengths of digital organisms. Additionally, we reduce the number of replicates due to constraints on computational resources.
+
+## 2021-01-21 - complex features - task value
+
+In these runs, we repeat our 2021-01-20 experiments, except we make the rewards and punishments for the fluctuating tasks more extreme (two-fold to four-fold effect).
