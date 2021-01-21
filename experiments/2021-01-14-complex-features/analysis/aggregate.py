@@ -125,6 +125,12 @@ def main():
     with open(time_series_fpath, "w") as fp:
         fp.write("")
 
+    lineage_series_content = []
+    lineage_series_header = None
+    lineage_series_fpath = os.path.join(dump_dir, f"lineage_series.csv")
+    with open(lineage_series_fpath, "w"):
+        fp.write("")
+
     # Only keep lines that fall within specified time series range.
     def keep_line(u): return u <= time_series_range[1] and u >= time_series_range[0]
 
@@ -143,6 +149,7 @@ def main():
 
         summary_info = {} # Hold summary information about run. (one entry per run)
         time_series_info = {}
+        lineage_series_info = []
         print(f"Processing ({progress_counter}/{len(run_dirs)}): {run_path}")
 
         ############################################################
@@ -344,8 +351,12 @@ def main():
         lineage_tasks_ot = [set([]) for _ in range(len(lineage_env_all))]
         extra_traits_discovered = set([])
         for i in range(len(lineage_env_all)):
+            ancestor_info = {}
+            ancestor_info["update"] = lineage_env_all[i]["update_born"]
+
             # collect mutation information for this ancestor
             muts_from_parent = lineage_env_all[i]["mutations_from_parent"].split(",")
+
             for mut in muts_from_parent:
                 if (len(mut) == 0): continue
                 if (mut[0] == "M"): sub_mut_cnt += 1
@@ -359,6 +370,8 @@ def main():
                 if even_expressed or odd_expressed:
                     lineage_tasks_ot[i].add(trait)
                     extra_traits_discovered.add(trait)
+            ancestor_info["extra_traits"] = len(lineage_tasks_ot[i])
+            lineage_series_info.append(ancestor_info)
 
         # save summary mutation info
         total_muts = sub_mut_cnt + ins_mut_cnt + dels_mut_cnt
@@ -422,6 +435,35 @@ def main():
             fp.write("\n".join(time_series_content))
         time_series_content = []
         ############################################################
+
+        ############################################################
+        # Output lineage series information
+        ############################################################
+        for i in range(len(lineage_series_info)):
+            lineage_series_info[i]["RANDOM_SEED"] = summary_info["RANDOM_SEED"]
+            lineage_series_info[i]["DISABLE_REACTION_SENSORS"] = summary_info["DISABLE_REACTION_SENSORS"]
+            lineage_series_info[i]["chg_env"] = summary_info["chg_env"]
+            lineage_series_info[i]["environment"] = summary_info["environment"]
+            lineage_series_info[i]["extra_task_value"] = summary_info["extra_task_value"]
+
+        lineage_series_fields = list(lineage_series_info[0].keys())
+        lineage_series_fields.sort()
+        write_header = False
+        if lineage_series_header == None:
+            write_header = True
+            lineage_series_header = ",".join(lineage_series_fields)
+        elif lineage_series_header != ",".join(lineage_series_fields):
+            print("Lineage series header mismatch!")
+            exit(-1)
+        lineage_series_content = []
+        for i in range(len(lineage_series_info)):
+            lineage_series_content.append(",".join([str(lineage_series_info[i][field]) for field in lineage_series_fields]))
+        with open(lineage_series_fpath, "a") as fp:
+            if write_header: fp.write(lineage_series_header)
+            fp.write("\n")
+            fp.write("\n".join(lineage_series_content))
+        lineage_series_content = []
+
 
         ############################################################
         # Add summary_info to aggregate content
