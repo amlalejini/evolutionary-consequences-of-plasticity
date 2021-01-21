@@ -128,7 +128,7 @@ def main():
     lineage_series_content = []
     lineage_series_header = None
     lineage_series_fpath = os.path.join(dump_dir, f"lineage_series.csv")
-    with open(lineage_series_fpath, "w"):
+    with open(lineage_series_fpath, "w") as fp:
         fp.write("")
 
     # Only keep lines that fall within specified time series range.
