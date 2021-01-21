@@ -370,7 +370,11 @@ def main():
                 if even_expressed or odd_expressed:
                     lineage_tasks_ot[i].add(trait)
                     extra_traits_discovered.add(trait)
+            ancestor_phenotype_even = "".join([lineage_env_even[i][trait] for trait in primary_traits])
+            ancestor_phenotype_odd = "".join([lineage_env_odd[i][trait] for trait in primary_traits])
             ancestor_info["extra_traits"] = len(lineage_tasks_ot[i])
+            ancestor_info["match_score_even"] = simple_match_coeff(ancestor_phenotype_even, even_profile)
+            ancestor_info["match_score_odd"] = simple_match_coeff(ancestor_phenotype_odd, odd_profile)
             lineage_series_info.append(ancestor_info)
 
         # save summary mutation info
