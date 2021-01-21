@@ -140,14 +140,14 @@ RUN \
 ########################################################
 # compile experiment code (modified avida)
 ########################################################
-RUN \
-  cd /opt/evolutionary-consequences-of-plasticity/avida/ \
-    && \
-  ./build_avida \
-    && \
-  cp /opt/evolutionary-consequences-of-plasticity/avida/cbuild/work/avida /bin/avida \
-    && \
-  echo "compiled avida"
+# RUN \
+#   cd /opt/evolutionary-consequences-of-plasticity/avida/ \
+#     && \
+#   ./build_avida \
+#     && \
+#   cp /opt/evolutionary-consequences-of-plasticity/avida/cbuild/work/avida /bin/avida \
+#     && \
+#   echo "compiled avida"
 
 ########################################################
 # build supplemental material (will also run data analyses)
