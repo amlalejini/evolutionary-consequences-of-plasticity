@@ -125,6 +125,7 @@ condition_order = c(
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
+dir.create(paste0(working_directory, "plots"))
 ```
 
 ## Evolution of phenotypic plasticity
