@@ -120,12 +120,32 @@ condition_order = c(
 )
 
 ###### time series #####
-# TODO
+lineage_time_series_data_loc <- paste0(working_directory, "data/lineage_series.csv")
+lineage_time_series_data <- read.csv(lineage_time_series_data_loc)
+
+lineage_time_series_data$DISABLE_REACTION_SENSORS <- as.factor(lineage_time_series_data$DISABLE_REACTION_SENSORS)
+lineage_time_series_data$chg_env <- lineage_time_series_data$chg_env == "True"
+lineage_time_series_data$sensors <- lineage_time_series_data$DISABLE_REACTION_SENSORS == "0"
+lineage_time_series_data$extra_task_value <- as.factor(lineage_time_series_data$extra_task_value)
+
+lineage_time_series_data$env_label <- mapply(
+  env_label_fun,
+  lineage_time_series_data$chg_env
+)
+lineage_time_series_data$sensors_label <- mapply(
+  sensors_label_fun,
+  lineage_time_series_data$sensors
+)
+lineage_time_series_data$condition <- mapply(
+  condition_label_fun,
+  lineage_time_series_data$sensors,
+  lineage_time_series_data$chg_env
+)
 
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
-dir.create(paste0(working_directory, "plots"))
+dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
 ```
 
 ## Evolution of phenotypic plasticity
@@ -371,3 +391,96 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost, fill
 ```
 
 ## Extra task performance over time
+
+Match score over time
+
+```{r}
+lineage_reward30 <- filter(lineage_time_series_data, extra_task_value=="0.3")
+lineage_reward10 <- filter(lineage_time_series_data, extra_task_value=="0.1")
+
+ggplot(filter(lineage_reward30, update>198000 & update<=200000), aes(x=update, y=match_score_even, color=condition, fill=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ylab("Match score (even environment)") +
+  facet_wrap(
+    ~extra_task_value,
+    labeller=label_both
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-match-score-even-val30.png"),
+    width=15,
+    height=10
+  )
+
+ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y=match_score_even, color=condition, fill=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ylab("Match score (even environment)") +
+  facet_wrap(
+    ~extra_task_value,
+    labeller=label_both
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-match-score-even-val10.png"),
+    width=15,
+    height=10
+  )
+
+```
+
+Extra tasks over time
+
+```{r}
+ggplot(filter(lineage_reward30, update>198000 & update<=200000), aes(x=update, y=extra_traits, color=condition, fill=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ylab("Match score (even environment)") +
+  facet_wrap(
+    ~extra_task_value,
+    labeller=label_both
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-extra-traits-val30.png"),
+    width=15,
+    height=10
+  )
+
+ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y=extra_traits, color=condition, fill=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ylab("Match score (even environment)") +
+  facet_wrap(
+    ~extra_task_value,
+    labeller=label_both
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-extra-traits-val10.png"),
+    width=15,
+    height=10
+  )
+
+```
