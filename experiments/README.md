@@ -205,3 +205,8 @@ In these runs, we repeat our 2021-01-14 experiments, except we fix genome length
 ## 2021-01-21 - complex features - task value
 
 In these runs, we repeat our 2021-01-20 experiments, except we make the rewards and punishments for the fluctuating tasks more extreme (two-fold to four-fold effect).
+
+## 2021-01-23 - hitchhiking
+
+In these runs, we investigate the propensity for deleterious hitchhiking in plastic and non-plastic populations.
+
