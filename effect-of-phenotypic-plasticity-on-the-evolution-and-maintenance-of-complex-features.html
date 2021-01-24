@@ -24,7 +24,7 @@
 <meta name="author" content="Alexander Lalejini, Austin J. Ferguson, and Charles Ofria" />
 
 
-<meta name="date" content="2021-01-21" />
+<meta name="date" content="2021-01-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -317,12 +317,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb73-56" title="56">)</a>
 <a class="sourceLine" id="cb73-57" title="57"></a>
 <a class="sourceLine" id="cb73-58" title="58"><span class="co">###### time series #####</span></a>
-<a class="sourceLine" id="cb73-59" title="59"><span class="co"># </span><span class="al">TODO</span></a>
-<a class="sourceLine" id="cb73-60" title="60"></a>
-<a class="sourceLine" id="cb73-61" title="61"><span class="co">####### misc #######</span></a>
-<a class="sourceLine" id="cb73-62" title="62"><span class="co"># Configure our default graphing theme</span></a>
-<a class="sourceLine" id="cb73-63" title="63"><span class="kw">theme_set</span>(<span class="kw">theme_cowplot</span>())</a>
-<a class="sourceLine" id="cb73-64" title="64"><span class="kw">dir.create</span>(<span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots&quot;</span>))</a></code></pre></div>
+<a class="sourceLine" id="cb73-59" title="59">lineage_time_series_data_loc &lt;-<span class="st"> </span><span class="kw">paste0</span>(working_directory, <span class="st">&quot;data/lineage_series.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb73-60" title="60">lineage_time_series_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(lineage_time_series_data_loc)</a>
+<a class="sourceLine" id="cb73-61" title="61"></a>
+<a class="sourceLine" id="cb73-62" title="62">lineage_time_series_data<span class="op">$</span>DISABLE_REACTION_SENSORS &lt;-<span class="st"> </span><span class="kw">as.factor</span>(lineage_time_series_data<span class="op">$</span>DISABLE_REACTION_SENSORS)</a>
+<a class="sourceLine" id="cb73-63" title="63">lineage_time_series_data<span class="op">$</span>chg_env &lt;-<span class="st"> </span>lineage_time_series_data<span class="op">$</span>chg_env <span class="op">==</span><span class="st"> &quot;True&quot;</span></a>
+<a class="sourceLine" id="cb73-64" title="64">lineage_time_series_data<span class="op">$</span>sensors &lt;-<span class="st"> </span>lineage_time_series_data<span class="op">$</span>DISABLE_REACTION_SENSORS <span class="op">==</span><span class="st"> &quot;0&quot;</span></a>
+<a class="sourceLine" id="cb73-65" title="65">lineage_time_series_data<span class="op">$</span>extra_task_value &lt;-<span class="st"> </span><span class="kw">as.factor</span>(lineage_time_series_data<span class="op">$</span>extra_task_value)</a>
+<a class="sourceLine" id="cb73-66" title="66"></a>
+<a class="sourceLine" id="cb73-67" title="67">lineage_time_series_data<span class="op">$</span>env_label &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
+<a class="sourceLine" id="cb73-68" title="68">  env_label_fun,</a>
+<a class="sourceLine" id="cb73-69" title="69">  lineage_time_series_data<span class="op">$</span>chg_env</a>
+<a class="sourceLine" id="cb73-70" title="70">)</a>
+<a class="sourceLine" id="cb73-71" title="71">lineage_time_series_data<span class="op">$</span>sensors_label &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
+<a class="sourceLine" id="cb73-72" title="72">  sensors_label_fun,</a>
+<a class="sourceLine" id="cb73-73" title="73">  lineage_time_series_data<span class="op">$</span>sensors</a>
+<a class="sourceLine" id="cb73-74" title="74">)</a>
+<a class="sourceLine" id="cb73-75" title="75">lineage_time_series_data<span class="op">$</span>condition &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
+<a class="sourceLine" id="cb73-76" title="76">  condition_label_fun,</a>
+<a class="sourceLine" id="cb73-77" title="77">  lineage_time_series_data<span class="op">$</span>sensors,</a>
+<a class="sourceLine" id="cb73-78" title="78">  lineage_time_series_data<span class="op">$</span>chg_env</a>
+<a class="sourceLine" id="cb73-79" title="79">)</a>
+<a class="sourceLine" id="cb73-80" title="80"></a>
+<a class="sourceLine" id="cb73-81" title="81"><span class="co">####### misc #######</span></a>
+<a class="sourceLine" id="cb73-82" title="82"><span class="co"># Configure our default graphing theme</span></a>
+<a class="sourceLine" id="cb73-83" title="83"><span class="kw">theme_set</span>(<span class="kw">theme_cowplot</span>())</a>
+<a class="sourceLine" id="cb73-84" title="84"><span class="kw">dir.create</span>(<span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots&quot;</span>), <span class="dt">showWarnings=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
 <div id="evolution-of-phenotypic-plasticity-2" class="section level2">
 <h2><span class="header-section-number">4.4</span> Evolution of phenotypic plasticity</h2>
@@ -574,6 +594,91 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="extra-task-performance-over-time" class="section level2">
 <h2><span class="header-section-number">4.8</span> Extra task performance over time</h2>
+<p>Match score over time</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" title="1">lineage_reward30 &lt;-<span class="st"> </span><span class="kw">filter</span>(lineage_time_series_data, extra_task_value<span class="op">==</span><span class="st">&quot;0.3&quot;</span>)</a>
+<a class="sourceLine" id="cb89-2" title="2">lineage_reward10 &lt;-<span class="st"> </span><span class="kw">filter</span>(lineage_time_series_data, extra_task_value<span class="op">==</span><span class="st">&quot;0.1&quot;</span>)</a>
+<a class="sourceLine" id="cb89-3" title="3"></a>
+<a class="sourceLine" id="cb89-4" title="4"><span class="kw">ggplot</span>(<span class="kw">filter</span>(lineage_reward30, update<span class="op">&gt;</span><span class="dv">198000</span> <span class="op">&amp;</span><span class="st"> </span>update<span class="op">&lt;=</span><span class="dv">200000</span>), <span class="kw">aes</span>(<span class="dt">x=</span>update, <span class="dt">y=</span>match_score_even, <span class="dt">color=</span>condition, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb89-5" title="5"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">fun=</span><span class="st">&quot;mean&quot;</span>, <span class="dt">geom=</span><span class="st">&quot;line&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb89-6" title="6"><span class="st">  </span><span class="kw">stat_summary</span>(</a>
+<a class="sourceLine" id="cb89-7" title="7">    <span class="dt">fun.data=</span><span class="st">&quot;mean_cl_boot&quot;</span>,</a>
+<a class="sourceLine" id="cb89-8" title="8">    <span class="dt">fun.args=</span><span class="kw">list</span>(<span class="dt">conf.int=</span><span class="fl">0.95</span>),</a>
+<a class="sourceLine" id="cb89-9" title="9">    <span class="dt">geom=</span><span class="st">&quot;ribbon&quot;</span>,</a>
+<a class="sourceLine" id="cb89-10" title="10">    <span class="dt">alpha=</span><span class="fl">0.2</span>,</a>
+<a class="sourceLine" id="cb89-11" title="11">    <span class="dt">linetype=</span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb89-12" title="12">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb89-13" title="13"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Match score (even environment)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb89-14" title="14"><span class="st">  </span><span class="kw">facet_wrap</span>(</a>
+<a class="sourceLine" id="cb89-15" title="15">    <span class="op">~</span>extra_task_value,</a>
+<a class="sourceLine" id="cb89-16" title="16">    <span class="dt">labeller=</span>label_both</a>
+<a class="sourceLine" id="cb89-17" title="17">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb89-18" title="18"><span class="st">  </span><span class="kw">ggsave</span>(</a>
+<a class="sourceLine" id="cb89-19" title="19">    <span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots/dominant-lineage-match-score-even-val30.png&quot;</span>),</a>
+<a class="sourceLine" id="cb89-20" title="20">    <span class="dt">width=</span><span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb89-21" title="21">    <span class="dt">height=</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb89-22" title="22">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" title="1"><span class="kw">ggplot</span>(<span class="kw">filter</span>(lineage_reward10, update<span class="op">&gt;</span><span class="dv">198000</span> <span class="op">&amp;</span><span class="st"> </span>update<span class="op">&lt;=</span><span class="dv">200000</span>), <span class="kw">aes</span>(<span class="dt">x=</span>update, <span class="dt">y=</span>match_score_even, <span class="dt">color=</span>condition, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb90-2" title="2"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">fun=</span><span class="st">&quot;mean&quot;</span>, <span class="dt">geom=</span><span class="st">&quot;line&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb90-3" title="3"><span class="st">  </span><span class="kw">stat_summary</span>(</a>
+<a class="sourceLine" id="cb90-4" title="4">    <span class="dt">fun.data=</span><span class="st">&quot;mean_cl_boot&quot;</span>,</a>
+<a class="sourceLine" id="cb90-5" title="5">    <span class="dt">fun.args=</span><span class="kw">list</span>(<span class="dt">conf.int=</span><span class="fl">0.95</span>),</a>
+<a class="sourceLine" id="cb90-6" title="6">    <span class="dt">geom=</span><span class="st">&quot;ribbon&quot;</span>,</a>
+<a class="sourceLine" id="cb90-7" title="7">    <span class="dt">alpha=</span><span class="fl">0.2</span>,</a>
+<a class="sourceLine" id="cb90-8" title="8">    <span class="dt">linetype=</span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb90-9" title="9">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb90-10" title="10"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Match score (even environment)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb90-11" title="11"><span class="st">  </span><span class="kw">facet_wrap</span>(</a>
+<a class="sourceLine" id="cb90-12" title="12">    <span class="op">~</span>extra_task_value,</a>
+<a class="sourceLine" id="cb90-13" title="13">    <span class="dt">labeller=</span>label_both</a>
+<a class="sourceLine" id="cb90-14" title="14">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb90-15" title="15"><span class="st">  </span><span class="kw">ggsave</span>(</a>
+<a class="sourceLine" id="cb90-16" title="16">    <span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots/dominant-lineage-match-score-even-val10.png&quot;</span>),</a>
+<a class="sourceLine" id="cb90-17" title="17">    <span class="dt">width=</span><span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb90-18" title="18">    <span class="dt">height=</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb90-19" title="19">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-37-2.png" width="672" /></p>
+<p>Extra tasks over time</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" title="1"><span class="kw">ggplot</span>(<span class="kw">filter</span>(lineage_reward30, update<span class="op">&gt;</span><span class="dv">198000</span> <span class="op">&amp;</span><span class="st"> </span>update<span class="op">&lt;=</span><span class="dv">200000</span>), <span class="kw">aes</span>(<span class="dt">x=</span>update, <span class="dt">y=</span>extra_traits, <span class="dt">color=</span>condition, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb91-2" title="2"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">fun=</span><span class="st">&quot;mean&quot;</span>, <span class="dt">geom=</span><span class="st">&quot;line&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb91-3" title="3"><span class="st">  </span><span class="kw">stat_summary</span>(</a>
+<a class="sourceLine" id="cb91-4" title="4">    <span class="dt">fun.data=</span><span class="st">&quot;mean_cl_boot&quot;</span>,</a>
+<a class="sourceLine" id="cb91-5" title="5">    <span class="dt">fun.args=</span><span class="kw">list</span>(<span class="dt">conf.int=</span><span class="fl">0.95</span>),</a>
+<a class="sourceLine" id="cb91-6" title="6">    <span class="dt">geom=</span><span class="st">&quot;ribbon&quot;</span>,</a>
+<a class="sourceLine" id="cb91-7" title="7">    <span class="dt">alpha=</span><span class="fl">0.2</span>,</a>
+<a class="sourceLine" id="cb91-8" title="8">    <span class="dt">linetype=</span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb91-9" title="9">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb91-10" title="10"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Match score (even environment)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb91-11" title="11"><span class="st">  </span><span class="kw">facet_wrap</span>(</a>
+<a class="sourceLine" id="cb91-12" title="12">    <span class="op">~</span>extra_task_value,</a>
+<a class="sourceLine" id="cb91-13" title="13">    <span class="dt">labeller=</span>label_both</a>
+<a class="sourceLine" id="cb91-14" title="14">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb91-15" title="15"><span class="st">  </span><span class="kw">ggsave</span>(</a>
+<a class="sourceLine" id="cb91-16" title="16">    <span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots/dominant-lineage-extra-traits-val30.png&quot;</span>),</a>
+<a class="sourceLine" id="cb91-17" title="17">    <span class="dt">width=</span><span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb91-18" title="18">    <span class="dt">height=</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb91-19" title="19">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" title="1"><span class="kw">ggplot</span>(<span class="kw">filter</span>(lineage_reward10, update<span class="op">&gt;</span><span class="dv">198000</span> <span class="op">&amp;</span><span class="st"> </span>update<span class="op">&lt;=</span><span class="dv">200000</span>), <span class="kw">aes</span>(<span class="dt">x=</span>update, <span class="dt">y=</span>extra_traits, <span class="dt">color=</span>condition, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb92-2" title="2"><span class="st">  </span><span class="kw">stat_summary</span>(<span class="dt">fun=</span><span class="st">&quot;mean&quot;</span>, <span class="dt">geom=</span><span class="st">&quot;line&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb92-3" title="3"><span class="st">  </span><span class="kw">stat_summary</span>(</a>
+<a class="sourceLine" id="cb92-4" title="4">    <span class="dt">fun.data=</span><span class="st">&quot;mean_cl_boot&quot;</span>,</a>
+<a class="sourceLine" id="cb92-5" title="5">    <span class="dt">fun.args=</span><span class="kw">list</span>(<span class="dt">conf.int=</span><span class="fl">0.95</span>),</a>
+<a class="sourceLine" id="cb92-6" title="6">    <span class="dt">geom=</span><span class="st">&quot;ribbon&quot;</span>,</a>
+<a class="sourceLine" id="cb92-7" title="7">    <span class="dt">alpha=</span><span class="fl">0.2</span>,</a>
+<a class="sourceLine" id="cb92-8" title="8">    <span class="dt">linetype=</span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb92-9" title="9">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb92-10" title="10"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Match score (even environment)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb92-11" title="11"><span class="st">  </span><span class="kw">facet_wrap</span>(</a>
+<a class="sourceLine" id="cb92-12" title="12">    <span class="op">~</span>extra_task_value,</a>
+<a class="sourceLine" id="cb92-13" title="13">    <span class="dt">labeller=</span>label_both</a>
+<a class="sourceLine" id="cb92-14" title="14">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb92-15" title="15"><span class="st">  </span><span class="kw">ggsave</span>(</a>
+<a class="sourceLine" id="cb92-16" title="16">    <span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots/dominant-lineage-extra-traits-val10.png&quot;</span>),</a>
+<a class="sourceLine" id="cb92-17" title="17">    <span class="dt">width=</span><span class="dv">15</span>,</a>
+<a class="sourceLine" id="cb92-18" title="18">    <span class="dt">height=</span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb92-19" title="19">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-38-2.png" width="672" /></p>
 
 </div>
 </div>

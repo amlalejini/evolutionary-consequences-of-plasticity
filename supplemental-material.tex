@@ -110,7 +110,7 @@
 
 \title{Supplemental Material}
 \author{Alexander Lalejini, Austin J. Ferguson, and Charles Ofria}
-\date{2021-01-21}
+\date{2021-01-24}
 
 \begin{document}
 \maketitle
@@ -1258,19 +1258,34 @@ These analyses were conducted/knitted with the following computing environment:
 \NormalTok{)}
 
 \CommentTok{###### time series #####}
-\CommentTok{# }\AlertTok{TODO}
+\NormalTok{lineage_time_series_data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"data/lineage_series.csv"}\NormalTok{)}
+\NormalTok{lineage_time_series_data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(lineage_time_series_data_loc)}
+
+\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(lineage_time_series_data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS)}
+\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{chg_env <-}\StringTok{ }\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{chg_env }\OperatorTok{==}\StringTok{ "True"}
+\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{sensors <-}\StringTok{ }\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{DISABLE_REACTION_SENSORS }\OperatorTok{==}\StringTok{ "0"}
+\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{extra_task_value <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(lineage_time_series_data}\OperatorTok{$}\NormalTok{extra_task_value)}
+
+\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{env_label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  env_label_fun,}
+\NormalTok{  lineage_time_series_data}\OperatorTok{$}\NormalTok{chg_env}
+\NormalTok{)}
+\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{sensors_label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  sensors_label_fun,}
+\NormalTok{  lineage_time_series_data}\OperatorTok{$}\NormalTok{sensors}
+\NormalTok{)}
+\NormalTok{lineage_time_series_data}\OperatorTok{$}\NormalTok{condition <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  condition_label_fun,}
+\NormalTok{  lineage_time_series_data}\OperatorTok{$}\NormalTok{sensors,}
+\NormalTok{  lineage_time_series_data}\OperatorTok{$}\NormalTok{chg_env}
+\NormalTok{)}
 
 \CommentTok{####### misc #######}
 \CommentTok{# Configure our default graphing theme}
 \KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
-\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots"}\NormalTok{))}
+\KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## Warning in dir.create(paste0(working_directory, "plots")): 'experiments/
-## 2021-01-14-complex-features/analysis/plots' already exists
-\end{verbatim}
 
 \hypertarget{evolution-of-phenotypic-plasticity-2}{%
 \section{Evolution of phenotypic plasticity}\label{evolution-of-phenotypic-plasticity-2}}
@@ -1598,6 +1613,117 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 
 \hypertarget{extra-task-performance-over-time}{%
 \section{Extra task performance over time}\label{extra-task-performance-over-time}}
+
+Match score over time
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lineage_reward30 <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(lineage_time_series_data, extra_task_value}\OperatorTok{==}\StringTok{"0.3"}\NormalTok{)}
+\NormalTok{lineage_reward10 <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(lineage_time_series_data, extra_task_value}\OperatorTok{==}\StringTok{"0.1"}\NormalTok{)}
+
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(lineage_reward30, update}\OperatorTok{>}\DecValTok{198000} \OperatorTok{&}\StringTok{ }\NormalTok{update}\OperatorTok{<=}\DecValTok{200000}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{update, }\DataTypeTok{y=}\NormalTok{match_score_even, }\DataTypeTok{color=}\NormalTok{condition, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun=}\StringTok{"mean"}\NormalTok{, }\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Match score (even environment)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
+    \OperatorTok{~}\NormalTok{extra_task_value,}
+    \DataTypeTok{labeller=}\NormalTok{label_both}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-match-score-even-val30.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-37-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(lineage_reward10, update}\OperatorTok{>}\DecValTok{198000} \OperatorTok{&}\StringTok{ }\NormalTok{update}\OperatorTok{<=}\DecValTok{200000}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{update, }\DataTypeTok{y=}\NormalTok{match_score_even, }\DataTypeTok{color=}\NormalTok{condition, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun=}\StringTok{"mean"}\NormalTok{, }\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Match score (even environment)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
+    \OperatorTok{~}\NormalTok{extra_task_value,}
+    \DataTypeTok{labeller=}\NormalTok{label_both}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-match-score-even-val10.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-37-2.pdf}
+
+Extra tasks over time
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(lineage_reward30, update}\OperatorTok{>}\DecValTok{198000} \OperatorTok{&}\StringTok{ }\NormalTok{update}\OperatorTok{<=}\DecValTok{200000}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{update, }\DataTypeTok{y=}\NormalTok{extra_traits, }\DataTypeTok{color=}\NormalTok{condition, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun=}\StringTok{"mean"}\NormalTok{, }\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Match score (even environment)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
+    \OperatorTok{~}\NormalTok{extra_task_value,}
+    \DataTypeTok{labeller=}\NormalTok{label_both}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-extra-traits-val30.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-38-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(lineage_reward10, update}\OperatorTok{>}\DecValTok{198000} \OperatorTok{&}\StringTok{ }\NormalTok{update}\OperatorTok{<=}\DecValTok{200000}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{update, }\DataTypeTok{y=}\NormalTok{extra_traits, }\DataTypeTok{color=}\NormalTok{condition, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun=}\StringTok{"mean"}\NormalTok{, }\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
+    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
+    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
+    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
+    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
+    \DataTypeTok{linetype=}\DecValTok{0}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Match score (even environment)"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
+    \OperatorTok{~}\NormalTok{extra_task_value,}
+    \DataTypeTok{labeller=}\NormalTok{label_both}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-extra-traits-val10.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-38-2.pdf}
 
 \bibliography{packages.bib,supplemental.bib}
 
