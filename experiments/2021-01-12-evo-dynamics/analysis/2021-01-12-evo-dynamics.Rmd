@@ -118,6 +118,7 @@ time_series_data$condition <- mapply(
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
+dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
 ```
 
 ## Evolution of phenotypic plasticity
@@ -443,4 +444,200 @@ ggplot(time_series_data, aes(x=update, y=phylo_num_taxa_extant, fill=condition, 
   )
 ```
 
+## Camera-ready figures
 
+Figures styled for the paper.
+
+
+Mutation accumulation
+
+```{r}
+library(viridis)
+library(RColorBrewer)
+# dominant_lineage_total_mut_cnt or mutations_per_lineage_step?
+mutation_count_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=c(
+      "Constant env.",
+      "Fluct. env.\nnon-plastic",
+      "Fluct. env.\nplastic"
+    )
+  ) +
+  scale_y_continuous(
+    name="Mutations accumulated (log scale)",
+    trans="log10"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip() +
+  ggsave(
+    paste0(working_directory, "plots/", "mutation-accumulation.pdf"),
+    width=5,
+    height=4
+  )
+```
+
+Phenotypic volatility
+
+```{r}
+phenotypic_volatility_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_phenotypic_volatility, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=c(
+      "Constant env.",
+      "Fluct. env.\nnon-plastic",
+      "Fluct. env.\nplastic"
+    )
+  ) +
+  scale_y_continuous(
+    name="Phenotypic volatility (log scale)",
+    trans="log10",
+    limits=c(50,11000)
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ) +
+  coord_flip() +
+  ggsave(
+    paste0(working_directory, "plots/", "phenotypic-volatility.pdf"),
+    width=4,
+    height=4
+  )
+```
+
+Selective sweeps.
+
+```{r}
+selective_sweeps_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=phylo_mrca_changes, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=c(
+      "Constant env.",
+      "Fluct. env.\nnon-plastic",
+      "Fluct. env.\nplastic"
+    )
+  ) +
+  scale_y_continuous(
+    name="Selective sweeps (log scale)",
+    trans="log10"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ) +
+  coord_flip() +
+  ggsave(
+    paste0(working_directory, "plots/", "selective-sweeps.pdf"),
+    width=4,
+    height=4
+  )
+
+# nrow(filter(summary_data, condition=="Non-plastic (fluctuating)" & phylo_mrca_changes <= 1))
+```
+
+All together
+
+```{r}
+grid <- plot_grid(
+  mutation_count_fig,
+  phenotypic_volatility_fig,
+  selective_sweeps_fig,
+  nrow=1,
+  align="v",
+  labels="auto"
+)
+save_plot(
+   paste0(working_directory, "plots/", "evolutionary-dynamics.pdf"),
+   grid,
+   base_height=6,
+   base_asp=2.5
+)
+# ggsave(
+#   paste0(working_directory, "plots/", "evolutionary-dynamics.pdf"),
+#   width=10,
+#   height=8
+# )
+
+```
