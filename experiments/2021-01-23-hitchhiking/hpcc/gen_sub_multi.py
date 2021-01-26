@@ -197,7 +197,8 @@ def main():
 
         fields = list(run_param_info.keys())
         fields.sort()
-        run_params = " ".join([f"-set {field} {run_param_info[field]}" for field in fields])
+        # prepend hitchhiking avida config file (that includes poison instruction)
+        run_params = f"-c avida-poison.cfg " + " ".join([f"-set {field} {run_param_info[field]}" for field in fields])
 
         # Add run commands to run the experiment
         run_commands = ''
