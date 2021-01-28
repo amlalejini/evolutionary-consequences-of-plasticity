@@ -300,8 +300,8 @@ def main():
             times_nopx_executed = statistics.mean([int(dom_env_odd["times_nop-x_executed"]),int(dom_env_even["times_nop-x_executed"])])
             times_poison_executed = statistics.mean([int(dom_env_odd["times_poison_executed"]),int(dom_env_even["times_poison_executed"])])
         else:
-            times_nopx_executed = dom_env_all["times_nop-x_executed"]
-            times_poison_executed = dom_env_all["times_poison_executed"]
+            times_nopx_executed = int(dom_env_all["times_nop-x_executed"])
+            times_poison_executed = int(dom_env_all["times_poison_executed"])
 
         summary_info["dominant_times_nopx_executed"] = times_nopx_executed
         summary_info["dominant_times_poison_executed"] = times_poison_executed
@@ -340,8 +340,8 @@ def main():
                 times_nopx_executed = statistics.mean([int(lineage_env_odd[i]["times_nop-x_executed"]),int(lineage_env_even[i]["times_nop-x_executed"])])
                 times_poison_executed = statistics.mean([int(lineage_env_odd[i]["times_poison_executed"]),int(lineage_env_even[i]["times_poison_executed"])])
             else:
-                times_nopx_executed = lineage_env_all[i]["times_nop-x_executed"]
-                times_poison_executed = lineage_env_all[i]["times_poison_executed"]
+                times_nopx_executed = int(lineage_env_all[i]["times_nop-x_executed"])
+                times_poison_executed = int(lineage_env_all[i]["times_poison_executed"])
 
             ancestor_phenotype_even = "".join([lineage_env_even[i][trait] for trait in primary_traits])
             ancestor_phenotype_odd = "".join([lineage_env_odd[i][trait] for trait in primary_traits])
