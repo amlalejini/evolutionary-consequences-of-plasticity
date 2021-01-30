@@ -334,7 +334,6 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     [this](int ud) {
       if (GetStats().GetUpdate() % m_conf->PHYLOGENY_SNAPSHOT_RES.Get() == 0) {
         systematics_manager->Snapshot("phylogeny-snapshot-" + emp::to_string(GetStats().GetUpdate()) + ".csv" );
-        systematics_manager->PrintStatus();
       }
     }
   );
@@ -429,7 +428,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   //OEE_stats.SetDefaultFitnessFun(fit_fun);
   // std::cout << "initialized" << std::endl;
 
-  systematics_manager->PrintStatus();
+  // systematics_manager->PrintStatus();
 
   return success;
 }
