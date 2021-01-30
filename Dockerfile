@@ -129,7 +129,7 @@ RUN \
     && \
   cd /opt/Empirical \
     && \
-  git checkout 68d17bff67dde19472f7a0b9b4bdff1dc3e846f7 \
+  git checkout c49ca476e371ef70d3c0f6126fc7cfeeaf3c8908 \
     && \
   git submodule init \
     && \
