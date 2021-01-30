@@ -10,6 +10,10 @@
 - Move the avida executable to bug-replication/
 - Run avida with run command [below](#avida-run-command)
   - use `-set FORCE_MRCA_COMP` avida config to turn on/off forced MRCA recalculations every update
+- Without forcing MRCA the phylodiversity file should report that the mrca is the root of the phylogeny:
+  depth = 0. If you take a look at the phylogeny snapshot file (from Empirical) at update 1000,
+  ancestor #276 should be the mrca.
+
 
 ## Changes to Systematics manager
 
