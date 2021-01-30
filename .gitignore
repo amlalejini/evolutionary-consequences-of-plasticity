@@ -13,8 +13,10 @@ DerivedData
 .Rhistory
 
 __pycache__
+pyenv/
 
 data/
+coexistence-data/
 dump/
 *.sb
 *.csv
