@@ -289,6 +289,7 @@ public:
   CONFIG_ADD_VAR(PHYLOGENY_SNAPSHOT_RES, int, 1000, "How often should we print phylogeny stats?");
   CONFIG_ADD_VAR(SYSTEMATICS_RES, int, 1000, "How often should we print phylodiversity stats?");
   CONFIG_ADD_VAR(SYSTEMATICS_TRACK_ALL, bool, false, "If false, prune phylogeny; otherwise, track all genotypes over time.");
+  CONFIG_ADD_VAR(FORCE_MRCA_COMP, bool, false, "Force MRCA to be recalculated every update?");
 
   // -------- Topology config options --------
   CONFIG_ADD_GROUP(TOPOLOGY_GROUP, "World topology");

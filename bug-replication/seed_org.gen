@@ -1,0 +1,190 @@
+# Tue Jan 12 16:25:48 2021
+# Filename........: analysis/env_all/final_dominant.gen
+# Update Output...: N/A
+# Is Viable.......: 1
+# Repro Cycle Size: 0
+# Depth to Viable.: 0
+# 
+# Generation: 0
+# Merit...........: 1232.000000
+# Gestation Time..: 397
+# Fitness.........: 3.103275
+# Errors..........: 4
+# Genome Size.....: 161
+# Copied Size.....: 161
+# Executed Size...: 154
+# Offspring.......: SELF
+# 
+# Tasks Performed:
+# not 0 (0.000000)
+# nand 1 (1.000000)
+# and 0 (0.000000)
+# orn 1 (1.000000)
+# or 0 (0.000000)
+# andn 1 (1.000000)
+# nor 0 (0.000000)
+# xor 0 (0.000000)
+# equ 0 (0.000000)
+
+
+nop-C
+sub
+if-n-equ
+mov-head
+set-flow
+if-n-equ
+get-head
+nop-C
+h-alloc
+if-less
+if-less
+sense-react-ORN
+h-alloc
+jmp-head
+dec
+if-n-equ
+set-flow
+shift-l
+if-n-equ
+set-flow
+mov-head
+nop-B
+shift-r
+set-flow
+nop-A
+nop-C
+sense-react-OR
+IO
+sense-react-ORN
+IO
+shift-l
+swap-stk
+sense-react-OR
+sense-react-OR
+shift-l
+shift-r
+sense-react-ANDN
+sense-react-AND
+nand
+pop
+swap
+IO
+if-n-equ
+h-alloc
+push
+h-divide
+add
+h-divide
+nop-B
+swap-stk
+if-n-equ
+jmp-head
+mov-head
+nop-C
+if-less
+nop-C
+shift-r
+nop-C
+shift-r
+IO
+nand
+push
+sense-react-OR
+sense-react-NAND
+pop
+swap
+nop-A
+add
+if-label
+set-flow
+h-alloc
+sense-react-OR
+if-n-equ
+IO
+nop-C
+dec
+push
+swap-stk
+h-copy
+sense-react-AND
+add
+IO
+dec
+h-copy
+set-flow
+IO
+nand
+sub
+add
+h-alloc
+shift-l
+if-n-equ
+shift-l
+pop
+sense-react-OR
+sense-react-AND
+swap
+inc
+dec
+sense-react-NAND
+nand
+nop-C
+nand
+IO
+add
+inc
+IO
+push
+if-n-equ
+sense-react-ANDN
+dec
+shift-r
+push
+nop-A
+add
+sense-react-AND
+swap
+IO
+h-divide
+h-search
+get-head
+sense-react-NAND
+push
+h-copy
+shift-r
+h-copy
+get-head
+if-less
+set-flow
+swap-stk
+sense-react-NAND
+swap
+sense-react-AND
+shift-l
+nand
+sense-react-NOT
+pop
+IO
+if-less
+sense-react-ANDN
+h-copy
+add
+IO
+swap-stk
+swap-stk
+h-copy
+dec
+push
+sense-react-ORN
+nop-C
+h-search
+h-copy
+h-copy
+if-label
+nop-C
+h-divide
+h-copy
+mov-head
+h-alloc
+push
+nop-A

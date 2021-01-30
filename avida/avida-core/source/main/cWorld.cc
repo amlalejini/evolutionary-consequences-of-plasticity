@@ -272,10 +272,19 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     systematics_manager.New([](const Avida::InstructionSequence & seq){return Avida::InstructionSequence(seq);});
   }
 
-  // systematics_manager->PrintStatus();
   systematics_manager->AddSnapshotFun([](const taxon_t & tax) {
       return emp::to_string(tax.GetInfo().AsString().GetCString());
     }, "sequence", "Avida instruction sequence for this taxon.");
+
+  systematics_manager->AddSnapshotFun(
+    [this](const taxon_t & tax) {
+      const size_t mrca_id = systematics_manager->GetMRCA()->GetID();
+      const size_t snap_id = tax.GetID();
+      return emp::to_string(mrca_id == snap_id);
+    },
+    "is_mrca",
+    "Is this taxon the current MRCA?"
+  );
 
   OEE_stats.New(systematics_manager, skel_fun, [null_inst](const std::string & org){return org.size();}, false, m_conf->WORLD_X.Get() * m_conf->WORLD_Y.Get() * 200000);
   OEE_stats->SetGenerationInterval(m_conf->FILTER_TIME.Get());
@@ -309,7 +318,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
       // update the systematics manager
       systematics_manager->Update();
       // did the mrca change? if so, record it
-      emp::Ptr<taxon_t> cur_taxa = systematics_manager->GetMRCA();
+      emp::Ptr<taxon_t> cur_taxa = systematics_manager->GetMRCA(m_conf->FORCE_MRCA_COMP.Get());
       if (cur_taxa != mrca_ptr) {
         ++mrca_changes;
         mrca_ptr = cur_taxa;
@@ -325,6 +334,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
     [this](int ud) {
       if (GetStats().GetUpdate() % m_conf->PHYLOGENY_SNAPSHOT_RES.Get() == 0) {
         systematics_manager->Snapshot("phylogeny-snapshot-" + emp::to_string(GetStats().GetUpdate()) + ".csv" );
+        systematics_manager->PrintStatus();
       }
     }
   );
@@ -357,6 +367,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   phylodiversity_file.template AddFun<int>(    [this](){ return systematics_manager->GetMRCADepth(); }, "mrca_depth", "Phylogenetic Depth of the Most Recent Common Ancestor (-1=none)." );
   phylodiversity_file.template AddFun<double>( [this](){ return systematics_manager->CalcDiversity(); }, "diversity", "Genotypic Diversity (entropy of taxa in population)." );
   phylodiversity_file.template AddFun<size_t>( [this](){ return mrca_changes; }, "mrca_changes", "Number of times the MRCA has changed.");
+  phylodiversity_file.template AddFun<size_t>( [this](){ return systematics_manager->GetMRCA()->GetID(); }, "mrca_id", "ID of the MRCA");
 
   phylodiversity_file.PrintHeaderKeys();
   phylodiversity_file.SetTimingRepeat(m_conf->SYSTEMATICS_RES.Get());
@@ -417,6 +428,8 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
   //cHardwareManager::SetupPropertyMap(props, inst_set_name);
   //OEE_stats.SetDefaultFitnessFun(fit_fun);
   // std::cout << "initialized" << std::endl;
+
+  systematics_manager->PrintStatus();
 
   return success;
 }
