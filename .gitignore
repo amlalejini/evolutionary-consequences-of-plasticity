@@ -12,7 +12,10 @@ DerivedData
 .vscode
 .Rhistory
 
+__pycache__
+
 data/
+dump/
 *.sb
 *.csv
 _book
