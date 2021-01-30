@@ -318,7 +318,7 @@ bool cWorld::setup(World* new_world, cUserFeedback* feedback, const Apto::Map<Ap
       // update the systematics manager
       systematics_manager->Update();
       // did the mrca change? if so, record it
-      emp::Ptr<taxon_t> cur_taxa = systematics_manager->GetMRCA(true);
+      emp::Ptr<taxon_t> cur_taxa = systematics_manager->GetMRCA(m_conf->FORCE_MRCA_COMP.Get());
       if (cur_taxa != mrca_ptr) {
         ++mrca_changes;
         mrca_ptr = cur_taxa;
