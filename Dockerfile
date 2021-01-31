@@ -72,11 +72,7 @@ RUN \
     && \
   ./download_exp_data.sh \
     && \
-  export EXP_TAG=2021-01-12-evo-dynamics \
-    && \
-  ./download_exp_data.sh \
-    && \
-  export EXP_TAG=2021-01-14-complex-features \
+  export EXP_TAG=2021-01-30-evo-dynamics \
     && \
   ./download_exp_data.sh
 
