@@ -461,6 +461,82 @@ ggplot(summary_data, aes(x=condition, y=phylo_mrca_depth, fill=condition)) +
 # filter(summary_data, condition=="Non-plastic (fluctuating)" & phylo_mrca_changes <= 10)$dominant_lineage_length_genotypes
 ```
 
+## Phylogenetic diversity over time
+
+```
+// From (Faith 1992, reviewed in Winters et al., 2013), phylogenetic diversity is the sum of edges in the minimal spanning tree connected the taxa you're calculating diversity of.
+// This calculates phylogenetic diversity for all extant taxa in the tree.
+```
+
+```{r}
+ggplot(time_series_data, aes(x=update, y=phylo_current_phylogenetic_diversity, fill=condition, color=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ylab("Phylogenetic diversity") +
+  ggsave(
+    paste0(working_directory, "plots/", "phylo-diversity-ot.png"),
+    width=10,
+    height=5
+  )
+```
+
+## Number of extant taxa (genotypes) over time
+
+```{r}
+ggplot(time_series_data, aes(x=update, y=phylo_num_taxa_extant, fill=condition, color=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "phylo-num-extant-taxa-ot.png"),
+    width=10,
+    height=5
+  )
+```
+
+## Evolutionary distinctiveness over time
+
+```
+  /** This metric (from Isaac, 2007; reviewed in Winter et al., 2013) measures how
+    * distinct @param tax is from the rest of the population, weighted for the amount of
+    * unique evolutionary history that it represents.
+    *
+    * To quantify length of evolutionary history, this method needs @param time: the current
+    * time, in whatever units time is being measured in when taxa are added to the systematics
+    * manager. Note that passing a time in the past will produce innacurate results (since we
+    * don't know what the state of the tree was at that time).
+    *
+    * Assumes the tree is all connected. Will return -1 if this assumption isn't met.
+  */
+```
+
+```{r}
+ggplot(time_series_data, aes(x=update, y=phylo_mean_evolutionary_distinctiveness, fill=condition, color=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "phylo_mean_evolutionary_distinctiveness-ot.png"),
+    width=10,
+    height=5
+  )
+```
 
 ## Camera-ready figures
 
