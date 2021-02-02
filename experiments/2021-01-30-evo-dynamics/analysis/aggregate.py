@@ -307,10 +307,14 @@ def main():
         # Extract mutation accumulation data from dominant lineage
         # - mutation information will be the same for all lineage data files.
         lineage_env_all = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_all", "lineage_tasks.dat"))
+        lineage_env_odd = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_odd", "lineage_tasks.dat"))
+        lineage_env_even = read_avida_dat_file(os.path.join(run_path, "data", "analysis", "env_even", "lineage_tasks.dat"))
+
         summary_info["dominant_lineage_length_genotypes"] = len(lineage_env_all)
         sub_mut_cnt = 0
         ins_mut_cnt = 0
         dels_mut_cnt = 0
+        primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
         for i in range(len(lineage_env_all)):
             muts_from_parent = lineage_env_all[i]["mutations_from_parent"].split(",")
             for mut in muts_from_parent:
@@ -319,11 +323,34 @@ def main():
                 elif (mut[0] == "I"): ins_mut_cnt += 1
                 elif (mut[0] == "D"): dels_mut_cnt += 1
                 else: print("Unknown mutation type (" + str(mut) + ")!")
+
+            ancestor_phenotype_even = "".join([lineage_env_even[i][trait] for trait in primary_traits])
+            ancestor_phenotype_odd = "".join([lineage_env_odd[i][trait] for trait in primary_traits])
+            ancestor_phenotype_const = "".join([lineage_env_all[i][trait] for trait in primary_traits])
+            if chg_env:
+                primary_task_profiles_ot[i] = ancestor_phenotype_even + ancestor_phenotype_odd
+            else:
+                primary_task_profiles_ot[i] = ancestor_phenotype_const
+        # save summary info about mutation accumulation
         total_muts = sub_mut_cnt + ins_mut_cnt + dels_mut_cnt
         summary_info["dominant_lineage_substitution_mut_cnt"] = sub_mut_cnt
         summary_info["dominant_lineage_insertion_mut_cnt"] = ins_mut_cnt
         summary_info["dominant_lineage_deletion_mut_cnt"] = dels_mut_cnt
         summary_info["dominant_lineage_total_mut_cnt"] = total_muts
+        # analyze lineage task profiles
+        task_profile_volatility = 0
+        for i in range(len(primary_task_profiles_ot)):
+            ##### Task profile volatility
+            if i:
+                current_profile = primary_task_profiles_ot[i]
+                previous_traits = primary_task_profiles_ot[i-1]
+                task_profile_volatility += int(current_profile != previous_traits)
+
+        summary_info["dominant_lineage_trait_volatility"] = task_profile_volatility
+
+        lineage_env_all = None
+        lineage_env_odd = None
+        lineage_env_even = None
         ############################################################
 
         ############################################################
