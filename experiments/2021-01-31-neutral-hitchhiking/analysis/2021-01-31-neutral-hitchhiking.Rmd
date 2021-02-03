@@ -1,4 +1,4 @@
-# The effect of phenotypic plasticity on deleterious hitchhiking
+# The effect of phenotypic plasticity on neutral genetic hitchhiking
 
 ## Overview
 
@@ -65,11 +65,11 @@ sensors_label_fun <- function(has_sensors) {
 
 condition_label_fun <- function(has_sensors, env_chg) {
   if (has_sensors && env_chg) {
-    return("Plastic (fluctuating)")
+    return("PLASTIC")
   } else if (env_chg) {
-    return("Non-plastic (fluctuating)")
+    return("NON-PLASTIC")
   } else {
-    return("Non-plastic (constant)")
+    return("STATIC")
   }
 }
 
@@ -88,9 +88,9 @@ summary_data$condition <- mapply(
 )
 
 condition_order = c(
-  "Non-plastic (constant)",
-  "Non-plastic (fluctuating)",
-  "Plastic (fluctuating)"
+  "STATIC",
+  "NON-PLASTIC",
+  "PLASTIC"
 )
 
 ###### time series #####
@@ -147,7 +147,7 @@ One NON-PLASTIC population went extinct early in phase 2.
 We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
 
 ```{r}
-summary_data_grouped = dplyr::group_by(summary_data, condition, is_plastic, POISON_PENALTY)
+summary_data_grouped = dplyr::group_by(summary_data, condition, is_plastic)
 summary_data_group_counts = dplyr::summarize(summary_data_grouped, n=dplyr::n())
 ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill=condition)) +
   geom_col(position=position_dodge(0.9)) +
@@ -157,7 +157,6 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   ) +
   geom_text(aes(label=n, y=n+1)) +
   ylab("Number of replicates with a plastic dominant genotype") +
-  facet_wrap(~POISON_PENALTY, labeller=label_both) +
   theme(
     legend.position="none"
   )
@@ -188,7 +187,7 @@ ggplot(summary_data, aes(x=condition, y=dominant_times_nopx_executed, fill=condi
     name="Condition",
     limits=condition_order
   ) +
-  ylab("nopx instruction executions (final dominant)") +
+  ylab("nopx instruction executions") +
   theme(
     legend.position="none"
   ) +
@@ -236,16 +235,13 @@ ggplot(summary_data, aes(x=condition, y=final_population_nopx, fill=condition)) 
     limits=condition_order
   ) +
   scale_y_continuous(
-    name="instruction executions (final population)",
-    trans="pseudo_log",
-    breaks=c(0,10,100,1000, 10000, 100000),
-    limits=c(-1,100000)
+    name="instruction executions (population-wide)"
   ) +
   theme(
     legend.position="none"
   ) +
   ggsave(
-    paste0(working_directory, "plots/final-population-nopx-log.pdf"),
+    paste0(working_directory, "plots/final-population-nopx.pdf"),
     width=15,
     height=10
   )
@@ -275,16 +271,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_nopx_executed, fi
     limits=condition_order
   ) +
   scale_y_continuous(
-    name="nopx instruction executions (dominant lineage)",
-    trans="pseudo_log",
-    breaks=c(0,10,100,1000, 10000,100000),
-    limits=c(-1,100000)
+    name="nopx instruction executions (dominant lineage)"
   ) +
   theme(
     legend.position="none"
   ) +
   ggsave(
-    paste0(working_directory, "plots/final-dominant-lineage-nopx-log.pdf"),
+    paste0(working_directory, "plots/final-dominant-lineage-nopx.pdf"),
     width=15,
     height=10
   )
@@ -327,4 +320,110 @@ ggplot(summary_data, aes(x=condition, y=phylo_mrca_changes, fill=condition)) +
     width=15,
     height=10
   )
+```
+
+## Manuscript figures
+
+Final dominant nop-x execution.
+
+```{r}
+dominant_inst_exec <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_times_nopx_executed, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Nop instructions executed (final dominant)"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+dominant_inst_exec
+```
+
+Lineage (cummulative).
+
+```{r}
+lineage_inst_exec <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_times_nopx_executed, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Nop instructions executed (lineage)"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+lineage_inst_exec
+```
+
+Pull it all together.
+
+```{r}
+grid <- plot_grid(
+  dominant_inst_exec,
+  lineage_inst_exec + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+  nrow=1,
+  align="v",
+  labels="auto"
+)
+save_plot(
+   paste0(working_directory, "plots/", "neutral-hitchhiking-panel.pdf"),
+   grid,
+   base_height=6,
+   base_asp=2.5
+)
 ```
