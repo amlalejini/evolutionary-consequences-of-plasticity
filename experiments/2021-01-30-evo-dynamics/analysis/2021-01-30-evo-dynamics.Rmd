@@ -1,4 +1,4 @@
-# Effect of phenotypic plasticity on subsequent evolutionary dynamics
+# The effect of adaptive phenotypic plasticity on evolutionary change
 
 ## Overview
 
@@ -23,6 +23,7 @@ Load all required R libraries.
 library(ggplot2)
 library(tidyverse)
 library(cowplot)
+library(RColorBrewer)
 library(Hmisc)
 source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
 ```
@@ -64,11 +65,11 @@ sensors_label_fun <- function(has_sensors) {
 # note that this labeler makes assumptions about how we set up our experiment
 condition_label_fun <- function(has_sensors, env_chg) {
   if (has_sensors && env_chg) {
-    return("Plastic (fluctuating)")
+    return("PLASTIC")
   } else if (env_chg) {
-    return("Non-plastic (fluctuating)")
+    return("NON-PLASTIC")
   } else {
-    return("Non-plastic (constant)")
+    return("STATIC")
   }
 }
 
@@ -87,9 +88,9 @@ summary_data$condition <- mapply(
 )
 
 condition_order = c(
-  "Non-plastic (constant)",
-  "Non-plastic (fluctuating)",
-  "Plastic (fluctuating)"
+  "STATIC",
+  "NON-PLASTIC",
+  "PLASTIC"
 )
 
 ###### time series #####
@@ -187,18 +188,23 @@ ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)
   theme(
     legend.position="none"
   )
+```
+
+```{r}
+median(filter(summary_data, condition=="PLASTIC")$time_average_generation)
+median(filter(summary_data, condition=="STATIC")$time_average_generation)
+median(filter(summary_data, condition=="NON-PLASTIC")$time_average_generation)
 
 kruskal.test(
   formula=time_average_generation~condition,
   data=summary_data
 )
-
 ```
 
 ## Phenotypic volatility along dominant lineage
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_phenotypic_volatility, fill=condition)) +
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -218,30 +224,36 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_phenotypic_volatility, 
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Phenotypic volatility") +
+  scale_y_continuous(
+    name="Phenotypic volatility (log scale)",
+    trans="pseudo_log",
+    breaks=c(0, 10, 100, 1000, 10000),
+    limits=c(-1,10000)
+  ) +
   theme(
     legend.position="none"
   )
 ```
 
 ```{r}
+
+median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility)
+median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility)
+median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility)
+
 kruskal.test(
-  formula=dominant_lineage_phenotypic_volatility~condition,
+  formula=dominant_lineage_trait_volatility~condition,
   data=summary_data
 )
 
 pairwise.wilcox.test(
-  x=summary_data$dominant_lineage_phenotypic_volatility,
+  x=summary_data$dominant_lineage_trait_volatility,
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
-
-median(filter(summary_data, condition=="Plastic (fluctuating)")$dominant_lineage_phenotypic_volatility)
-median(filter(summary_data, condition=="Non-plastic (constant)")$dominant_lineage_phenotypic_volatility)
-median(filter(summary_data, condition=="Non-plastic (fluctuating)")$dominant_lineage_phenotypic_volatility)
 ```
 
-## Mutation accumulation along dominant lineage
+## Mutation accumulation along the dominant lineage
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)) +
@@ -282,9 +294,9 @@ pairwise.wilcox.test(
   p.adjust.method="bonferroni",
 )
 
-median(filter(summary_data, condition=="Plastic (fluctuating)")$dominant_lineage_total_mut_cnt)
-median(filter(summary_data, condition=="Non-plastic (constant)")$dominant_lineage_total_mut_cnt)
-median(filter(summary_data, condition=="Non-plastic (fluctuating)")$dominant_lineage_total_mut_cnt)
+median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_total_mut_cnt)
+median(filter(summary_data, condition=="STATIC")$dominant_lineage_total_mut_cnt)
+median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_total_mut_cnt)
 ```
 
 ### Mutation accumulation normalized by lineage length
@@ -329,9 +341,9 @@ pairwise.wilcox.test(
   p.adjust.method="bonferroni",
 )
 
-median(filter(summary_data, condition=="Plastic (fluctuating)")$mutations_per_lineage_step)
-median(filter(summary_data, condition=="Non-plastic (constant)")$mutations_per_lineage_step)
-median(filter(summary_data, condition=="Non-plastic (fluctuating)")$mutations_per_lineage_step)
+median(filter(summary_data, condition=="PLASTIC")$mutations_per_lineage_step)
+median(filter(summary_data, condition=="NON-PLASTIC")$mutations_per_lineage_step)
+median(filter(summary_data, condition=="STATIC")$mutations_per_lineage_step)
 ```
 
 ## Selective sweeps
@@ -377,9 +389,9 @@ pairwise.wilcox.test(
   p.adjust.method="bonferroni",
 )
 
-median(filter(summary_data, condition=="Plastic (fluctuating)")$phylo_mrca_changes)
-median(filter(summary_data, condition=="Non-plastic (constant)")$phylo_mrca_changes)
-median(filter(summary_data, condition=="Non-plastic (fluctuating)")$phylo_mrca_changes)
+median(filter(summary_data, condition=="PLASTIC")$phylo_mrca_changes)
+median(filter(summary_data, condition=="STATIC")$phylo_mrca_changes)
+median(filter(summary_data, condition=="NON-PLASTIC")$phylo_mrca_changes)
 
 # low_mrca_change <- filter(summary_data, condition=="Non-plastic (fluctuating)" & phylo_mrca_changes <= 20)
 ```
@@ -424,9 +436,9 @@ pairwise.wilcox.test(
   p.adjust.method="bonferroni",
 )
 
-median(filter(summary_data, condition=="Plastic (fluctuating)")$phylo_mrca_changes)
-median(filter(summary_data, condition=="Non-plastic (constant)")$phylo_mrca_changes)
-median(filter(summary_data, condition=="Non-plastic (fluctuating)")$phylo_mrca_changes)
+median(filter(summary_data, condition=="PLASTIC")$phylo_mrca_changes)
+median(filter(summary_data, condition=="STATIC")$phylo_mrca_changes)
+median(filter(summary_data, condition=="NON-PLASTIC")$phylo_mrca_changes)
 ```
 
 ## Depth of MRCA
@@ -456,9 +468,6 @@ ggplot(summary_data, aes(x=condition, y=phylo_mrca_depth, fill=condition)) +
   theme(
     legend.position="none"
   )
-
-# filter(summary_data, condition=="Non-plastic (fluctuating)" & phylo_mrca_changes <= 1)$phylo_mrca_depth
-# filter(summary_data, condition=="Non-plastic (fluctuating)" & phylo_mrca_changes <= 10)$dominant_lineage_length_genotypes
 ```
 
 ## Phylogenetic diversity over time
@@ -569,11 +578,7 @@ mutation_count_fig <- ggplot(
   scale_x_discrete(
     name="Condition",
     limits=condition_order,
-    labels=c(
-      "Constant env.",
-      "Fluct. env.\nnon-plastic",
-      "Fluct. env.\nplastic"
-    )
+    labels=condition_order
   ) +
   scale_y_continuous(
     name="Mutations accumulated (log scale)",
@@ -601,7 +606,7 @@ Phenotypic volatility
 ```{r}
 phenotypic_volatility_fig <- ggplot(
     summary_data,
-    aes(x=condition, y=dominant_lineage_phenotypic_volatility, fill=condition)
+    aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)
   ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -621,16 +626,13 @@ phenotypic_volatility_fig <- ggplot(
   scale_x_discrete(
     name="Condition",
     limits=condition_order,
-    labels=c(
-      "Constant env.",
-      "Fluct. env.\nnon-plastic",
-      "Fluct. env.\nplastic"
-    )
+    labels=condition_order
   ) +
   scale_y_continuous(
     name="Phenotypic volatility (log scale)",
-    trans="log10",
-    limits=c(50,11000)
+    trans="pseudo_log",
+    breaks=c(0, 10, 100, 1000, 10000),
+    limits=c(-1,10000)
   ) +
   scale_fill_brewer(
     palette="Paired"
@@ -677,14 +679,10 @@ selective_sweeps_fig <- ggplot(
   scale_x_discrete(
     name="Condition",
     limits=condition_order,
-    labels=c(
-      "Constant env.",
-      "Fluct. env.\nnon-plastic",
-      "Fluct. env.\nplastic"
-    )
+    labels=condition_order
   ) +
   scale_y_continuous(
-    name="Selective sweeps (log scale)",
+    name="Coalescence Events (log scale)",
     trans="log10"
   ) +
   scale_fill_brewer(
