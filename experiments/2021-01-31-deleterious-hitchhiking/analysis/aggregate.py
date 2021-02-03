@@ -17,7 +17,7 @@ max_pop_size = 3600
 
 
 time_data_time_series_fields = ["average_generation"]
-instruction_data_time_series_fields = ["nop-x", "poison"]
+instruction_data_time_series_fields = ["poison"]
 
 """
 This is functionally equivalent to the mkdir -p [fname] bash command
