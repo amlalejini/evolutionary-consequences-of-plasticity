@@ -243,7 +243,6 @@ def main():
         # Summary information
         instruction_summary_data = [line for line in instruction_data if int(line["update"]) == update][0]
         summary_info["final_population_nopx"] = instruction_summary_data["nop-x"]
-        summary_info["final_population_poison"] = instruction_summary_data["poison"]
         # Extract information over time
         # Time series information
         instruction_data_ts = {line["update"]: {field: line[field] for field in instruction_data_time_series_fields} for line in instruction_data if keep_line(int(line["update"]))}
@@ -295,16 +294,12 @@ def main():
         summary_info["dominant_optimal_plastic"] = optimal_plastic
 
         times_nopx_executed = 0
-        times_poison_executed = 0
         if chg_env:
             times_nopx_executed = statistics.mean([int(dom_env_odd["times_nop-x_executed"]),int(dom_env_even["times_nop-x_executed"])])
-            times_poison_executed = statistics.mean([int(dom_env_odd["times_poison_executed"]),int(dom_env_even["times_poison_executed"])])
         else:
             times_nopx_executed = int(dom_env_all["times_nop-x_executed"])
-            times_poison_executed = int(dom_env_all["times_poison_executed"])
 
         summary_info["dominant_times_nopx_executed"] = times_nopx_executed
-        summary_info["dominant_times_poison_executed"] = times_poison_executed
         ############################################################
 
         ############################################################
@@ -319,7 +314,6 @@ def main():
         ins_mut_cnt = 0
         dels_mut_cnt = 0
         lineage_times_nopx_executed = 0
-        lineage_times_poison_executed = 0
         primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
         for i in range(len(lineage_env_all)):
             ancestor_info = {}
@@ -336,13 +330,10 @@ def main():
 
             # Collect instruction information for this ancestor
             times_nopx_executed = 0
-            times_poison_executed = 0
             if chg_env:
                 times_nopx_executed = statistics.mean([int(lineage_env_odd[i]["times_nop-x_executed"]),int(lineage_env_even[i]["times_nop-x_executed"])])
-                times_poison_executed = statistics.mean([int(lineage_env_odd[i]["times_poison_executed"]),int(lineage_env_even[i]["times_poison_executed"])])
             else:
                 times_nopx_executed = int(lineage_env_all[i]["times_nop-x_executed"])
-                times_poison_executed = int(lineage_env_all[i]["times_poison_executed"])
 
             ancestor_phenotype_even = "".join([lineage_env_even[i][trait] for trait in primary_traits])
             ancestor_phenotype_odd = "".join([lineage_env_odd[i][trait] for trait in primary_traits])
@@ -356,10 +347,8 @@ def main():
             ancestor_info["match_score_even"] = simple_match_coeff(ancestor_phenotype_even, even_profile)
             ancestor_info["match_score_odd"] = simple_match_coeff(ancestor_phenotype_odd, odd_profile)
             ancestor_info["inst_nop-x"] = times_nopx_executed
-            ancestor_info["inst_poison"] = times_poison_executed
 
             lineage_times_nopx_executed += times_nopx_executed
-            lineage_times_poison_executed += times_poison_executed
             lineage_series_info.append(ancestor_info)
 
         # save summary mutation info
@@ -369,7 +358,6 @@ def main():
         summary_info["dominant_lineage_deletion_mut_cnt"] = dels_mut_cnt
         summary_info["dominant_lineage_total_mut_cnt"] = total_muts
         summary_info["dominant_lineage_times_nopx_executed"] = lineage_times_nopx_executed
-        summary_info["dominant_lineage_times_poison_executed"] = lineage_times_poison_executed
 
         # analyze lineage task profiles
         task_profile_volatility = 0
@@ -396,7 +384,6 @@ def main():
             time_series_info[u]["DISABLE_REACTION_SENSORS"] = summary_info["DISABLE_REACTION_SENSORS"]
             time_series_info[u]["chg_env"] = summary_info["chg_env"]
             time_series_info[u]["environment"] = summary_info["environment"]
-            time_series_info[u]["POISON_VALUE"] = summary_info["POISON_PENALTY"]
 
         time_series_fields = list(time_series_info[str(time_series_range[0])].keys())
         time_series_fields.sort()
@@ -427,7 +414,6 @@ def main():
             lineage_series_info[i]["DISABLE_REACTION_SENSORS"] = summary_info["DISABLE_REACTION_SENSORS"]
             lineage_series_info[i]["chg_env"] = summary_info["chg_env"]
             lineage_series_info[i]["environment"] = summary_info["environment"]
-            lineage_series_info[i]["POISON_VALUE"] = summary_info["POISON_PENALTY"]
 
         lineage_series_fields = list(lineage_series_info[0].keys())
         lineage_series_fields.sort()

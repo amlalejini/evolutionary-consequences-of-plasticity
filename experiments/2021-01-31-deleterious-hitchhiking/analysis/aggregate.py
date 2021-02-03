@@ -242,7 +242,6 @@ def main():
         instruction_data = read_avida_dat_file(os.path.join(run_path, "data", "instruction.dat"))
         # Summary information
         instruction_summary_data = [line for line in instruction_data if int(line["update"]) == update][0]
-        summary_info["final_population_nopx"] = instruction_summary_data["nop-x"]
         summary_info["final_population_poison"] = instruction_summary_data["poison"]
         # Extract information over time
         # Time series information
@@ -294,16 +293,12 @@ def main():
         summary_info["dominant_match_score_odd_even"] = match_score_odd_even
         summary_info["dominant_optimal_plastic"] = optimal_plastic
 
-        times_nopx_executed = 0
         times_poison_executed = 0
         if chg_env:
-            times_nopx_executed = statistics.mean([int(dom_env_odd["times_nop-x_executed"]),int(dom_env_even["times_nop-x_executed"])])
             times_poison_executed = statistics.mean([int(dom_env_odd["times_poison_executed"]),int(dom_env_even["times_poison_executed"])])
         else:
-            times_nopx_executed = int(dom_env_all["times_nop-x_executed"])
             times_poison_executed = int(dom_env_all["times_poison_executed"])
 
-        summary_info["dominant_times_nopx_executed"] = times_nopx_executed
         summary_info["dominant_times_poison_executed"] = times_poison_executed
         ############################################################
 
@@ -318,7 +313,6 @@ def main():
         sub_mut_cnt = 0
         ins_mut_cnt = 0
         dels_mut_cnt = 0
-        lineage_times_nopx_executed = 0
         lineage_times_poison_executed = 0
         primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
         for i in range(len(lineage_env_all)):
@@ -335,13 +329,10 @@ def main():
                 else: print("Unknown mutation type (" + str(mut) + ")!")
 
             # Collect instruction information for this ancestor
-            times_nopx_executed = 0
             times_poison_executed = 0
             if chg_env:
-                times_nopx_executed = statistics.mean([int(lineage_env_odd[i]["times_nop-x_executed"]),int(lineage_env_even[i]["times_nop-x_executed"])])
                 times_poison_executed = statistics.mean([int(lineage_env_odd[i]["times_poison_executed"]),int(lineage_env_even[i]["times_poison_executed"])])
             else:
-                times_nopx_executed = int(lineage_env_all[i]["times_nop-x_executed"])
                 times_poison_executed = int(lineage_env_all[i]["times_poison_executed"])
 
             ancestor_phenotype_even = "".join([lineage_env_even[i][trait] for trait in primary_traits])
@@ -355,10 +346,8 @@ def main():
 
             ancestor_info["match_score_even"] = simple_match_coeff(ancestor_phenotype_even, even_profile)
             ancestor_info["match_score_odd"] = simple_match_coeff(ancestor_phenotype_odd, odd_profile)
-            ancestor_info["inst_nop-x"] = times_nopx_executed
             ancestor_info["inst_poison"] = times_poison_executed
 
-            lineage_times_nopx_executed += times_nopx_executed
             lineage_times_poison_executed += times_poison_executed
             lineage_series_info.append(ancestor_info)
 
@@ -368,7 +357,6 @@ def main():
         summary_info["dominant_lineage_insertion_mut_cnt"] = ins_mut_cnt
         summary_info["dominant_lineage_deletion_mut_cnt"] = dels_mut_cnt
         summary_info["dominant_lineage_total_mut_cnt"] = total_muts
-        summary_info["dominant_lineage_times_nopx_executed"] = lineage_times_nopx_executed
         summary_info["dominant_lineage_times_poison_executed"] = lineage_times_poison_executed
 
         # analyze lineage task profiles
