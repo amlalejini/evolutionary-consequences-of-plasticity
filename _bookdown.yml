@@ -7,5 +7,6 @@ rmd_files: [
   "index.Rmd",
   "experiments/2021-01-07-validation/analysis/2021-01-07-validation.Rmd",
   "experiments/2021-01-30-evo-dynamics/analysis/2021-01-30-evo-dynamics.Rmd",
+  "experiments/2021-01-31-complex-features/analysis/2021-01-31-complex-features.Rmd",
   "tail.Rmd"
   ]
