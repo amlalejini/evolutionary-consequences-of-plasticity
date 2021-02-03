@@ -92,11 +92,11 @@ sensors_label_fun <- function(has_sensors) {
 
 condition_label_fun <- function(has_sensors, env_chg) {
   if (has_sensors && env_chg) {
-    return("Plastic (fluctuating)")
+    return("PLASTIC")
   } else if (env_chg) {
-    return("Non-plastic (fluctuating)")
+    return("NON-PLASTIC")
   } else {
-    return("Non-plastic (constant)")
+    return("STATIC")
   }
 }
 
@@ -115,9 +115,9 @@ summary_data$condition <- mapply(
 )
 
 condition_order = c(
-  "Non-plastic (constant)",
-  "Non-plastic (fluctuating)",
-  "Plastic (fluctuating)"
+  "STATIC",
+  "NON-PLASTIC",
+  "PLASTIC"
 )
 
 ###### time series #####
@@ -344,6 +344,20 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered
     width=15,
     height=10
   )
+
+reward_level <- 0.1
+dom_task_data <- filter(summary_data, extra_task_value==reward_level)
+kruskal.test(
+  formula=dominant_lineage_extra_traits_discovered~condition,
+  data=dom_task_data
+)
+pairwise.wilcox.test(
+  x=dom_task_data$dominant_lineage_extra_traits_discovered,
+  g=dom_task_data$condition,
+  p.adjust.method="bonferroni",
+  conf.int=TRUE,
+  conf.level=0.95
+)
 ```
 
 ### Tasks gained
@@ -454,26 +468,6 @@ ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y
 Extra tasks over time
 
 ```{r}
-ggplot(filter(lineage_reward30, update>198000 & update<=200000), aes(x=update, y=extra_traits, color=condition, fill=condition)) +
-  stat_summary(fun="mean", geom="line") +
-  stat_summary(
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    geom="ribbon",
-    alpha=0.2,
-    linetype=0
-  ) +
-  ylab("Match score (even environment)") +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-extra-traits-val30.png"),
-    width=15,
-    height=10
-  )
-
 ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y=extra_traits, color=condition, fill=condition)) +
   stat_summary(fun="mean", geom="line") +
   stat_summary(
@@ -483,7 +477,7 @@ ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y
     alpha=0.2,
     linetype=0
   ) +
-  ylab("Match score (even environment)") +
+  ylab("Number of extra traits") +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -493,5 +487,159 @@ ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y
     width=15,
     height=10
   )
+```
 
+## Manuscript figures
+
+Figures for the manuscript.
+
+Final dominant extra tasks.
+
+```{r}
+extra_task_reward_value=0.1
+dominant_extra_tasks_fig <- ggplot(
+    filter(summary_data, extra_task_value==extra_task_reward_value),
+    aes(x=condition, y=dominant_extra_tasks, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Final dominant novel traits"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+```
+
+Final dominant lineage tasks discovered.
+
+```{r}
+lineage_extra_tasks_discovered_fig <- ggplot(
+    filter(summary_data, extra_task_value==extra_task_reward_value),
+    aes(x=condition, y=dominant_lineage_extra_traits_discovered, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Novel traits discovered on lineage"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+```
+
+Final dominant lineage tasks lost.
+
+```{r}
+lineage_extra_tasks_lost_fig <- ggplot(
+    filter(summary_data, extra_task_value==extra_task_reward_value),
+    aes(x=condition, y=dominant_lineage_extra_traits_lost, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Novel traits lost on lineage (log scale)",
+    trans="pseudo_log",
+    breaks=c(0,10,100,1000),
+    limits=c(-1,1000)
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+
+lineage_extra_tasks_lost_fig
+```
+
+Pull it all together.
+
+```{r}
+grid <- plot_grid(
+  dominant_extra_tasks_fig,
+  lineage_extra_tasks_discovered_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+  lineage_extra_tasks_lost_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+  nrow=1,
+  align="v",
+  labels="auto"
+)
+save_plot(
+   paste0(working_directory, "plots/", "complex-traits-panel.pdf"),
+   grid,
+   base_height=6,
+   base_asp=2.5
+)
 ```
