@@ -17,6 +17,7 @@ pyenv/
 
 data/
 coexistence-data/
+experiments/2021-01-31-neutral-hitchhiking/analysis/extinct
 dump/
 *.sb
 *.csv
