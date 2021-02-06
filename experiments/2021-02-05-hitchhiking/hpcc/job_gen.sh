@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXP_TAG=2021-02-05-deleterious-hitchhiking
+EXP_TAG=2021-02-05-hitchhiking
 EXP_DIR=/mnt/home/lalejini/devo_ws/evolutionary-consequences-of-plasticity/experiments/${EXP_TAG}
 BASE_DATA_DIR=/mnt/scratch/lalejini/data/avida-plasticity/${EXP_TAG}
 
