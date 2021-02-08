@@ -349,7 +349,8 @@ def main():
         ins_mut_cnt = 0
         dels_mut_cnt = 0
         lineage_tasks_ot = [set([]) for _ in range(len(lineage_env_all))]
-        primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
+        # primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
+        primary_task_profiles_ot = [{"odd": None, "even": None, "const": None, "aggregate": None} for _ in range(len(lineage_env_all))]
         extra_traits_discovered = set([])
         for i in range(len(lineage_env_all)):
             ancestor_info = {}
@@ -381,10 +382,14 @@ def main():
             ancestor_phenotype_odd = "".join([lineage_env_odd[i][trait] for trait in primary_traits])
             ancestor_phenotype_const = "".join([lineage_env_all[i][trait] for trait in primary_traits])
 
+            primary_task_profiles_ot[i]["even"] = ancestor_phenotype_even
+            primary_task_profiles_ot[i]["odd"] = ancestor_phenotype_odd
+            primary_task_profiles_ot[i]["const"] = ancestor_phenotype_const
+
             if chg_env:
-                primary_task_profiles_ot[i] = ancestor_phenotype_even + ancestor_phenotype_odd
+                primary_task_profiles_ot[i]["aggregate"] = ancestor_phenotype_even + ancestor_phenotype_odd
             else:
-                primary_task_profiles_ot[i] = ancestor_phenotype_const
+                primary_task_profiles_ot[i]["aggregate"] = ancestor_phenotype_const
 
             ancestor_info["extra_traits"] = len(lineage_tasks_ot[i])
             ancestor_info["match_score_even"] = simple_match_coeff(ancestor_phenotype_even, even_profile)
@@ -401,6 +406,7 @@ def main():
         # analyze lineage task information
         extra_traits_gained = 0   # total number of times that any trait is gained
         extra_traits_lost = 0     # total number of times that any trait is lost
+        extra_traits_lost_linked_to_primary_change = 0
         task_profile_volatility = 0
         for i in range(len(lineage_tasks_ot)):
             ##### Trait gain/loss
@@ -416,14 +422,17 @@ def main():
                 # update gain/lost information
                 extra_traits_gained += len(gained_traits)
                 extra_traits_lost += len(lost_traits)
-            ##### Task profile volatility
-            if i:
-                current_profile = primary_task_profiles_ot[i]
-                previous_traits = primary_task_profiles_ot[i-1]
+
+                ##### Task profile volatility
+                current_profile = primary_task_profiles_ot[i]["aggregate"]
+                previous_traits = primary_task_profiles_ot[i-1]["aggregate"]
                 task_profile_volatility += int(current_profile != previous_traits)
+
+                if current_profile != previous_traits: extra_traits_lost_linked_to_primary_change += len(lost_traits)
 
         summary_info["dominant_lineage_extra_traits_gained"] = extra_traits_gained
         summary_info["dominant_lineage_extra_traits_lost"] = extra_traits_lost
+        summary_info["dominant_lineage_extra_traits_lost_linked_to_primary_change"] = extra_traits_lost_linked_to_primary_change
         summary_info["dominant_lineage_extra_traits_discovered"] = len(extra_traits_discovered)
         summary_info["dominant_lineage_trait_volatility"] = task_profile_volatility
 
