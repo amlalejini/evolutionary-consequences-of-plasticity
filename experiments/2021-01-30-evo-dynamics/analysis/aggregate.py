@@ -13,6 +13,8 @@ even_profile = "101010"
 odd_profile = "010101"
 all_profile = "111111"
 
+env_order = ["even", "odd"]
+
 max_pop_size = 3600
 
 # because we want smaller file sizes, only keep fields that we want to look at
@@ -47,6 +49,20 @@ def mkdir_p(path):
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
         else: raise
+
+def build_env_lookup(period_length, max_update):
+    lookup = ["all" for i in range(0, max_update+1)]
+    if period_length == 0:
+        return lookup
+    u = 0
+    env_i = 0
+    while u < len(lookup):
+        for pi in range(period_length):
+            if u >= len(lookup): break
+            lookup[u] = env_order[env_i]
+            u+=1
+        env_i = (env_i + 1) % len(env_order)
+    return lookup
 
 def extract_params_cmd_log(path):
     content = None
@@ -165,10 +181,17 @@ def main():
         env_cond = cmd_params["EVENT_FILE"].replace("events_", "").split("_phase")[0].lower()
         phase = "1" if "phase-one" in cmd_params["EVENT_FILE"] else "2"
 
+        events_info = cmd_params["EVENT_FILE"].strip("events_").strip(".cfg").split("_")
+        events_info = {param.split("-")[0]:param.split("-")[1] for param in events_info}
+        change_rate = int(events_info["rate"].strip("u"))
+
+        environment_lookup = build_env_lookup(period_length = change_rate, max_update = update)
+
         summary_info["chg_env"] = chg_env
         summary_info["environment"] = env_cond
         summary_info["update"] = update
         summary_info["phase"] = phase
+        summary_info["change_rate"] = change_rate
 
         for field in cmd_params:
             summary_info[field] = cmd_params[field]
@@ -314,7 +337,8 @@ def main():
         sub_mut_cnt = 0
         ins_mut_cnt = 0
         dels_mut_cnt = 0
-        primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
+        # primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
+        primary_task_profiles_ot = [{"muts_from_parent": None, "odd": None, "even": None, "const": None, "aggregate": None} for _ in range(len(lineage_env_all))]
         for i in range(len(lineage_env_all)):
             muts_from_parent = lineage_env_all[i]["mutations_from_parent"].split(",")
             for mut in muts_from_parent:
@@ -327,10 +351,17 @@ def main():
             ancestor_phenotype_even = "".join([lineage_env_even[i][trait] for trait in primary_traits])
             ancestor_phenotype_odd = "".join([lineage_env_odd[i][trait] for trait in primary_traits])
             ancestor_phenotype_const = "".join([lineage_env_all[i][trait] for trait in primary_traits])
+
+            primary_task_profiles_ot[i]["even"] = ancestor_phenotype_even
+            primary_task_profiles_ot[i]["odd"] = ancestor_phenotype_odd
+            primary_task_profiles_ot[i]["const"] = ancestor_phenotype_const
+            primary_task_profiles_ot[i]["muts_from_parent"] = len(muts_from_parent)
+
             if chg_env:
-                primary_task_profiles_ot[i] = ancestor_phenotype_even + ancestor_phenotype_odd
+                primary_task_profiles_ot[i]["aggregate"] = ancestor_phenotype_even + ancestor_phenotype_odd
             else:
-                primary_task_profiles_ot[i] = ancestor_phenotype_const
+                primary_task_profiles_ot[i]["aggregate"] = ancestor_phenotype_const
+
         # save summary info about mutation accumulation
         total_muts = sub_mut_cnt + ins_mut_cnt + dels_mut_cnt
         summary_info["dominant_lineage_substitution_mut_cnt"] = sub_mut_cnt
@@ -342,11 +373,47 @@ def main():
         for i in range(len(primary_task_profiles_ot)):
             ##### Task profile volatility
             if i:
-                current_profile = primary_task_profiles_ot[i]
-                previous_traits = primary_task_profiles_ot[i-1]
+                current_profile = primary_task_profiles_ot[i]["aggregate"]
+                previous_traits = primary_task_profiles_ot[i-1]["aggregate"]
                 task_profile_volatility += int(current_profile != previous_traits)
 
         summary_info["dominant_lineage_trait_volatility"] = task_profile_volatility
+
+        # analyze mutation outcomes
+        num_muts_that_change_aggregate_phenotype = 0
+        num_muts_that_change_unexpressed_phenotype = 0
+        num_muts_that_change_expressed_phenotype = 0
+        num_mut_steps = 0
+        for i in range(len(primary_task_profiles_ot)):
+            if not i: continue
+            update_born = int(lineage_env_all[i]["update_born"])
+            mutated = primary_task_profiles_ot[i]["muts_from_parent"] > 0
+            if not mutated: continue
+            prev_profile = primary_task_profiles_ot[i-1]
+            cur_profile = primary_task_profiles_ot[i]
+            num_mut_steps += 1
+            # Did this mutation change the aggregate phenotype?
+            change_agg = prev_profile["aggregate"] != cur_profile["aggregate"]
+            if chg_env:
+                cur_env = environment_lookup[update_born]
+                alt_env = "odd" if cur_env == "even" else "even"
+                # Did this mutation change the unexpressed phenotype?
+                change_unexpressed = prev_profile[alt_env] != cur_profile[alt_env]
+                # Did this mutation change the expressed phenotype?
+                change_expressed = prev_profile[cur_env] != cur_profile[cur_env]
+            else:
+                # Did this mutation change the unexpressed phenotype?
+                change_unexpressed = False
+                # Did this mutation change the expressed phenotype?
+                change_expressed = prev_profile["const"] != cur_profile["const"]
+            num_muts_that_change_aggregate_phenotype += int(change_agg)
+            num_muts_that_change_unexpressed_phenotype += int(change_unexpressed)
+            num_muts_that_change_expressed_phenotype += int(change_expressed)
+
+        summary_info["dominant_lineage_num_mut_steps_that_change_aggregate_phenotype"] = num_muts_that_change_aggregate_phenotype
+        summary_info["dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype"] = num_muts_that_change_unexpressed_phenotype
+        summary_info["dominant_lineage_num_mut_steps_that_change_expressed_phenotype"] = num_muts_that_change_expressed_phenotype
+        summary_info["dominant_lineage_num_mut_steps"] = num_mut_steps
 
         lineage_env_all = None
         lineage_env_odd = None
