@@ -338,7 +338,17 @@ def main():
         ins_mut_cnt = 0
         dels_mut_cnt = 0
         # primary_task_profiles_ot = [None for _ in range(len(lineage_env_all))]
-        primary_task_profiles_ot = [{"muts_from_parent": None, "odd": None, "even": None, "const": None, "aggregate": None} for _ in range(len(lineage_env_all))]
+        primary_task_profiles_ot = [{
+            "muts_from_parent": None,
+            "odd": None,
+            "even": None,
+            "const": None,
+            "aggregate": None,
+            "odd-match-score": None,
+            "even-match-score": None,
+            "const-match-score": None
+        } for _ in range(len(lineage_env_all))]
+
         for i in range(len(lineage_env_all)):
             muts_from_parent = lineage_env_all[i]["mutations_from_parent"].split(",")
             for mut in muts_from_parent:
@@ -352,10 +362,18 @@ def main():
             ancestor_phenotype_odd = "".join([lineage_env_odd[i][trait] for trait in primary_traits])
             ancestor_phenotype_const = "".join([lineage_env_all[i][trait] for trait in primary_traits])
 
+            ancestor_match_score_even = simple_match_coeff(ancestor_phenotype_even, even_profile)
+            ancestor_match_score_odd = simple_match_coeff(ancestor_phenotype_odd, odd_profile)
+            ancestor_match_score_all = simple_match_coeff(ancestor_phenotype_const, all_profile)
+
             primary_task_profiles_ot[i]["even"] = ancestor_phenotype_even
             primary_task_profiles_ot[i]["odd"] = ancestor_phenotype_odd
             primary_task_profiles_ot[i]["const"] = ancestor_phenotype_const
             primary_task_profiles_ot[i]["muts_from_parent"] = len(muts_from_parent)
+
+            primary_task_profiles_ot[i]["even-match-score"] = ancestor_match_score_even
+            primary_task_profiles_ot[i]["odd-match-score"] = ancestor_match_score_odd
+            primary_task_profiles_ot[i]["const-match-score"] = ancestor_match_score_all
 
             if chg_env:
                 primary_task_profiles_ot[i]["aggregate"] = ancestor_phenotype_even + ancestor_phenotype_odd
@@ -382,7 +400,11 @@ def main():
         # analyze mutation outcomes
         num_muts_that_change_aggregate_phenotype = 0
         num_muts_that_change_unexpressed_phenotype = 0
+        num_muts_that_change_unexpressed_phenotype_deleterious = 0
+        num_muts_that_change_unexpressed_phenotype_beneficial = 0
         num_muts_that_change_expressed_phenotype = 0
+        num_muts_that_change_expressed_phenotype_deleterious = 0
+        num_muts_that_change_expressed_phenotype_beneficial = 0
         num_mut_steps = 0
         for i in range(len(primary_task_profiles_ot)):
             if not i: continue
@@ -401,11 +423,29 @@ def main():
                 change_unexpressed = prev_profile[alt_env] != cur_profile[alt_env]
                 # Did this mutation change the expressed phenotype?
                 change_expressed = prev_profile[cur_env] != cur_profile[cur_env]
+                # Did this mutation make the unexpressed phenotype better or worse?
+                if change_unexpressed:
+                    # deleterious mutation for unexpressed phenotype?
+                    num_muts_that_change_unexpressed_phenotype_deleterious += int(
+                        prev_profile[f"{alt_env}-match-score"] > cur_profile[f"{alt_env}-match-score"]
+                    )
+                    num_muts_that_change_unexpressed_phenotype_beneficial += int(
+                        prev_profile[f"{alt_env}-match-score"] < cur_profile[f"{alt_env}-match-score"]
+                    )
+                if change_expressed:
+                    num_muts_that_change_expressed_phenotype_deleterious += int(
+                        prev_profile[f"{cur_env}-match-score"] > cur_profile[f"{cur_env}-match-score"]
+                    )
+                    num_muts_that_change_expressed_phenotype_beneficial += int(
+                        prev_profile[f"{cur_env}-match-score"] > cur_profile[f"{cur_env}-match-score"]
+                    )
+
             else:
                 # Did this mutation change the unexpressed phenotype?
                 change_unexpressed = False
                 # Did this mutation change the expressed phenotype?
                 change_expressed = prev_profile["const"] != cur_profile["const"]
+
             num_muts_that_change_aggregate_phenotype += int(change_agg)
             num_muts_that_change_unexpressed_phenotype += int(change_unexpressed)
             num_muts_that_change_expressed_phenotype += int(change_expressed)
@@ -414,6 +454,11 @@ def main():
         summary_info["dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype"] = num_muts_that_change_unexpressed_phenotype
         summary_info["dominant_lineage_num_mut_steps_that_change_expressed_phenotype"] = num_muts_that_change_expressed_phenotype
         summary_info["dominant_lineage_num_mut_steps"] = num_mut_steps
+
+        summary_info["dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_deleterious"] = num_muts_that_change_unexpressed_phenotype_deleterious
+        summary_info["dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_beneficial"] = num_muts_that_change_unexpressed_phenotype_beneficial
+        summary_info["dominant_lineage_num_mut_steps_that_change_expressed_phenotype_deleterious"] = num_muts_that_change_expressed_phenotype_deleterious
+        summary_info["dominant_lineage_num_mut_steps_that_change_expressed_phenotype_beneficial"] = num_muts_that_change_expressed_phenotype_beneficial
 
         lineage_env_all = None
         lineage_env_odd = None
