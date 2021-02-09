@@ -408,8 +408,8 @@ def main():
                     cur_env = environment_lookup[update_born]
                     alt_env = "odd" if cur_env == "even" else "even"
 
-                    expressed_hitchhiking_inst_exec_increased = current_hitchhiking_info[f"{cur_env}_times_poison_executed"] > previous_hitchhiking_info[f"{cur_env}_times_poison_executed"]
-                    unexpressed_hitchiking_inst_exec_increased = current_hitchhiking_info[f"{alt_env}_times_poison_executed"] > previous_hitchhiking_info[f"{alt_env}_times_poison_executed"]
+                    expressed_hitchhiking_inst_exec_increased = (current_hitchhiking_info[f"{cur_env}_times_poison_executed"] > previous_hitchhiking_info[f"{cur_env}_times_poison_executed"]) and not (current_hitchhiking_info[f"{alt_env}_times_poison_executed"] > previous_hitchhiking_info[f"{alt_env}_times_poison_executed"])
+                    unexpressed_hitchiking_inst_exec_increased = (current_hitchhiking_info[f"{alt_env}_times_poison_executed"] > previous_hitchhiking_info[f"{alt_env}_times_poison_executed"]) and not (current_hitchhiking_info[f"{cur_env}_times_poison_executed"] > previous_hitchhiking_info[f"{cur_env}_times_poison_executed"])
 
                     num_times_hitchhike_inst_exec_increases_in_expressed_phenotype += int(expressed_hitchhiking_inst_exec_increased)
                     num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype += int(unexpressed_hitchiking_inst_exec_increased)
