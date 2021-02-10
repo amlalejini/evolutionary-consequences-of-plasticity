@@ -1,0 +1,447 @@
+# The effect of phenotypic plasticity on deleterious genetic hitchhiking
+
+## Overview
+
+```{r}
+total_updates <- 200000
+replicates <- 100
+
+focal_traits <- c("not","nand","and","ornot","or","andnot")
+traits_set_a <- c("not", "and", "or")
+traits_set_b <- c("nand", "ornot", "andnot")
+
+# Relative location of data.
+working_directory <- "experiments/2021-02-05-hitchhiking/analysis/" # << For bookdown
+# working_directory <- "./"
+```
+
+## Analysis dependencies
+
+Load all required R libraries.
+
+```{r, message=FALSE}
+library(RColorBrewer)
+library(ggplot2)
+library(tidyverse)
+library(cowplot)
+library(Hmisc)
+source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
+```
+
+These analyses were conducted/knitted with the following computing environment:
+
+```{r}
+print(version)
+```
+
+## Setup
+
+```{r}
+####### summary data #######
+summary_data_loc <- paste0(working_directory, "data/aggregate.csv")
+summary_data <- read.csv(summary_data_loc, na.strings="NONE")
+
+summary_data$DISABLE_REACTION_SENSORS <- as.factor(summary_data$DISABLE_REACTION_SENSORS)
+summary_data$chg_env <- summary_data$chg_env == "True"
+summary_data$dominant_plastic_odd_even <- as.factor(summary_data$dominant_plastic_odd_even)
+summary_data$sensors <- summary_data$DISABLE_REACTION_SENSORS == "0"
+summary_data$is_plastic <- summary_data$dominant_plastic_odd_even == "True"
+summary_data$POISON_PENALTY <- as.factor(summary_data$POISON_PENALTY)
+
+env_label_fun <- function(chg_env) {
+  if (chg_env) {
+    return("Fluctuating")
+  } else {
+    return("Constant")
+  }
+}
+
+sensors_label_fun <- function(has_sensors) {
+  if (has_sensors) {
+    return("Sensors")
+  } else {
+    return("No sensors")
+  }
+}
+
+condition_label_fun <- function(has_sensors, env_chg) {
+  if (has_sensors && env_chg) {
+    return("PLASTIC")
+  } else if (env_chg) {
+    return("NON-PLASTIC")
+  } else {
+    return("STATIC")
+  }
+}
+
+summary_data$env_label <- mapply(
+  env_label_fun,
+  summary_data$chg_env
+)
+summary_data$sensors_label <- mapply(
+  sensors_label_fun,
+  summary_data$sensors
+)
+summary_data$condition <- mapply(
+  condition_label_fun,
+  summary_data$sensors,
+  summary_data$chg_env
+)
+
+condition_order = c(
+  "STATIC",
+  "NON-PLASTIC",
+  "PLASTIC"
+)
+
+###### time series #####
+lineage_time_series_data_loc <- paste0(working_directory, "data/lineage_series.csv")
+lineage_time_series_data <- read.csv(lineage_time_series_data_loc)
+
+lineage_time_series_data$DISABLE_REACTION_SENSORS <- as.factor(lineage_time_series_data$DISABLE_REACTION_SENSORS)
+lineage_time_series_data$chg_env <- lineage_time_series_data$chg_env == "True"
+lineage_time_series_data$sensors <- lineage_time_series_data$DISABLE_REACTION_SENSORS == "0"
+lineage_time_series_data$POISON_PENALTY <- as.factor(lineage_time_series_data$POISON_VALUE)
+
+lineage_time_series_data$env_label <- mapply(
+  env_label_fun,
+  lineage_time_series_data$chg_env
+)
+lineage_time_series_data$sensors_label <- mapply(
+  sensors_label_fun,
+  lineage_time_series_data$sensors
+)
+lineage_time_series_data$condition <- mapply(
+  condition_label_fun,
+  lineage_time_series_data$sensors,
+  lineage_time_series_data$chg_env
+)
+
+####### misc #######
+# Configure our default graphing theme
+theme_set(theme_cowplot())
+dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
+```
+
+## Evolution of phenotypic plasticity
+
+For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.
+
+```{r}
+summary_data_grouped = dplyr::group_by(summary_data, sensors, env_label, condition, POISON_PENALTY)
+summary_data_group_counts = dplyr::summarize(summary_data_grouped, n=dplyr::n())
+
+ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
+  geom_col(position=position_dodge(0.9)) +
+  geom_text(aes(label=n, y=n+2)) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Number of replicates in phase two") +
+  facet_wrap(~POISON_PENALTY, labeller=label_both) +
+  theme(
+    legend.position="none"
+  )
+```
+
+We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
+
+```{r}
+summary_data_grouped = dplyr::group_by(summary_data, condition, is_plastic, POISON_PENALTY)
+summary_data_group_counts = dplyr::summarize(summary_data_grouped, n=dplyr::n())
+ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill=condition)) +
+  geom_col(position=position_dodge(0.9)) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  geom_text(aes(label=n, y=n+1)) +
+  ylab("Number of replicates with a plastic dominant genotype") +
+  facet_wrap(~POISON_PENALTY, labeller=label_both) +
+  theme(
+    legend.position="none"
+  )
+```
+
+## Hitchhiking instruction execution
+
+### Final dominant genotype
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_times_poison_executed, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("poison instruction executions (final dominant)") +
+  facet_wrap(
+    ~POISON_PENALTY,
+    labeller=label_both
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-poison.pdf"),
+    width=15,
+    height=10
+  )
+
+threshold <- 0.1
+dom_data <- filter(summary_data, POISON_PENALTY==threshold)
+kruskal.test(
+  formula=dominant_times_poison_executed~condition,
+  data=dom_data
+)
+```
+
+### Final population
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=final_population_poison, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  scale_y_continuous(
+    name="poison instruction executions (final population)",
+    trans="pseudo_log",
+    breaks=c(0,10,100,1000, 10000, 100000, 1000000),
+    limits=c(-1,1000000)
+  ) +
+  facet_wrap(
+    ~POISON_PENALTY,
+    labeller=label_both
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/final-population-poison-log.pdf"),
+    width=15,
+    height=10
+  )
+threshold <- 0.1
+dom_data <- filter(summary_data, POISON_PENALTY==threshold)
+kruskal.test(
+  formula=dominant_times_poison_executed~condition,
+  data=dom_data
+)
+```
+
+## Final dominant lineage (cummulative)
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  scale_y_continuous(
+    name="poison instruction executions (dominant lineage)",
+    trans="pseudo_log",
+    breaks=c(0,10,100,1000,10000,100000),
+    limits=c(-1,100000)
+  ) +
+  facet_wrap(
+    ~POISON_PENALTY,
+    labeller=label_both
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/final-dominant-lineage-poison-log.pdf"),
+    width=15,
+    height=10
+  )
+threshold <- 0.1
+dom_task_data <- filter(summary_data, POISON_PENALTY==threshold)
+kruskal.test(
+  formula=dominant_lineage_times_poison_executed~condition,
+  data=dom_task_data
+)
+pairwise.wilcox.test(
+  x=dom_task_data$dominant_lineage_times_poison_executed,
+  g=dom_task_data$condition,
+  p.adjust.method="bonferroni",
+  conf.int=TRUE,
+  conf.level=0.95
+)
+```
+
+### Hitchhike instruction execution linkage
+
+```{r}
+# Fraction of unexpressed vs expressed increases in hitchhiker instructions
+summary_data$frac_unexpressed_hitchhiker_inc <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype / (summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_expressed_phenotype + summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype )
+summary_data$frac_expressed_hitchiker_inc <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_expressed_phenotype / (summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_expressed_phenotype + summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype )
+
+summary_data$frac_hitchhiking_linked_trait_change <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
+ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0 & POISON_PENALTY != 0), aes(x=frac_hitchhiking_linked_trait_change)) +
+  geom_density() +
+  facet_grid(
+    condition~POISON_PENALTY,
+    labeller=label_both,
+    scales="free_y"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/dominant-lineage-frac_hitchhiking_linked_trait_change.pdf"),
+    width=15,
+    height=10
+  )
+
+# filter(summary_data, POISON_PENALTY==0.1 & condition=="PLASTIC")$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype
+# filter(summary_data, POISON_PENALTY==0.1 & condition=="PLASTIC")$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_expressed_phenotype
+# filter(summary_data, POISON_PENALTY==0.1 & condition=="PLASTIC")$dominant_lineage_num_times_hitchhike_inst_exec_increases
+
+```
+
+## MRCA Changes
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=phylo_mrca_changes, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  scale_y_continuous(
+    name="sweeps",
+    trans="pseudo_log",
+    breaks=c(0,10,100,1000,10000),
+    limits=c(-1,10000)
+  ) +
+  facet_wrap(
+    ~POISON_PENALTY,
+    labeller=label_both
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/selective-sweeps.pdf"),
+    width=15,
+    height=10
+  )
+```
+
+## Manuscript figures
+
+Lineage (cummulative)
+
+```{r}
+lineage_inst_exec <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_times_poison_executed, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Poison instructions executed along lineage (log)",
+    trans="pseudo_log",
+    breaks=c(0,10,100,1000, 10000),
+    limits=c(-1,10000)
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+lineage_inst_exec
+```
+
+```{r}
+lineage_inst_exec +
+  ggsave(
+    paste0(working_directory, "plots/", "deleterious-hitchhiking-panel.pdf"),
+    width=7,
+    height=6
+  )
+```

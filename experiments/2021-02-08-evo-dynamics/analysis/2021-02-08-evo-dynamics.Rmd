@@ -1,0 +1,762 @@
+# The effect of adaptive phenotypic plasticity on evolutionary change
+
+## Overview
+
+```{r}
+total_updates <- 200000
+replicates <- 100
+
+all_traits <- c("not","nand","and","ornot","or","andnot")
+traits_set_a <- c("not", "and", "or")
+traits_set_b <- c("nand", "ornot", "andnot")
+
+# Relative location of data.
+working_directory <- "experiments/2021-02-08-evo-dynamics/analysis/" # << For bookdown
+# working_directory <- "./"                                              # << For local analysis
+```
+
+## Analysis dependencies
+
+Load all required R libraries.
+
+```{r, message=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(cowplot)
+library(RColorBrewer)
+library(Hmisc)
+library(boot)
+source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
+```
+
+These analyses were conducted/knitted with the following computing environment:
+
+```{r}
+print(version)
+```
+
+## Setup
+
+```{r}
+summary_data_loc <- paste0(working_directory, "data/aggregate.csv")
+summary_data <- read.csv(summary_data_loc, na.strings="NONE")
+
+summary_data$DISABLE_REACTION_SENSORS <- as.factor(summary_data$DISABLE_REACTION_SENSORS)
+summary_data$chg_env <- summary_data$chg_env == "True"
+summary_data$dominant_plastic_odd_even <- as.factor(summary_data$dominant_plastic_odd_even)
+summary_data$sensors <- summary_data$DISABLE_REACTION_SENSORS == "0"
+summary_data$is_plastic <- summary_data$dominant_plastic_odd_even == "True"
+
+env_label_fun <- function(chg_env) {
+  if (chg_env) {
+    return("Fluctuating")
+  } else {
+    return("Constant")
+  }
+}
+
+sensors_label_fun <- function(has_sensors) {
+  if (has_sensors) {
+    return("Sensors")
+  } else {
+    return("No sensors")
+  }
+}
+
+# note that this labeler makes assumptions about how we set up our experiment
+condition_label_fun <- function(has_sensors, env_chg) {
+  if (has_sensors && env_chg) {
+    return("PLASTIC")
+  } else if (env_chg) {
+    return("NON-PLASTIC")
+  } else {
+    return("STATIC")
+  }
+}
+
+summary_data$env_label <- mapply(
+  env_label_fun,
+  summary_data$chg_env
+)
+summary_data$sensors_label <- mapply(
+  sensors_label_fun,
+  summary_data$sensors
+)
+summary_data$condition <- mapply(
+  condition_label_fun,
+  summary_data$sensors,
+  summary_data$chg_env
+)
+
+condition_order = c(
+  "STATIC",
+  "NON-PLASTIC",
+  "PLASTIC"
+)
+
+###### time series #####
+# time_series_data_loc <- paste0(working_directory, "data/time_series_u0-u200000.csv")
+time_series_data_loc <- paste0(working_directory, "data/time_series_u95000-u105000.csv")
+
+time_series_data <- read.csv(time_series_data_loc)
+time_series_data$DISABLE_REACTION_SENSORS <- as.factor(time_series_data$DISABLE_REACTION_SENSORS)
+time_series_data$chg_env <- time_series_data$chg_env == "True"
+time_series_data$sensors <- time_series_data$DISABLE_REACTION_SENSORS == "0"
+
+time_series_data$env_label <- mapply(
+  env_label_fun,
+  time_series_data$chg_env
+)
+time_series_data$sensors_label <- mapply(
+  sensors_label_fun,
+  time_series_data$sensors
+)
+time_series_data$condition <- mapply(
+  condition_label_fun,
+  time_series_data$sensors,
+  time_series_data$chg_env
+)
+
+####### misc #######
+# Configure our default graphing theme
+theme_set(theme_cowplot())
+dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
+```
+
+## Evolution of phenotypic plasticity
+
+For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.
+
+```{r}
+summary_data_grouped = dplyr::group_by(summary_data, sensors, env_label, condition)
+summary_data_group_counts = dplyr::summarize(summary_data_grouped, n=dplyr::n())
+
+ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
+  geom_col(position=position_dodge(0.9)) +
+  geom_text(aes(label=n, y=n+2)) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Number of replicates in phase two") +
+  theme(
+    legend.position="none"
+  )
+```
+
+We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
+
+```{r}
+summary_data_grouped = dplyr::group_by(summary_data, condition, is_plastic)
+summary_data_group_counts = dplyr::summarize(summary_data_grouped, n=dplyr::n())
+ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill=condition)) +
+  geom_col(position=position_dodge(0.9)) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  geom_text(aes(label=n, y=n+1)) +
+  ylab("Number of replicates with a plastic dominant genotype") +
+  theme(
+    legend.position="none"
+  )
+```
+
+## Average generation
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("average generation") +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+median(filter(summary_data, condition=="PLASTIC")$time_average_generation)
+median(filter(summary_data, condition=="STATIC")$time_average_generation)
+median(filter(summary_data, condition=="NON-PLASTIC")$time_average_generation)
+
+kruskal.test(
+  formula=time_average_generation~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$time_average_generation,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+```
+
+## Phenotypic volatility along dominant lineage
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  scale_y_continuous(
+    name="Phenotypic volatility (log scale)",
+    trans="pseudo_log",
+    breaks=c(0, 10, 100, 1000, 10000),
+    limits=c(-1,10000)
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+
+median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility)
+median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility)
+median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility)
+
+kruskal.test(
+  formula=dominant_lineage_trait_volatility~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$dominant_lineage_trait_volatility,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+```
+
+## Mutation accumulation along the dominant lineage
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Mutation accumulation") +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+kruskal.test(
+  formula=dominant_lineage_total_mut_cnt~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$dominant_lineage_total_mut_cnt,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+
+median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_total_mut_cnt)
+median(filter(summary_data, condition=="STATIC")$dominant_lineage_total_mut_cnt)
+median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_total_mut_cnt)
+```
+
+### Mutation accumulation normalized by lineage length
+
+```{r}
+summary_data$mutations_per_lineage_step <- summary_data$dominant_lineage_total_mut_cnt / summary_data$dominant_lineage_length_genotypes
+ggplot(summary_data, aes(x=condition, y=mutations_per_lineage_step, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Mutation accumulation / lineage length") +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+kruskal.test(
+  formula=mutations_per_lineage_step~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$mutations_per_lineage_step,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+
+median(filter(summary_data, condition=="PLASTIC")$mutations_per_lineage_step)
+median(filter(summary_data, condition=="NON-PLASTIC")$mutations_per_lineage_step)
+median(filter(summary_data, condition=="STATIC")$mutations_per_lineage_step)
+```
+
+### Unexpressed variation along lineage
+
+```{r}
+summary_data$frac_phenotype_changing_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype / summary_data$dominant_lineage_num_mut_steps
+
+summary_data$frac_unexpressed_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype / summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype
+summary_data$frac_expressed_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_expressed_phenotype / summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype
+
+summary_data$frac_unexpressed_deleterious_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_deleterious / summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype
+summary_data$frac_unexpressed_beneficial_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_beneficial / summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype
+
+samplemean <- function(x, d) {
+  return(mean(x[d]))
+}
+
+# How many mutational steps result in a change in aggregate phenotype?
+bo <- boot(filter(summary_data, condition=="PLASTIC" & dominant_lineage_num_mut_steps > 0)$frac_phenotype_changing_mut_steps, statistic=samplemean, R=10000)
+bo
+boot.ci(bo, conf=0.95, type="perc")
+
+bo <- boot(filter(summary_data, condition=="PLASTIC" & dominant_lineage_num_mut_steps_that_change_aggregate_phenotype > 0)$frac_unexpressed_mut_steps, statistic=samplemean, R=10000)
+bo
+boot.ci(bo, conf=0.95, type="perc")
+
+bo <- boot(filter(summary_data, condition=="PLASTIC" & dominant_lineage_num_mut_steps_that_change_aggregate_phenotype > 0)$frac_unexpressed_deleterious_mut_steps, statistic=samplemean, R=10000)
+bo
+boot.ci(bo, conf=0.95, type="perc")
+
+bo <- boot(filter(summary_data, condition=="PLASTIC" & dominant_lineage_num_mut_steps_that_change_aggregate_phenotype > 0)$frac_unexpressed_beneficial_mut_steps, statistic=samplemean, R=10000)
+bo
+boot.ci(bo, conf=0.95, type="perc")
+
+# ggplot(filter(summary_data, condition=="PLASTIC"), aes(x=frac_unexpressed_mut_steps)) +
+#   geom_density() +
+#   theme(
+#     legend.position="none"
+#   )
+# ggplot(filter(summary_data, condition=="PLASTIC"), aes(x=frac_expressed_mut_steps)) +
+#   geom_density() +
+#   theme(
+#     legend.position="none"
+#   )
+```
+
+## Selective sweeps
+
+The number of times the most recent common ancestor changes gives us the number of selective sweeps that occur during the experiment.
+
+```{r}
+
+
+ggplot(summary_data, aes(x=condition, y=phylo_mrca_changes, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Number of selective sweeps") +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+kruskal.test(
+  formula=phylo_mrca_changes~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$phylo_mrca_changes,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+
+median(filter(summary_data, condition=="PLASTIC")$phylo_mrca_changes)
+median(filter(summary_data, condition=="STATIC")$phylo_mrca_changes)
+median(filter(summary_data, condition=="NON-PLASTIC")$phylo_mrca_changes)
+
+# low_mrca_change <- filter(summary_data, condition=="Non-plastic (fluctuating)" & phylo_mrca_changes <= 20)
+```
+
+```{r}
+summary_data$generations_per_mrca_change <- summary_data$time_average_generation / summary_data$phylo_mrca_changes
+
+ggplot(summary_data, aes(x=condition, y=generations_per_mrca_change, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+
+## Depth of MRCA
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=phylo_mrca_depth, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("MRCA Depth") +
+  theme(
+    legend.position="none"
+  )
+```
+
+## Phylogenetic diversity over time
+
+```
+// From (Faith 1992, reviewed in Winters et al., 2013), phylogenetic diversity is the sum of edges in the minimal spanning tree connected the taxa you're calculating diversity of.
+// This calculates phylogenetic diversity for all extant taxa in the tree.
+```
+
+```{r}
+ggplot(time_series_data, aes(x=update, y=phylo_current_phylogenetic_diversity, fill=condition, color=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ylab("Phylogenetic diversity") +
+  ggsave(
+    paste0(working_directory, "plots/", "phylo-diversity-ot.png"),
+    width=10,
+    height=5
+  )
+```
+
+## Number of extant taxa (genotypes) over time
+
+```{r}
+ggplot(time_series_data, aes(x=update, y=phylo_num_taxa_extant, fill=condition, color=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "phylo-num-extant-taxa-ot.png"),
+    width=10,
+    height=5
+  )
+```
+
+## Evolutionary distinctiveness over time
+
+```
+  /** This metric (from Isaac, 2007; reviewed in Winter et al., 2013) measures how
+    * distinct @param tax is from the rest of the population, weighted for the amount of
+    * unique evolutionary history that it represents.
+    *
+    * To quantify length of evolutionary history, this method needs @param time: the current
+    * time, in whatever units time is being measured in when taxa are added to the systematics
+    * manager. Note that passing a time in the past will produce innacurate results (since we
+    * don't know what the state of the tree was at that time).
+    *
+    * Assumes the tree is all connected. Will return -1 if this assumption isn't met.
+  */
+```
+
+```{r}
+ggplot(time_series_data, aes(x=update, y=phylo_mean_evolutionary_distinctiveness, fill=condition, color=condition)) +
+  stat_summary(fun="mean", geom="line") +
+  stat_summary(
+    fun.data="mean_cl_boot",
+    fun.args=list(conf.int=0.95),
+    geom="ribbon",
+    alpha=0.2,
+    linetype=0
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "phylo_mean_evolutionary_distinctiveness-ot.png"),
+    width=10,
+    height=5
+  )
+```
+
+## Camera-ready figures
+
+Figures styled for the paper.
+
+
+Mutation accumulation
+
+```{r}
+# dominant_lineage_total_mut_cnt or mutations_per_lineage_step?
+mutation_count_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Mutations accumulated (log scale)",
+    trans="log10"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip() +
+  ggsave(
+    paste0(working_directory, "plots/", "mutation-accumulation.pdf"),
+    width=5,
+    height=4
+  )
+```
+
+Phenotypic volatility
+
+```{r}
+phenotypic_volatility_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Phenotypic volatility (log scale)",
+    trans="pseudo_log",
+    breaks=c(0, 10, 100, 1000, 10000),
+    limits=c(-1,10000)
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ) +
+  coord_flip() +
+  ggsave(
+    paste0(working_directory, "plots/", "phenotypic-volatility.pdf"),
+    width=4,
+    height=4
+  )
+```
+
+Selective sweeps.
+
+```{r}
+selective_sweeps_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=phylo_mrca_changes, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Coalescence Events (log scale)",
+    trans="log10"
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ) +
+  coord_flip() +
+  ggsave(
+    paste0(working_directory, "plots/", "selective-sweeps.pdf"),
+    width=4,
+    height=4
+  )
+```
+
+All together
+
+```{r}
+grid <- plot_grid(
+  mutation_count_fig,
+  phenotypic_volatility_fig,
+  selective_sweeps_fig,
+  nrow=1,
+  align="v",
+  labels="auto"
+)
+save_plot(
+   paste0(working_directory, "plots/", "evolutionary-dynamics.pdf"),
+   grid,
+   base_height=6,
+   base_asp=2.5
+)
+```
