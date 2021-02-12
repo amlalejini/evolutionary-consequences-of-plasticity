@@ -14,4 +14,8 @@ description: "Supplemental material"
 
 # Introduction
 
-TODO
+![Experimental design overview](media/experimental-design-overview.png)
+
+![Fluctuating environment](media/fluctuating-environment.jpg)
+
+![Static environment](media/static-environment.jpg)
