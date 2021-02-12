@@ -78,6 +78,10 @@ RUN \
     && \
   export EXP_TAG=2021-01-31-complex-features \
     && \
+  ./download_exp_data.sh \
+    && \
+  export EXP_TAG=2021-02-05-hitchhiking \
+    && \
   ./download_exp_data.sh
 
 ########################################################
