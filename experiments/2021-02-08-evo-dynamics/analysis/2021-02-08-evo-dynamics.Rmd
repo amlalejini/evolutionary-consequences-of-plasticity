@@ -107,7 +107,7 @@ dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
 For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.
 
 ```{r}
-summary_data_grouped = dplyr::group_by(summary_data, sensors, env_label, condition)
+summary_data_grouped = dplyr::group_by(summary_data, condition)
 summary_data_group_counts = dplyr::summarize(summary_data_grouped, n=dplyr::n())
 
 ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
@@ -125,17 +125,19 @@ ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
 
 We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
 
-```{r}
+```{r, message=FALSE}
 summary_data_grouped = dplyr::group_by(summary_data, condition, is_plastic)
 summary_data_group_counts = dplyr::summarize(summary_data_grouped, n=dplyr::n())
 ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill=condition)) +
-  geom_col(position=position_dodge(0.9)) +
+  geom_col(
+    position=position_dodge(0.9)
+  ) +
   scale_x_discrete(
     name="Condition",
     limits=condition_order
   ) +
   geom_text(aes(label=n, y=n+1)) +
-  ylab("Number of replicates with a plastic dominant genotype") +
+  ylab("Number of plastic replicates") +
   theme(
     legend.position="none"
   )
@@ -172,15 +174,15 @@ ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)
 
 ```{r}
 paste0(
-  "PLASTIC: ",
+  "PLASTIC median: ",
   median(filter(summary_data, condition=="PLASTIC")$time_average_generation)
 )
 paste0(
-  "STATIC: ",
+  "STATIC median: ",
   median(filter(summary_data, condition=="STATIC")$time_average_generation)
 )
 paste0(
-  "NON-PLASTIC: ",
+  "NON-PLASTIC median: ",
   median(filter(summary_data, condition=="NON-PLASTIC")$time_average_generation)
 )
 
@@ -547,6 +549,7 @@ ggplot(filter(summary_data, dominant_lineage_num_mut_steps > 0), aes(x=frac_phen
   geom_density() +
   facet_wrap(
     ~condition,
+    nrow=3,
     labeller=label_both
 
   ) +
@@ -554,7 +557,6 @@ ggplot(filter(summary_data, dominant_lineage_num_mut_steps > 0), aes(x=frac_phen
   theme(
     legend.position="none"
   )
-
 ```
 
 ```{r}
@@ -710,6 +712,9 @@ mutation_count_fig <- ggplot(
     palette="Paired"
   ) +
   coord_flip() +
+  theme(
+    legend.position="none"
+  ) +
   ggsave(
     paste0(working_directory, "plots/", "mutation-accumulation.pdf"),
     width=5,
@@ -758,6 +763,9 @@ phenotypic_volatility_fig <- ggplot(
     palette="Paired"
   ) +
   coord_flip() +
+  theme(
+    legend.position="none"
+  ) +
   ggsave(
     paste0(working_directory, "plots/", "phenotypic-volatility.pdf"),
     width=4,
@@ -807,6 +815,9 @@ selective_sweeps_fig <- ggplot(
     palette="Paired"
   ) +
   coord_flip() +
+  theme(
+    legend.position="none"
+  ) +
   ggsave(
     paste0(working_directory, "plots/", "selective-sweeps.pdf"),
     width=4,
