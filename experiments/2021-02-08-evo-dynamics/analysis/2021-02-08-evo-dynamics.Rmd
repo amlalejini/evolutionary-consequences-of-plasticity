@@ -371,7 +371,66 @@ pairwise.wilcox.test(
 )
 ```
 
+### Phenotypic volatility normalized by generations elapsed
+
+
+```{r}
+summary_data$dominant_lineage_trait_volatility_per_generation <- summary_data$dominant_lineage_trait_volatility / summary_data$dominant_generation_born
+
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility_per_generation, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+paste0(
+  "PLASTIC: ",
+  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility_per_generation)
+)
+paste0(
+  "STATIC: ",
+  median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility_per_generation)
+)
+paste0(
+  "NON-PLASTIC: ",
+  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility_per_generation)
+)
+
+kruskal.test(
+  formula=dominant_lineage_trait_volatility_per_generation~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$dominant_lineage_trait_volatility_per_generation,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+```
+
 ### Phenotypic volatility normalized by lineage length
+
+Lineage length = number of genotypes along the lineage.
 
 ```{r}
 summary_data$dominant_lineage_trait_volatility_per_lineage_step <- summary_data$dominant_lineage_trait_volatility / summary_data$dominant_lineage_length_genotypes
@@ -477,6 +536,63 @@ kruskal.test(
 
 pairwise.wilcox.test(
   x=summary_data$dominant_lineage_total_mut_cnt,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+```
+
+### Mutation accumulation normalized by generations elapsed
+
+```{r}
+summary_data$mutations_per_generation <- summary_data$dominant_lineage_total_mut_cnt / summary_data$dominant_generation_born
+
+ggplot(summary_data, aes(x=condition, y=mutations_per_generation, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Mutation accumulation / generation") +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+paste0(
+  "PLASTIC: ",
+  median(filter(summary_data, condition=="PLASTIC")$mutations_per_generation)
+)
+paste0(
+  "STATIC: ",
+  median(filter(summary_data, condition=="STATIC")$mutations_per_generation)
+)
+paste0(
+  "NON-PLASTIC: ",
+  median(filter(summary_data, condition=="NON-PLASTIC")$mutations_per_generation)
+)
+
+kruskal.test(
+  formula=mutations_per_generation~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$mutations_per_generation,
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
