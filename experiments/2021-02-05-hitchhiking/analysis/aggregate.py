@@ -80,7 +80,7 @@ def read_avida_dat_file(path, backfill_missing_fields=False):
         if "Logic 3" in line:
             line = line.split("(")[0]
 
-        fields.append( line.split(":")[-1].strip().lower().replace(" ", "_") )
+        fields.append( line.split(":")[-1].strip().lower().replace("#", "").strip().replace(" ", "_") )
     data = []
     for line_i in range(legend_end, len(content)):
         line = content[line_i].strip()
