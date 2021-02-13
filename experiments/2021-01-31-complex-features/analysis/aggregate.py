@@ -41,7 +41,7 @@ def extract_params_cmd_log(path):
     cfg = {param.split(" ")[0]:param.split(" ")[1] for param in params}
     return cfg
 
-def read_avida_dat_file(path):
+def read_avida_dat_file(path, backfill_missing_fields=False):
     content = None
     with open(path, "r") as fp:
         content = fp.read().strip().split("\n")
@@ -73,7 +73,15 @@ def read_avida_dat_file(path):
         line = content[line_i].strip()
         if line == "": continue
         data_line = line.split(" ")
-        if len(data_line) != len(fields):
+        if len(data_line) > len(fields):
+            print("found more items than there are fields!")
+            print(fields)
+            print(data_line)
+            exit(-1)
+        elif backfill_missing_fields:
+            num_backfill = len(fields) - len(data_line)
+            for _ in range(num_backfill): data_line.append("")
+        elif len(data_line) != len(fields):
             print("data fields mismatch!")
             print(fields)
             print(data_line)
@@ -283,6 +291,22 @@ def main():
         task_data_ts = None
         ############################################################
 
+        ############################################################
+        # Extract .spop file info
+        # - What are the unique keys shared across analyze mode output/.spop file?
+        #   - tuple(sequence, update born)
+        spop_data = read_avida_dat_file(os.path.join(run_path, "data", f"detail-{update}.spop"), True)
+        # each entry is indexed off of update born and genome sequence so we can easily lookup spop
+        # info when grabbing data from analyze mode files.
+        spop_lookup_table = {
+            tuple([line["update_born"], line["genome_sequence"]]):line
+            for line in spop_data
+        }
+        def spop_lookup(update_born, sequence, field):
+            return spop_lookup_table[tuple([update_born, sequence])][field]
+
+        spop_data = None
+        ############################################################
 
         ############################################################
         # Extract environment-specific final dominant information.
@@ -301,6 +325,11 @@ def main():
 
         # Collect dominant genotype data.
         summary_info["dominant_genome_length"] = dom_env_all["genome_length"]
+        summary_info["dominant_generation_born"] = spop_lookup(
+            update_born=dom_env_all["update_born"],
+            sequence=dom_env_all["genome_sequence"],
+            field="generation_born"
+        )
 
         phenotype_even = "".join([dom_env_even[trait] for trait in primary_traits])
         phenotype_odd = "".join([dom_env_odd[trait] for trait in primary_traits])
