@@ -1009,8 +1009,124 @@ The number of times the most recent common ancestor changes gives us the number 
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
+\hypertarget{phenotypic-volatility-normalized-by-generations-elapsed}{%
+\subsection{Phenotypic volatility normalized by generations elapsed}\label{phenotypic-volatility-normalized-by-generations-elapsed}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_trait_volatility_per_generation <-}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_trait_volatility }\OperatorTok{/}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_generation_born}
+
+\KeywordTok{ggplot}\NormalTok{(summary_data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_trait_volatility_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-21-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{paste0}\NormalTok{(}
+  \StringTok{"PLASTIC: "}\NormalTok{,}
+  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_trait_volatility_per_generation)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "PLASTIC: 6.33339279717772e-05"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{paste0}\NormalTok{(}
+  \StringTok{"STATIC: "}\NormalTok{,}
+  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"STATIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_trait_volatility_per_generation)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "STATIC: 0"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{paste0}\NormalTok{(}
+  \StringTok{"NON-PLASTIC: "}\NormalTok{,}
+  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_trait_volatility_per_generation)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "NON-PLASTIC: 0.0447440145638177"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{kruskal.test}\NormalTok{(}
+  \DataTypeTok{formula=}\NormalTok{dominant_lineage_trait_volatility_per_generation}\OperatorTok{~}\NormalTok{condition,}
+  \DataTypeTok{data=}\NormalTok{summary_data}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  dominant_lineage_trait_volatility_per_generation by condition
+## Kruskal-Wallis chi-squared = 189.62, df = 2, p-value < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pairwise.wilcox.test}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_trait_volatility_per_generation,}
+  \DataTypeTok{g=}\NormalTok{summary_data}\OperatorTok{$}\NormalTok{condition,}
+  \DataTypeTok{p.adjust.method=}\StringTok{"bonferroni"}\NormalTok{,}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+## 
+## data:  summary_data$dominant_lineage_trait_volatility_per_generation and summary_data$condition 
+## 
+##         NON-PLASTIC PLASTIC
+## PLASTIC < 2e-16     -      
+## STATIC  < 2e-16     4.2e-06
+## 
+## P value adjustment method: bonferroni
+\end{verbatim}
+
 \hypertarget{phenotypic-volatility-normalized-by-lineage-length}{%
 \subsection{Phenotypic volatility normalized by lineage length}\label{phenotypic-volatility-normalized-by-lineage-length}}
+
+Lineage length = number of genotypes along the lineage.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1042,7 +1158,7 @@ The number of times the most recent common ancestor changes gives us the number 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-23-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1155,7 +1271,7 @@ The number of times the most recent common ancestor changes gives us the number 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-23-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1236,6 +1352,121 @@ The number of times the most recent common ancestor changes gives us the number 
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
+\hypertarget{mutation-accumulation-normalized-by-generations-elapsed}{%
+\subsection{Mutation accumulation normalized by generations elapsed}\label{mutation-accumulation-normalized-by-generations-elapsed}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{summary_data}\OperatorTok{$}\NormalTok{mutations_per_generation <-}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_total_mut_cnt }\OperatorTok{/}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_generation_born}
+
+\KeywordTok{ggplot}\NormalTok{(summary_data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{mutations_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Mutation accumulation / generation"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-27-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{paste0}\NormalTok{(}
+  \StringTok{"PLASTIC: "}\NormalTok{,}
+  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{mutations_per_generation)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "PLASTIC: 0.0319267181456982"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{paste0}\NormalTok{(}
+  \StringTok{"STATIC: "}\NormalTok{,}
+  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"STATIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{mutations_per_generation)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "STATIC: 0.0368157192941933"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{paste0}\NormalTok{(}
+  \StringTok{"NON-PLASTIC: "}\NormalTok{,}
+  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{mutations_per_generation)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "NON-PLASTIC: 0.112804526786948"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{kruskal.test}\NormalTok{(}
+  \DataTypeTok{formula=}\NormalTok{mutations_per_generation}\OperatorTok{~}\NormalTok{condition,}
+  \DataTypeTok{data=}\NormalTok{summary_data}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  mutations_per_generation by condition
+## Kruskal-Wallis chi-squared = 180.11, df = 2, p-value < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pairwise.wilcox.test}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{summary_data}\OperatorTok{$}\NormalTok{mutations_per_generation,}
+  \DataTypeTok{g=}\NormalTok{summary_data}\OperatorTok{$}\NormalTok{condition,}
+  \DataTypeTok{p.adjust.method=}\StringTok{"bonferroni"}\NormalTok{,}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+## 
+## data:  summary_data$mutations_per_generation and summary_data$condition 
+## 
+##         NON-PLASTIC PLASTIC
+## PLASTIC <2e-16      -      
+## STATIC  <2e-16      2e-04  
+## 
+## P value adjustment method: bonferroni
+\end{verbatim}
+
 \hypertarget{mutation-accumulation-normalized-by-lineage-length}{%
 \subsection{Mutation accumulation normalized by lineage length}\label{mutation-accumulation-normalized-by-lineage-length}}
 
@@ -1269,7 +1500,7 @@ The number of times the most recent common ancestor changes gives us the number 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-29-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1375,7 +1606,7 @@ The number of times the most recent common ancestor changes gives us the number 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-31-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1406,8 +1637,8 @@ The number of times the most recent common ancestor changes gives us the number 
 ## 
 ## 
 ## Bootstrap Statistics :
-##         original       bias     std. error
-## t1* 0.0006788834 1.028763e-06 0.0001237147
+##         original        bias     std. error
+## t1* 0.0006788834 -1.478991e-06 0.0001262498
 ## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
 ## 
@@ -1416,7 +1647,7 @@ The number of times the most recent common ancestor changes gives us the number 
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.0005,  0.0009 )  
+## 95%   ( 0.0004,  0.0009 )  
 ## Calculations and Intervals on Original Scale
 ## [1] "NON-PLASTIC - Mean with bootstrapped 95% CI"
 ## 
@@ -1430,8 +1661,8 @@ The number of times the most recent common ancestor changes gives us the number 
 ## 
 ## 
 ## Bootstrap Statistics :
-##     original       bias    std. error
-## t1* 0.434007 3.760033e-05 0.004328761
+##     original        bias    std. error
+## t1* 0.434007 -3.534218e-05 0.004337971
 ## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
 ## 
@@ -1440,7 +1671,7 @@ The number of times the most recent common ancestor changes gives us the number 
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4243,  0.4406 )  
+## 95%   ( 0.4241,  0.4406 )  
 ## Calculations and Intervals on Original Scale
 ## [1] "PLASTIC - Mean with bootstrapped 95% CI"
 ## 
@@ -1455,7 +1686,7 @@ The number of times the most recent common ancestor changes gives us the number 
 ## 
 ## Bootstrap Statistics :
 ##        original        bias     std. error
-## t1* 0.002717008 -2.769699e-06 0.0004016029
+## t1* 0.002717008 -6.225722e-06 0.0004003743
 ## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
 ## 
@@ -1484,7 +1715,7 @@ The number of times the most recent common ancestor changes gives us the number 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-33-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1514,8 +1745,8 @@ The number of times the most recent common ancestor changes gives us the number 
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.8247126 -0.0001433908  0.04006572
+##      original       bias    std. error
+## t1* 0.8247126 0.0001712644  0.04011045
 \end{verbatim}
 
 \begin{Shaded}
@@ -1533,7 +1764,7 @@ The number of times the most recent common ancestor changes gives us the number 
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.8994 )  
+## 95%   ( 0.7443,  0.9023 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -1557,7 +1788,7 @@ Deleterious
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-34-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1578,8 +1809,8 @@ Deleterious
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.5172414 -0.0005943678  0.03922909
+##      original       bias    std. error
+## t1* 0.5172414 0.0002947126  0.03936686
 \end{verbatim}
 
 \begin{Shaded}
@@ -1597,7 +1828,7 @@ Deleterious
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4414,  0.5931 )  
+## 95%   ( 0.4403,  0.5966 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -1618,7 +1849,7 @@ Beneficial
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-31-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-35-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1640,7 +1871,7 @@ Beneficial
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.4827586 4.298851e-05  0.03973162
+## t1* 0.4827586 0.0006805747  0.03945907
 \end{verbatim}
 
 \begin{Shaded}
@@ -1658,7 +1889,7 @@ Beneficial
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4046,  0.5598 )  
+## 95%   ( 0.4057,  0.5586 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -1694,7 +1925,7 @@ Beneficial
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-32-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-36-1.pdf}
 
 \hypertarget{manuscript-figures}{%
 \section{Manuscript figures}\label{manuscript-figures}}
@@ -1760,7 +1991,7 @@ Mutation accumulation:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-33-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-37-1.pdf}
 
 Phenotypic volatility:
 
@@ -1816,7 +2047,7 @@ Phenotypic volatility:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-34-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-38-1.pdf}
 
 Selective sweeps:
 
@@ -1872,7 +2103,7 @@ Selective sweeps:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-35-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-39-1.pdf}
 
 All together:
 
@@ -1902,7 +2133,7 @@ All together:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-36-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-40-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2125,7 +2356,7 @@ For sensor-enabled populations in fluctuating environments, we only transfered p
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-41-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-45-1.pdf}
 
 We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
 
@@ -2149,7 +2380,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-42-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-46-1.pdf}
 
 \hypertarget{final-dominant-novel-task-performance}{%
 \section{Final dominant novel task performance}\label{final-dominant-novel-task-performance}}
@@ -2194,7 +2425,7 @@ How many novel tasks do final dominant genotypes perform?
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-43-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-47-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2316,7 +2547,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-45-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-49-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2436,7 +2667,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-47-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-51-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2565,7 +2796,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-49-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-53-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2687,7 +2918,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-51-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-55-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2813,7 +3044,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-53-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 \hypertarget{novel-tasks-lost}{%
 \subsection{Novel tasks lost}\label{novel-tasks-lost}}
@@ -2856,7 +3087,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-58-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2978,7 +3209,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-56-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-60-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3088,7 +3319,7 @@ Task loss linked with primary trait changes.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-58-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-62-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3122,7 +3353,7 @@ Task loss linked with primary trait changes.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-59-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3157,8 +3388,8 @@ Task loss linked with primary trait changes.
 ## 
 ## 
 ## Bootstrap Statistics :
-##       original       bias    std. error
-## t1* 0.03137547 3.102663e-05  0.01407428
+##       original        bias    std. error
+## t1* 0.03137547 -0.0002275482  0.01439893
 ## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
 ## 
@@ -3167,7 +3398,7 @@ Task loss linked with primary trait changes.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.0082,  0.0627 )  
+## 95%   ( 0.0078,  0.0638 )  
 ## Calculations and Intervals on Original Scale
 ## [1] "NON-PLASTIC - Mean with bootstrapped 95% CI"
 ## 
@@ -3181,8 +3412,8 @@ Task loss linked with primary trait changes.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.9792739 -7.363614e-06 0.002272282
+##      original       bias    std. error
+## t1* 0.9792739 1.566871e-06 0.002276671
 ## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
 ## 
@@ -3191,7 +3422,7 @@ Task loss linked with primary trait changes.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.9745,  0.9835 )  
+## 95%   ( 0.9747,  0.9836 )  
 ## Calculations and Intervals on Original Scale
 ## [1] "PLASTIC - Mean with bootstrapped 95% CI"
 ## 
@@ -3205,8 +3436,8 @@ Task loss linked with primary trait changes.
 ## 
 ## 
 ## Bootstrap Statistics :
-##     original       bias    std. error
-## t1* 0.295094 0.0009070319  0.07450759
+##     original        bias    std. error
+## t1* 0.295094 -0.0009507615  0.07571422
 ## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
 ## 
@@ -3215,7 +3446,7 @@ Task loss linked with primary trait changes.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.1558,  0.4462 )  
+## 95%   ( 0.1516,  0.4489 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -3250,7 +3481,7 @@ Match score over time
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 Extra tasks over time
 
@@ -3278,7 +3509,7 @@ Extra tasks over time
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-62-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \hypertarget{manuscript-figures-1}{%
 \section{Manuscript figures}\label{manuscript-figures-1}}
@@ -3329,7 +3560,7 @@ Final dominant extra tasks.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 Final dominant lineage tasks discovered.
 
@@ -3376,7 +3607,7 @@ Final dominant lineage tasks discovered.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-64-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-68-1.pdf}
 
 Final dominant lineage tasks lost.
 
@@ -3427,7 +3658,7 @@ Final dominant lineage tasks lost.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 Pull it all together.
 
@@ -3451,7 +3682,7 @@ Pull it all together.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-70-1.pdf}
 
 \hypertarget{genetic-hitchhiking}{%
 \chapter{Genetic hitchhiking}\label{genetic-hitchhiking}}
@@ -3636,7 +3867,7 @@ For sensor-enabled populations in fluctuating environments, we only transfered p
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-71-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
 
 We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
 
@@ -3669,7 +3900,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-72-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 \hypertarget{hitchhiking-instruction-execution}{%
 \section{Hitchhiking instruction execution}\label{hitchhiking-instruction-execution}}
@@ -3716,7 +3947,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-77-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3854,7 +4085,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-79-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3992,7 +4223,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-77-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-81-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4123,7 +4354,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-83-1.pdf}
 
 What about unexpressed vs expressed trait changes in plastic populations?
 
@@ -4145,7 +4376,7 @@ What about unexpressed vs expressed trait changes in plastic populations?
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-80-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-84-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
