@@ -138,6 +138,7 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   ) +
   geom_text(aes(label=n, y=n+1)) +
   ylab("Number of plastic replicates") +
+  ylim(0, 100) +
   theme(
     legend.position="none"
   )
@@ -373,7 +374,6 @@ pairwise.wilcox.test(
 
 ### Phenotypic volatility normalized by generations elapsed
 
-
 ```{r}
 summary_data$dominant_lineage_trait_volatility_per_generation <- summary_data$dominant_lineage_trait_volatility / summary_data$dominant_generation_born
 
@@ -481,6 +481,64 @@ kruskal.test(
 
 pairwise.wilcox.test(
   x=summary_data$dominant_lineage_trait_volatility_per_lineage_step,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+```
+
+### Phenotypic fidelity
+
+Frequency that an offspring's genotype is identical to a parent genotype (along the dominant lineage).
+
+```{r}
+summary_data$dominant_lineage_trait_fidelity <- (summary_data$dominant_generation_born - summary_data$dominant_lineage_trait_volatility) / summary_data$dominant_generation_born
+
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_fidelity, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+paste0(
+  "PLASTIC: ",
+  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_fidelity)
+)
+paste0(
+  "STATIC: ",
+  median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_fidelity)
+)
+paste0(
+  "NON-PLASTIC: ",
+  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_fidelity)
+)
+
+kruskal.test(
+  formula=dominant_lineage_trait_fidelity~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$dominant_lineage_trait_fidelity,
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
@@ -654,6 +712,64 @@ pairwise.wilcox.test(
 )
 ```
 
+### Genotypic fidelity
+
+The frequency that an offspring's genotype is the same as a parent's genotype.
+
+```{r}
+summary_data$dominant_lineage_genotypic_fidelity <- (summary_data$dominant_generation_born - summary_data$dominant_lineage_num_mut_steps) / summary_data$dominant_generation_born
+
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_genotypic_fidelity, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+paste0(
+  "PLASTIC: ",
+  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_genotypic_fidelity)
+)
+paste0(
+  "STATIC: ",
+  median(filter(summary_data, condition=="STATIC")$dominant_lineage_genotypic_fidelity)
+)
+paste0(
+  "NON-PLASTIC: ",
+  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_genotypic_fidelity)
+)
+
+kruskal.test(
+  formula=dominant_lineage_genotypic_fidelity~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$dominant_lineage_genotypic_fidelity,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+```
+
 ### Characterizing variation along lineages
 
 #### How many mutation-steps along the lineage result in phenotypic changes?
@@ -676,17 +792,69 @@ ggplot(filter(summary_data, dominant_lineage_num_mut_steps > 0), aes(x=frac_phen
 ```
 
 ```{r}
+ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+paste0(
+  "PLASTIC: ",
+  median(filter(summary_data, condition=="PLASTIC")$frac_phenotype_changing_mut_steps)
+)
+paste0(
+  "STATIC: ",
+  median(filter(summary_data, condition=="STATIC")$frac_phenotype_changing_mut_steps)
+)
+paste0(
+  "NON-PLASTIC: ",
+  median(filter(summary_data, condition=="NON-PLASTIC")$frac_phenotype_changing_mut_steps)
+)
+
+kruskal.test(
+  formula=frac_phenotype_changing_mut_steps~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$frac_phenotype_changing_mut_steps,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+```
+
+```{r, include=FALSE}
 samplemean <- function(x, d) {
   return(mean(x[d]))
 }
 
-for (cond in condition_order) {
-  # How many mutational steps result in a change in aggregate phenotype?
-  print(paste0(cond, " - Mean with bootstrapped 95% CI"))
-  bo <- boot(filter(summary_data, condition==cond & dominant_lineage_num_mut_steps > 0)$frac_phenotype_changing_mut_steps, statistic=samplemean, R=10000)
-  print(bo)
-  print(boot.ci(bo, conf=0.95, type="perc"))
-}
+# for (cond in condition_order) {
+#   # How many mutational steps result in a change in aggregate phenotype?
+#   print(paste0(cond, " - Mean with bootstrapped 95% CI"))
+#   bo <- boot(filter(summary_data, condition==cond & dominant_lineage_num_mut_steps > 0)$frac_phenotype_changing_mut_steps, statistic=samplemean, R=10000)
+#   print(bo)
+#   print(boot.ci(bo, conf=0.95, type="perc"))
+# }
 ```
 
 #### For PLASTIC populations, what fraction of phenotype-altering mutations affect the unexpressed phenotype?
@@ -705,10 +873,25 @@ print(paste0("PLASTIC - Mean with bootstrapped 95% CI"))
 bo <- boot(filter(summary_data, condition=="PLASTIC" & dominant_lineage_num_mut_steps_that_change_aggregate_phenotype > 0)$frac_unexpressed_mut_steps, statistic=samplemean, R=10000)
 print(bo)
 print(boot.ci(bo, conf=0.95, type="perc"))
-
 ```
 
+```{r}
+plastic_summary_data <- filter(summary_data, condition=="PLASTIC")
+aggregate_frac_mut_steps_that_change_unexpressed_phenotype <- sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype) / sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)
+sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype)
+sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)
+aggregate_frac_mut_steps_that_change_unexpressed_phenotype
+```
+
+`r sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype)` / `r sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)` (`r aggregate_frac_mut_steps_that_change_unexpressed_phenotype`)
+
 #### For PLASTIC populations, what fraction of mutations that affect the unexpressed phenotype are deleterious versus beneficial?
+
+
+```{r}
+aggregate_frac_unexpressed_deleterious_mut_steps <- sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_deleterious) / sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype)
+aggregate_frac_unexpressed_beneficial_mut_steps <- sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_beneficial) / sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype)
+```
 
 
 Deleterious
