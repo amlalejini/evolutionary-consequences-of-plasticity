@@ -1,6 +1,6 @@
 ---
 title: "Supplemental Material"
-author: "Alexander Lalejini, Austin J. Ferguson, and Charles Ofria"
+author: "Alexander Lalejini, Austin J. Ferguson, Nkrumah Grant, and Charles Ofria"
 date: "`r Sys.Date()`"
 output: bookdown::gitbook
 documentclass: book
