@@ -98,7 +98,7 @@ RUN \
   add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' \
     && \
   apt-get install -y -q --no-install-recommends \
-    r-base=4.0.3-1.2004.0 \
+    r-base \
     r-base-dev \
     libssl-dev \
     libcurl4-openssl-dev \
