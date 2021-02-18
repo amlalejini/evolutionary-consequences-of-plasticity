@@ -28,6 +28,7 @@ library(tidyverse)
 library(cowplot)
 library(Hmisc)
 library(boot)
+library(fmsb)
 source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
 ```
 
@@ -169,6 +170,37 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
 ```
 
 ## Hitchhiking instruction execution
+
+### Number of replicates where final dominant genotype executes hitchhiker instruction
+
+```{r}
+hitchiker_penalty <- 0.1
+```
+
+```{r}
+occurrences <- c(
+  length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="NON-PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
+  length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
+  length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="STATIC" & dominant_times_poison_executed > 0)$RANDOM_SEED)
+)
+trials <- c(
+  length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="NON-PLASTIC")$RANDOM_SEED),
+  length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="PLASTIC")$RANDOM_SEED),
+  length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="STATIC" )$RANDOM_SEED)
+)
+names(trials) <- c(
+  "NON-PLASTIC",
+  "PLASTIC",
+  "STATIC"
+)
+names(occurrences) <- c(
+  "NON-PLASTIC",
+  "PLASTIC",
+  "STATIC"
+)
+
+pairwise.fisher.test(x=occurrences, n=trials, p.adjust.method="bonferroni")
+```
 
 ### Final dominant genotype hitchhiker execution
 
@@ -381,11 +413,149 @@ for (penalty in penalties) {
 
 ## Characterizing mutations that increase hitchhiker instruction execution
 
+### Number of offspring along dominant lineage with increase in hitchiker instruction execution
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  facet_wrap(
+    ~POISON_PENALTY,
+    labeller=label_both,
+    scales="free_y"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/final-dominant-lineage-poison-increase-num-mutants-log.pdf"),
+    width=15,
+    height=10
+  )
+```
+
+```{r}
+penalties <- levels(summary_data$POISON_PENALTY)
+for (penalty in penalties) {
+  stat_data <- filter(summary_data, POISON_PENALTY==penalty)
+  print(
+    paste0(
+      "PENALTY: ", penalty
+    )
+  )
+  kt <- kruskal.test(
+      formula=dominant_lineage_num_times_hitchhike_inst_exec_increases~condition,
+      data=stat_data
+    )
+  print(
+    kt
+  )
+  if (is.na(kt$p.value)) { next }
+  if (kt$p.value > 0.05) { next }
+  print(
+    pairwise.wilcox.test(
+      x=stat_data$dominant_lineage_num_times_hitchhike_inst_exec_increases,
+      g=stat_data$condition,
+      p.adjust.method="bonferroni"
+    )
+  )
+}
+
+sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+
+# sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_trait_volatility)
+# sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_trait_volatility)
+# sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_trait_volatility)
+
+```
+
+#### Normalized by generations
+
+```{r}
+summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases / summary_data$dominant_generation_born
+ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  facet_wrap(
+    ~POISON_PENALTY,
+    labeller=label_both,
+    scales="free_y"
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+penalties <- levels(summary_data$POISON_PENALTY)
+for (penalty in penalties) {
+  stat_data <- filter(summary_data, POISON_PENALTY==penalty)
+  print(
+    paste0(
+      "PENALTY: ", penalty
+    )
+  )
+  kt <- kruskal.test(
+      formula=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation~condition,
+      data=stat_data
+    )
+  print(
+    kt
+  )
+  if (is.na(kt$p.value)) { next }
+  if (kt$p.value > 0.05) { next }
+  print(
+    pairwise.wilcox.test(
+      x=stat_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation,
+      g=stat_data$condition,
+      p.adjust.method="bonferroni"
+    )
+  )
+}
+```
+
 ### What fraction of mutations that increase hitchhiker instruction execution co-occur with base trait changes?
 
 ```{r}
 # Fraction of unexpressed vs expressed increases in hitchhiker instructions
 summary_data$frac_hitchhiking_linked_trait_change <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
+
 ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0 ), aes(x=frac_hitchhiking_linked_trait_change)) +
   geom_density() +
   facet_grid(
@@ -401,9 +571,81 @@ ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_incre
     width=15,
     height=10
   )
+
+ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0 ), aes(x=condition, y=frac_hitchhiking_linked_trait_change, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  facet_wrap(
+    ~POISON_PENALTY,
+    labeller=label_both,
+    scales="free_y"
+  ) +
+  theme(
+    legend.position="none"
+  )
 ```
 
-What about unexpressed vs expressed trait changes in plastic populations?
+```{r}
+
+penalties <- levels(summary_data$POISON_PENALTY)
+for (penalty in penalties) {
+  stat_data <- filter(summary_data, POISON_PENALTY==penalty & dominant_lineage_num_times_hitchhike_inst_exec_increases>0)
+  print(
+    paste0(
+      "PENALTY: ", penalty
+    )
+  )
+  kt <- kruskal.test(
+      formula=frac_hitchhiking_linked_trait_change~condition,
+      data=stat_data
+    )
+  print(
+    kt
+  )
+  if (is.na(kt$p.value)) { next }
+  if (kt$p.value > 0.05) { next }
+  print(
+    pairwise.wilcox.test(
+      x=stat_data$frac_hitchhiking_linked_trait_change,
+      g=stat_data$condition,
+      p.adjust.method="bonferroni",
+      exact=FALSE
+    )
+  )
+}
+
+denom <- sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+num <- sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change)
+paste0("NON-PLASTIC: ", num/denom, "(", num, "/", denom, ")")
+
+denom <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+num <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change)
+paste0("PLASTIC: ", num/denom, " (", num, "/", denom, ")")
+
+denom <- sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+num <- sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change)
+paste0("STATIC: ", num/denom, " (", num, "/", denom, ")")
+
+```
+
+### What about unexpressed vs expressed trait changes in plastic populations?
 
 ```{r}
 summary_data$frac_unexpressed_hitchhiker_inc <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
@@ -434,4 +676,184 @@ ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_incre
 
 ## Manuscript figures
 
-??
+```{r}
+hitchiker_penalty <- 0.1
+```
+
+```{r}
+ggplot(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="NON-PLASTIC" & dominant_times_poison_executed > 0), aes(x=condition, fill=condition) ) +
+  geom_bar() +
+  geom_text(
+    stat="count",
+    mapping=aes(label=..count..),
+    position=position_dodge(0.9),
+    vjust=0
+  ) +
+  scale_y_continuous(
+    name="Number of replicates where poison is executed by dominant genotype",
+    limits=c(0, replicates+2)
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order,
+    breaks=condition_order
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position="none"
+  )
+
+fig_data <- data.frame(
+  num_execute_poison=c(
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="NON-PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="STATIC" & dominant_times_poison_executed > 0)$RANDOM_SEED)
+  ),
+  num_execute_no_poison=c(
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="NON-PLASTIC" & dominant_times_poison_executed == 0)$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="PLASTIC" & dominant_times_poison_executed == 0)$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="STATIC" & dominant_times_poison_executed == 0)$RANDOM_SEED)
+  ),
+  total=c(
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="NON-PLASTIC")$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="PLASTIC")$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==hitchiker_penalty & condition=="STATIC" )$RANDOM_SEED)
+  ),
+  condition=c(
+    "NON-PLASTIC",
+    "PLASTIC",
+    "STATIC"
+  )
+)
+
+ggplot(fig_data, aes(x=condition, y=num_execute_poison, fill=condition)) +
+  geom_col(position=position_dodge(0.9)) +
+  geom_text(aes(label=num_execute_poison, y=num_execute_poison+0.25)) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+Number of poison increases along lineage.
+
+```{r}
+poison_increases_fig <- ggplot(
+    filter(summary_data, POISON_PENALTY==hitchiker_penalty),
+    aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Increases in poison instruction execution along lineage",
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+
+poison_increases_fig
+```
+
+```{r}
+
+poison_increases_per_gen_fig <- ggplot(
+    filter(summary_data, POISON_PENALTY==hitchiker_penalty),
+    aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Increases in poison instruction execution along lineage (per generation)",
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  theme(
+    legend.position="none"
+  ) +
+  coord_flip()
+
+poison_increases_per_gen_fig
+```
+
+Pull it all together.
+
+```{r}
+# grid <- plot_grid(
+#   dominant_extra_tasks_fig,
+#   lineage_extra_tasks_discovered_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+#   lineage_extra_tasks_lost_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+#   nrow=1,
+#   align="v",
+#   labels="auto"
+# )
+# save_plot(
+#    paste0(working_directory, "plots/", "complex-traits-panel.pdf"),
+#    grid,
+#    base_height=6,
+#    base_asp=2.5
+# )
+# grid
+```
