@@ -122,6 +122,10 @@ RUN \
     && \
   R -e "install.packages('Hmisc', dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
+  R -e "install.packages('boot', dependencies=NA, repos='http://cran.rstudio.com/')" \
+    && \
+  R -e "install.packages('fmsb', dependencies=NA, repos='http://cran.rstudio.com/')" \
+    && \
   echo "installed r and configured r environment"
 
 
