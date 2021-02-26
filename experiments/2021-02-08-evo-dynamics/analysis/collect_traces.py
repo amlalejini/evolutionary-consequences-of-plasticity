@@ -174,8 +174,6 @@ def main():
         ############################################################
 
     # write out aggregate data
-    print(summary_header)
-    print(summary_content_lines)
     with open(os.path.join(dump_dir, "trace_summary.csv"), "w") as fp:
         out_content = ",".join(summary_header) + "\n" + "\n".join(summary_content_lines)
         fp.write(out_content)
