@@ -1225,7 +1225,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.8247126 0.0002307471  0.04031212</code></pre>
+## t1* 0.8247126 0.0002482759  0.04022101</code></pre>
 <div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb153-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1235,7 +1235,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.8994 )  
+## 95%   ( 0.7443,  0.9023 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 <div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb155-1" title="1">plastic_summary_data &lt;-<span class="st"> </span><span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)</a>
 <a class="sourceLine" id="cb155-2" title="2">aggregate_frac_mut_steps_that_change_unexpressed_phenotype &lt;-<span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)</a>
@@ -1277,7 +1277,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -0.0004375862  0.03948913</code></pre>
+## t1* 0.5172414 -0.0001898851  0.03954818</code></pre>
 <div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb165-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1287,7 +1287,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4391,  0.5931 )  
+## 95%   ( 0.4414,  0.5954 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 <p>Beneficial</p>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb167-1" title="1">summary_data<span class="op">$</span>frac_unexpressed_beneficial_mut_steps &lt;-<span class="st"> </span>summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_beneficial <span class="op">/</span><span class="st"> </span>summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype</a>
@@ -1315,7 +1315,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.4827586 0.0002521839  0.03983531</code></pre>
+## t1* 0.4827586 0.0002743678  0.03995665</code></pre>
 <div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb170-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
