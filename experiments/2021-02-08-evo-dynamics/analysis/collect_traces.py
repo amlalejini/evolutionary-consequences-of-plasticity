@@ -117,7 +117,7 @@ def main():
         summary_info["phase"] = phase
         summary_info["change_rate"] = change_rate
 
-        # if cmd_params["DISABLE_REACTION_SENSORS"] == "1": continue
+        if cmd_params["DISABLE_REACTION_SENSORS"] == "1": continue
 
         for field in cmd_params:
             summary_info[field] = cmd_params[field]
