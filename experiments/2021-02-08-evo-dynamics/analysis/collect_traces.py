@@ -68,6 +68,23 @@ def extract_site_sequence(trace_file):
         execution_inst_sequence.append(current_instruction)
     return {"sites": execution_site_sequence, "instructions": execution_inst_sequence}
 
+# sites toggled on in a but not in b
+# def get_chunk_sizes(sites):
+#     sites.sort()
+#     chunk_sizes = []
+#     for i in range(0, len(sites)):
+#         if not i:
+#             chunk_sizes.append(1)
+#             continue
+#         # if previous site is contiguous with this site, increment chunk size
+#         if sites[i] == (sites[i-1] + 1):
+#             # part of previous chunk
+#             chunk_sizes[-1] += 1
+#         else:
+#             # start a new chunk
+#             chunk_sizes.append(1)
+#     return chunk_sizes
+
 def main():
     parser = argparse.ArgumentParser(description="Run submission script.")
     parser.add_argument("--data_dir", type=str, help="Where is the base output directory for each run?")
@@ -126,8 +143,8 @@ def main():
 
         ############################################################
         # Load genome file
-        # genome_path = os.path.join(run_path, "data", "analysis", "env_all", "final_dominant.gen")
-        # genome_sequence = genome_from_genfile(genome_path)
+        genome_path = os.path.join(run_path, "data", "analysis", "env_all", "final_dominant.gen")
+        genome_sequence = genome_from_genfile(genome_path)
         ############################################################
 
         ############################################################
@@ -154,10 +171,36 @@ def main():
 
         # Which sites are toggled based on environmental context?
         toggled_sites = sites_executed_env_a ^ sites_executed_env_b
-
         num_toggled_sites = len(toggled_sites)
-
         summary_info["dominant_num_toggled_sites"] = num_toggled_sites
+
+        # Which instructions are executed?
+        env_a_execution = [i in sites_executed_env_a for i in range(len(genome_sequence))]
+        env_b_execution = [i in sites_executed_env_b for i in range(len(genome_sequence))]
+        toggled_execution = [env_a_execution[i] ^ env_b_execution for i in range(len(genome_sequence))]
+        # which sites are unexecuted nops? (we don't want these to break up/count toward chunk size)
+        unexecuted_nops = [ (not (env_a_execution[i] or env_b_execution[i])) and "nop-" in genome_sequence[i] for i in range(len(genome_sequence))]
+
+        chunk_sizes = []
+        cur_chunk_size = 0
+        in_chunk = False
+        for site_i in range(len(genome_sequence)):
+            toggled = toggled_execution[site_i]
+            unexecuted_nop = unexecuted_nops[site_i]
+            # we don't care about unexecuted nops
+            if unexecuted_nop: continue
+            if toggled and not in_chunk:
+                in_chunk = True
+                cur_chunk_size = 1
+            elif toggled and in_chunk:
+                cur_chunk_size += 1
+            elif not toggled and in_chunk:
+                chunk_sizes.append(cur_chunk_size)
+                in_chunk = False
+                cur_chunk_size = 0
+        if cur_chunk_size: chunk_sizes.append(cur_chunk_size)
+
+        summary_info["dominant_toggled_chunk_sizes"] = ";".join(map(str, chunk_sizes))
         ############################################################
 
         ############################################################
@@ -174,6 +217,7 @@ def main():
         ############################################################
 
     # write out aggregate data
+    if summary_header == None: return
     with open(os.path.join(dump_dir, "trace_summary.csv"), "w") as fp:
         out_content = ",".join(summary_header) + "\n" + "\n".join(summary_content_lines)
         fp.write(out_content)
