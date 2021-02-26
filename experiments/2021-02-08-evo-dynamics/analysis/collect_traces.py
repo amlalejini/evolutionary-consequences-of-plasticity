@@ -177,7 +177,7 @@ def main():
         # Which instructions are executed?
         env_a_execution = [i in sites_executed_env_a for i in range(len(genome_sequence))]
         env_b_execution = [i in sites_executed_env_b for i in range(len(genome_sequence))]
-        toggled_execution = [env_a_execution[i] ^ env_b_execution for i in range(len(genome_sequence))]
+        toggled_execution = [env_a_execution[i] ^ env_b_execution[i] for i in range(len(genome_sequence))]
         # which sites are unexecuted nops? (we don't want these to break up/count toward chunk size)
         unexecuted_nops = [ (not (env_a_execution[i] or env_b_execution[i])) and "nop-" in genome_sequence[i] for i in range(len(genome_sequence))]
 
