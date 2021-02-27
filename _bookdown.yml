@@ -9,5 +9,6 @@ rmd_files: [
   "experiments/2021-02-08-evo-dynamics/analysis/2021-02-08-evo-dynamics.Rmd",
   "experiments/2021-01-31-complex-features/analysis/2021-01-31-complex-features.Rmd",
   "experiments/2021-02-05-hitchhiking/analysis/2021-02-05-hitchhiking.Rmd",
+  "experiments/2021-02-08-evo-dynamics/analysis/2021-02-08-plastic-traces.Rmd",
   "tail.Rmd"
   ]
