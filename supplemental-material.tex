@@ -575,12 +575,24 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"average generation"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"average-generation.png"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-13-1.pdf}
 
@@ -1863,11 +1875,23 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"frac_phenotype_changing_mutational_steps.png"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-36-1.pdf}
 
@@ -1996,8 +2020,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.8247126 -0.0003258621   0.0404859
+##      original       bias    std. error
+## t1* 0.8247126 0.0003695402  0.03959875
 \end{verbatim}
 
 \begin{Shaded}
@@ -2015,7 +2039,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7414,  0.8994 )  
+## 95%   ( 0.7471,  0.9023 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2102,7 +2126,7 @@ Deleterious
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -0.0005206897  0.03977468
+## t1* 0.5172414 -0.0002850575  0.03952691
 \end{verbatim}
 
 \begin{Shaded}
@@ -2120,7 +2144,7 @@ Deleterious
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4403,  0.5966 )  
+## 95%   ( 0.4391,  0.5954 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2162,8 +2186,8 @@ Beneficial
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original      bias    std. error
-## t1* 0.4827586 0.000111954  0.03932112
+##      original       bias    std. error
+## t1* 0.4827586 0.0003794253  0.03928081
 \end{verbatim}
 
 \begin{Shaded}
@@ -2181,7 +2205,7 @@ Beneficial
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4046,  0.5598 )  
+## 95%   ( 0.4034,  0.5575 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2224,8 +2248,8 @@ Beneficial
 
 Figures styled for the paper.
 
-\hypertarget{evolutionary-change-panel}{%
-\subsection{Evolutionary change panel}\label{evolutionary-change-panel}}
+\hypertarget{total-evolutionary-change-panel}{%
+\subsection{Total evolutionary change panel}\label{total-evolutionary-change-panel}}
 
 Selective sweeps, mutation accumulation, phenotypic volatility.
 
@@ -2431,6 +2455,204 @@ All together:
 \begin{Highlighting}[]
 \KeywordTok{save_plot}\NormalTok{(}
    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"evolutionary-dynamics.pdf"}\NormalTok{),}
+\NormalTok{   grid,}
+   \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
+   \DataTypeTok{base_asp=}\FloatTok{2.5}
+\NormalTok{)}
+\KeywordTok{save_plot}\NormalTok{(}
+   \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"evolutionary-dynamics.png"}\NormalTok{),}
+\NormalTok{   grid,}
+   \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
+   \DataTypeTok{base_asp=}\FloatTok{2.5}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{rate-of-evolutionary-change-panel}{%
+\subsection{Rate of evolutionary change panel}\label{rate-of-evolutionary-change-panel}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# dominant_lineage_total_mut_cnt or mutations_per_lineage_step?}
+\NormalTok{genotypic_fidelity_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    summary_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_genotypic_fidelity, }\DataTypeTok{fill=}\NormalTok{condition)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order,}
+    \DataTypeTok{labels=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"genotypic-fidelity.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{4}
+\NormalTok{  )}
+\NormalTok{genotypic_fidelity_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-49-1.pdf}
+
+Phenotypic fidelity:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{phenotypic_fidelity_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    summary_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_trait_fidelity, }\DataTypeTok{fill=}\NormalTok{condition)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order,}
+    \DataTypeTok{labels=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"phenotypic-fidelity.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{4}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{4}
+\NormalTok{  )}
+
+\NormalTok{phenotypic_fidelity_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-50-1.pdf}
+
+rate of selective sweeps:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selective_sweeps_rate_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    summary_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{generations_per_mrca_change, }\DataTypeTok{fill=}\NormalTok{condition)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order,}
+    \DataTypeTok{labels=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"generations-between-selective-sweeps.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{4}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{4}
+\NormalTok{  )}
+
+\NormalTok{selective_sweeps_rate_fig}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-51-1.pdf}
+
+All together:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  selective_sweeps_rate_fig }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  ),}
+\NormalTok{  genotypic_fidelity_fig }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{,}
+    \DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{(),}
+    \DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}
+    \DataTypeTok{axis.title.y=}\KeywordTok{element_blank}\NormalTok{()}
+\NormalTok{  ),}
+\NormalTok{  phenotypic_fidelity_fig }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{,}
+    \DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{(),}
+    \DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}
+    \DataTypeTok{axis.title.y=}\KeywordTok{element_blank}\NormalTok{()}
+\NormalTok{  ),}
+  \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-52-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{save_plot}\NormalTok{(}
+   \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"rate-evolutionary-dynamics.png"}\NormalTok{),}
 \NormalTok{   grid,}
    \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
    \DataTypeTok{base_asp=}\FloatTok{2.5}
@@ -2648,7 +2870,7 @@ For sensor-enabled populations in fluctuating environments, we only transfered p
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-53-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-57-1.pdf}
 
 We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
 
@@ -2672,7 +2894,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-54-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-58-1.pdf}
 
 \hypertarget{final-dominant-novel-task-performance}{%
 \section{Final dominant novel task performance}\label{final-dominant-novel-task-performance}}
@@ -2717,7 +2939,7 @@ How many novel tasks do final dominant genotypes perform?
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-55-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-59-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2839,7 +3061,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-57-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2959,7 +3181,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-59-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3088,7 +3310,7 @@ How many novel tasks are performed across the final population (1\% of organisms
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-61-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-65-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3213,7 +3435,7 @@ more genotypes along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-67-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3335,7 +3557,7 @@ more genotypes along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3461,7 +3683,7 @@ more genotypes along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-67-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-71-1.pdf}
 
 \hypertarget{novel-tasks-lost}{%
 \subsection{Novel tasks lost}\label{novel-tasks-lost}}
@@ -3504,7 +3726,7 @@ more genotypes along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-68-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3628,7 +3850,7 @@ Again, not totally fair to non-plastic lineages.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-70-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-74-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3750,7 +3972,7 @@ Again, not totally fair to non-plastic lineages.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-72-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-76-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3862,7 +4084,7 @@ Task loss linked with primary trait changes.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-74-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-78-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3896,7 +4118,7 @@ Task loss linked with primary trait changes.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-79-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4103,7 +4325,7 @@ Match score over time
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-83-1.pdf}
 
 Extra tasks over time
 
@@ -4131,7 +4353,7 @@ Extra tasks over time
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-80-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-84-1.pdf}
 
 \hypertarget{manuscript-figures-1}{%
 \section{Manuscript figures}\label{manuscript-figures-1}}
@@ -4182,7 +4404,7 @@ Final dominant extra tasks.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-81-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-85-1.pdf}
 
 Final dominant lineage tasks discovered.
 
@@ -4229,7 +4451,7 @@ Final dominant lineage tasks discovered.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-82-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 Final dominant lineage tasks lost.
 
@@ -4280,7 +4502,7 @@ Final dominant lineage tasks lost.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-83-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-87-1.pdf}
 
 Pull it all together.
 
@@ -4304,7 +4526,7 @@ Pull it all together.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-84-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-88-1.pdf}
 
 \hypertarget{genetic-hitchhiking}{%
 \chapter{Genetic hitchhiking}\label{genetic-hitchhiking}}
@@ -4490,7 +4712,7 @@ For sensor-enabled populations in fluctuating environments, we only transfered p
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-89-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-93-1.pdf}
 
 We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
 
@@ -4523,7 +4745,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-94-1.pdf}
 
 \hypertarget{hitchhiking-instruction-execution}{%
 \section{Hitchhiking instruction execution}\label{hitchhiking-instruction-execution}}
@@ -4619,7 +4841,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-93-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-97-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4757,7 +4979,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-95-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4895,7 +5117,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-97-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-101-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5042,7 +5264,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-103-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5220,7 +5442,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-101-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-105-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5349,7 +5571,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-103-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-107-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5384,7 +5606,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-103-2.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-107-2.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5545,7 +5767,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-105-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-109-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5604,7 +5826,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-107-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-111-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5650,7 +5872,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-107-2.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-111-2.pdf}
 
 Number of poison increases along lineage.
 
@@ -5698,7 +5920,7 @@ Number of poison increases along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-108-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-112-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5744,7 +5966,7 @@ Number of poison increases along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-109-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-113-1.pdf}
 
 Pull it all together.
 
