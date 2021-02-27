@@ -167,10 +167,18 @@ ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   ylab("average generation") +
   theme(
     legend.position="none"
-  )
+  ) +
+  ggsave(paste0(working_directory, "plots/", "average-generation.png"))
 ```
 
 ```{r}
@@ -812,9 +820,17 @@ ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
-  )
+  ) +
+  ggsave(paste0(working_directory, "plots/", "frac_phenotype_changing_mutational_steps.png"))
 ```
 
 ```{r}
@@ -966,7 +982,7 @@ ggplot(summary_data, aes(x=condition, y=phylo_mrca_depth, fill=condition)) +
 
 Figures styled for the paper.
 
-### Evolutionary change panel
+### Total evolutionary change panel
 
 Selective sweeps, mutation accumulation, phenotypic volatility.
 
@@ -1152,6 +1168,182 @@ grid <- plot_grid(
 grid
 save_plot(
    paste0(working_directory, "plots/", "evolutionary-dynamics.pdf"),
+   grid,
+   base_height=6,
+   base_asp=2.5
+)
+save_plot(
+   paste0(working_directory, "plots/", "evolutionary-dynamics.png"),
+   grid,
+   base_height=6,
+   base_asp=2.5
+)
+```
+
+### Rate of evolutionary change panel
+
+```{r}
+# dominant_lineage_total_mut_cnt or mutations_per_lineage_step?
+genotypic_fidelity_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_genotypic_fidelity, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "genotypic-fidelity.png"),
+    width=5,
+    height=4
+  )
+genotypic_fidelity_fig
+```
+
+Phenotypic fidelity:
+
+```{r}
+phenotypic_fidelity_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_trait_fidelity, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "phenotypic-fidelity.png"),
+    width=4,
+    height=4
+  )
+
+phenotypic_fidelity_fig
+```
+
+rate of selective sweeps:
+
+```{r}
+selective_sweeps_rate_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=generations_per_mrca_change, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "generations-between-selective-sweeps.png"),
+    width=4,
+    height=4
+  )
+
+selective_sweeps_rate_fig
+```
+
+All together:
+
+```{r}
+grid <- plot_grid(
+  selective_sweeps_rate_fig + theme(
+    legend.position="none"
+  ),
+  genotypic_fidelity_fig + theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ),
+  phenotypic_fidelity_fig + theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ),
+  nrow=1,
+  align="v",
+  labels="auto"
+)
+grid
+save_plot(
+   paste0(working_directory, "plots/", "rate-evolutionary-dynamics.png"),
    grid,
    base_height=6,
    base_asp=2.5
