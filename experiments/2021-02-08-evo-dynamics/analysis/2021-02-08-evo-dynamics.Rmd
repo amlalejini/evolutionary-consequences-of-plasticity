@@ -99,10 +99,15 @@ condition_order = c(
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
+# Create a directory to store plots
 dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
+# Define sample mean function
+samplemean <- function(x, d) {
+  return(mean(x[d]))
+}
 ```
 
-## Evolution of phenotypic plasticity
+## The evolution of phenotypic plasticity
 
 For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.
 
@@ -117,7 +122,13 @@ ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Number of replicates in phase two") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  ylab("Number of replicates transferred to phase two") +
   theme(
     legend.position="none"
   )
@@ -135,6 +146,12 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   scale_x_discrete(
     name="Condition",
     limits=condition_order
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
   ) +
   geom_text(aes(label=n, y=n+1)) +
   ylab("Number of plastic replicates") +
@@ -228,6 +245,13 @@ ggplot(summary_data, aes(x=condition, y=phylo_mrca_changes, fill=condition)) +
     outlier.shape = NA,
     alpha = 0.5
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   scale_x_discrete(
     name="Condition",
     limits=condition_order
@@ -289,6 +313,13 @@ ggplot(summary_data, aes(x=condition, y=generations_per_mrca_change, fill=condit
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -320,7 +351,7 @@ pairwise.wilcox.test(
 )
 ```
 
-## Phenotypic volatility along dominant lineage
+## Phenotypic volatility along the dominant lineage
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)) +
@@ -349,6 +380,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility, fill=
     breaks=c(0, 10, 100, 1000, 10000),
     limits=c(-1,10000)
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -405,6 +443,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility_per_ge
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -431,64 +476,6 @@ kruskal.test(
 
 pairwise.wilcox.test(
   x=summary_data$dominant_lineage_trait_volatility_per_generation,
-  g=summary_data$condition,
-  p.adjust.method="bonferroni",
-)
-```
-
-### Phenotypic volatility normalized by lineage length
-
-Lineage length = number of genotypes along the lineage.
-
-```{r}
-summary_data$dominant_lineage_trait_volatility_per_lineage_step <- summary_data$dominant_lineage_trait_volatility / summary_data$dominant_lineage_length_genotypes
-
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility_per_lineage_step, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  theme(
-    legend.position="none"
-  )
-```
-
-```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility_per_lineage_step)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility_per_lineage_step)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility_per_lineage_step)
-)
-
-kruskal.test(
-  formula=dominant_lineage_trait_volatility_per_lineage_step~condition,
-  data=summary_data
-)
-
-pairwise.wilcox.test(
-  x=summary_data$dominant_lineage_trait_volatility_per_lineage_step,
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
@@ -521,6 +508,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_fidelity, fill=co
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -571,11 +565,18 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=con
     outlier.shape = NA,
     alpha = 0.5
   ) +
+  ylab("Mutation accumulation") +
   scale_x_discrete(
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Mutation accumulation") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -633,6 +634,13 @@ ggplot(summary_data, aes(x=condition, y=mutations_per_generation, fill=condition
     limits=condition_order
   ) +
   ylab("Mutation accumulation / generation") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -659,62 +667,6 @@ kruskal.test(
 
 pairwise.wilcox.test(
   x=summary_data$mutations_per_generation,
-  g=summary_data$condition,
-  p.adjust.method="bonferroni",
-)
-```
-
-### Mutation accumulation normalized by lineage length
-
-```{r}
-summary_data$mutations_per_lineage_step <- summary_data$dominant_lineage_total_mut_cnt / summary_data$dominant_lineage_length_genotypes
-ggplot(summary_data, aes(x=condition, y=mutations_per_lineage_step, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Mutation accumulation / lineage length") +
-  theme(
-    legend.position="none"
-  )
-```
-
-```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$mutations_per_lineage_step)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$mutations_per_lineage_step)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$mutations_per_lineage_step)
-)
-
-kruskal.test(
-  formula=mutations_per_lineage_step~condition,
-  data=summary_data
-)
-
-pairwise.wilcox.test(
-  x=summary_data$mutations_per_lineage_step,
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
@@ -747,6 +699,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_genotypic_fidelity, fil
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -778,28 +737,12 @@ pairwise.wilcox.test(
 )
 ```
 
-### Characterizing variation along lineages
+## Characterizing variation along dominant lineages
 
-#### How many mutation-steps along the lineage result in phenotypic changes?
+### What fraction of mutations along the lineage result in phenotypic changes?
 
 ```{r}
 summary_data$frac_phenotype_changing_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype / summary_data$dominant_lineage_num_mut_steps
-
-ggplot(filter(summary_data, dominant_lineage_num_mut_steps > 0), aes(x=frac_phenotype_changing_mut_steps)) +
-  geom_density() +
-  facet_wrap(
-    ~condition,
-    nrow=3,
-    labeller=label_both
-
-  ) +
-  xlim(0, 1.0) +
-  theme(
-    legend.position="none"
-  )
-```
-
-```{r}
 ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -859,28 +802,18 @@ pairwise.wilcox.test(
 )
 ```
 
-```{r, include=FALSE}
-samplemean <- function(x, d) {
-  return(mean(x[d]))
-}
-
-# for (cond in condition_order) {
-#   # How many mutational steps result in a change in aggregate phenotype?
-#   print(paste0(cond, " - Mean with bootstrapped 95% CI"))
-#   bo <- boot(filter(summary_data, condition==cond & dominant_lineage_num_mut_steps > 0)$frac_phenotype_changing_mut_steps, statistic=samplemean, R=10000)
-#   print(bo)
-#   print(boot.ci(bo, conf=0.95, type="perc"))
-# }
-```
-
-#### For PLASTIC populations, what fraction of phenotype-altering mutations affect the unexpressed phenotype?
+### For PLASTIC populations, what fraction of phenotype-altering mutations occurred in the unexpressed phenotype?
 
 ```{r}
 summary_data$frac_unexpressed_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype / summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype
 summary_data$frac_expressed_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_expressed_phenotype / summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype
 
 ggplot(filter(summary_data, condition=="PLASTIC" & dominant_lineage_num_mut_steps_that_change_aggregate_phenotype > 0), aes(x=frac_unexpressed_mut_steps)) +
-  geom_density() +
+  geom_histogram(binwidth=0.1) +
+  scale_x_continuous(
+    limits=c(0, 1.1),
+    breaks=seq(0, 1.0, 0.1)
+  ) +
   theme(
     legend.position="none"
   )
@@ -901,21 +834,17 @@ aggregate_frac_mut_steps_that_change_unexpressed_phenotype
 
 `r sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype)` / `r sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)` (`r aggregate_frac_mut_steps_that_change_unexpressed_phenotype`)
 
-#### For PLASTIC populations, what fraction of mutations that affect the unexpressed phenotype are deleterious versus beneficial?
-
+### For PLASTIC populations, what fraction of mutations that affect the unexpressed phenotype are deleterious versus beneficial?
 
 ```{r}
 aggregate_frac_unexpressed_deleterious_mut_steps <- sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_deleterious) / sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype)
 aggregate_frac_unexpressed_beneficial_mut_steps <- sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_beneficial) / sum(plastic_summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype)
 ```
 
-
-Deleterious
+#### Deleterious mutations
 
 ```{r}
-
 summary_data$frac_unexpressed_deleterious_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_deleterious / summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype
-
 ggplot(
   filter(summary_data, condition=="PLASTIC" & dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype > 0),
   aes(x=frac_unexpressed_deleterious_mut_steps)
@@ -930,7 +859,7 @@ print(bo)
 print(boot.ci(bo, conf=0.95, type="perc"))
 ```
 
-Beneficial
+#### Beneficial mutations
 
 ```{r}
 summary_data$frac_unexpressed_beneficial_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype_beneficial / summary_data$dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype
@@ -949,47 +878,17 @@ print(bo)
 print(boot.ci(bo, conf=0.95, type="perc"))
 ```
 
-## Depth of MRCA
-
-```{r}
-ggplot(summary_data, aes(x=condition, y=phylo_mrca_depth, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("MRCA Depth") +
-  theme(
-    legend.position="none"
-  )
-```
-
 ## Manuscript figures
 
 Figures styled for the paper.
 
-### Total evolutionary change panel
+### Total evolutionary change
 
 Selective sweeps, mutation accumulation, phenotypic volatility.
 
-Mutation accumulation:
+#### Total mutation accumulation
 
 ```{r}
-# dominant_lineage_total_mut_cnt or mutations_per_lineage_step?
 mutation_count_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)
@@ -1038,7 +937,7 @@ mutation_count_fig <- ggplot(
 mutation_count_fig
 ```
 
-Phenotypic volatility:
+#### Phenotypic volatility
 
 ```{r}
 phenotypic_volatility_fig <- ggplot(
@@ -1090,7 +989,7 @@ phenotypic_volatility_fig <- ggplot(
 phenotypic_volatility_fig
 ```
 
-Selective sweeps:
+#### Coalescence events
 
 ```{r}
 selective_sweeps_fig <- ggplot(
@@ -1142,7 +1041,7 @@ selective_sweeps_fig <- ggplot(
 selective_sweeps_fig
 ```
 
-All together:
+#### Combined
 
 ```{r}
 grid <- plot_grid(
@@ -1180,10 +1079,11 @@ save_plot(
 )
 ```
 
-### Rate of evolutionary change panel
+### Rate of evolutionary change
+
+#### Genotypic fidelity
 
 ```{r}
-# dominant_lineage_total_mut_cnt or mutations_per_lineage_step?
 genotypic_fidelity_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_lineage_genotypic_fidelity, fill=condition)
@@ -1208,6 +1108,11 @@ genotypic_fidelity_fig <- ggplot(
     limits=condition_order,
     labels=condition_order
   ) +
+  scale_y_continuous(
+    name="Genotypic fidelity",
+    limits=c(0.85, 1.01),
+    breaks=seq(0.85, 1.0, 0.01)
+  ) +
   scale_fill_brewer(
     palette="Paired"
   ) +
@@ -1226,7 +1131,7 @@ genotypic_fidelity_fig <- ggplot(
 genotypic_fidelity_fig
 ```
 
-Phenotypic fidelity:
+#### Phenotypic fidelity
 
 ```{r}
 phenotypic_fidelity_fig <- ggplot(
@@ -1253,6 +1158,11 @@ phenotypic_fidelity_fig <- ggplot(
     limits=condition_order,
     labels=condition_order
   ) +
+  scale_y_continuous(
+    name="Phenotypic fidelity",
+    limits=c(0.94, 1.01),
+    breaks=seq(0.94, 1.0, 0.01)
+  ) +
   scale_fill_brewer(
     palette="Paired"
   ) +
@@ -1272,7 +1182,7 @@ phenotypic_fidelity_fig <- ggplot(
 phenotypic_fidelity_fig
 ```
 
-rate of selective sweeps:
+#### Generations per selective sweep
 
 ```{r}
 selective_sweeps_rate_fig <- ggplot(
@@ -1299,6 +1209,11 @@ selective_sweeps_rate_fig <- ggplot(
     limits=condition_order,
     labels=condition_order
   ) +
+  scale_y_continuous(
+    name="Generations between coalescence events",
+    limits=c(0, 2000),
+    breaks=seq(0, 2000, 500)
+  ) +
   scale_fill_brewer(
     palette="Paired"
   ) +
@@ -1318,7 +1233,7 @@ selective_sweeps_rate_fig <- ggplot(
 selective_sweeps_rate_fig
 ```
 
-All together:
+#### Combined
 
 ```{r}
 grid <- plot_grid(
@@ -1346,6 +1261,54 @@ save_plot(
    paste0(working_directory, "plots/", "rate-evolutionary-dynamics.png"),
    grid,
    base_height=6,
+   base_asp=2.5
+)
+```
+
+### Full panel
+
+```{r}
+grid <- plot_grid(
+  selective_sweeps_fig + theme(
+    legend.position="none"
+  ),
+  mutation_count_fig + theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ),
+  phenotypic_volatility_fig + theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ),
+  selective_sweeps_rate_fig + theme(
+    legend.position="none"
+  ),
+  genotypic_fidelity_fig + theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ),
+  phenotypic_fidelity_fig + theme(
+    legend.position="none",
+    axis.ticks.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.title.y=element_blank()
+  ),
+  nrow=2,
+  ncol=3,
+  align="v",
+  labels="auto"
+)
+grid
+save_plot(
+   paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),
+   grid,
+   base_height=12,
    base_asp=2.5
 )
 ```
