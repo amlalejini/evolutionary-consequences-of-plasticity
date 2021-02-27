@@ -1,6 +1,6 @@
 # Evolution and maintenance of novel traits
 
-The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits.
+The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel tasks.
 
 ## Overview
 
@@ -150,10 +150,15 @@ lineage_time_series_data$condition <- mapply(
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
+# Create directory to dump plots
 dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
+# Sample mean function
+samplemean <- function(x, d) {
+  return(mean(x[d]))
+}
 ```
 
-## Evolution of phenotypic plasticity
+## The evolution of phenotypic plasticity
 
 For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase two.
 
@@ -167,6 +172,12 @@ ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
   scale_x_discrete(
     name="Condition",
     limits=condition_order
+  ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
   ) +
   ylab("Number of replicates in phase two") +
   facet_wrap(~extra_task_value, labeller=label_both) +
@@ -186,6 +197,12 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
   ylim(0, 100) +
   geom_text(aes(label=n, y=n+1)) +
   ylab("Number of replicates with a plastic dominant genotype") +
@@ -195,7 +212,7 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   )
 ```
 
-## Final dominant novel task performance
+## Novel task performance - final dominant genotype
 
 How many novel tasks do final dominant genotypes perform?
 
@@ -221,6 +238,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_extra_tasks, fill=condition)) +
     limits=condition_order
   ) +
   ylab("Novel tasks performed by final dominant") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -264,7 +288,7 @@ pairwise.wilcox.test(
 )
 ```
 
-## Final population novel task performance
+## Novel task performance - final population
 
 How many novel tasks are performed across the final population (1% of organisms must perform to count)?
 
@@ -289,6 +313,13 @@ ggplot(summary_data, aes(x=condition, y=final_pop_extra_tasks_0.01, fill=conditi
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -327,7 +358,7 @@ pairwise.wilcox.test(
 )
 ```
 
-## Population-level novel tasks discovered
+## Novel task discovery - population
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=discovered_extra_tasks_0.01, fill=condition)) +
@@ -350,6 +381,13 @@ ggplot(summary_data, aes(x=condition, y=discovered_extra_tasks_0.01, fill=condit
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -388,9 +426,7 @@ pairwise.wilcox.test(
 )
 ```
 
-## Novel tasks along lineage of final dominant genotype
-
-### Novel tasks discovered
+## Novel task discovery - lineage of final dominant genotype
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered, fill=condition)) +
@@ -414,6 +450,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered
     limits=condition_order
   ) +
   ylab("Extra tasks discovered along dominant lineage") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -457,73 +500,7 @@ pairwise.wilcox.test(
 )
 ```
 
-#### Novel traits discovered per step
-
-This isn't totally fair to non-plastic lineages because they're continuously re-adapting, so they have
-more genotypes along lineage.
-
-```{r}
-summary_data$dominant_lineage_extra_traits_discovered_per_step <- summary_data$dominant_lineage_extra_traits_discovered / summary_data$dominant_lineage_length_genotypes
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered_per_step, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Lineage task discovery (per step)") +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
-  theme(
-    legend.position="none"
-  )
-```
-
-```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_discovered_per_step)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_discovered_per_step)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_discovered_per_step)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
-kruskal.test(
-  formula=dominant_lineage_extra_traits_discovered_per_step~condition,
-  data=dom_task_data
-)
-pairwise.wilcox.test(
-  x=dom_task_data$dominant_lineage_extra_traits_discovered_per_step,
-  g=dom_task_data$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-```
-
-### Novel tasks discovered per generation
+### Per-generation novel task discovery - lineage of final dominant genotype
 
 ```{r}
 summary_data$dominant_lineage_extra_traits_discovered_per_generation <- summary_data$dominant_lineage_extra_traits_discovered / summary_data$dominant_generation_born
@@ -552,9 +529,17 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered
     ~extra_task_value,
     labeller=label_both
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
-  )
+  ) +
+  ggsave(paste0(working_directory, "plots/", "discovery-per-generation.png"))
 ```
 
 ```{r}
@@ -586,7 +571,7 @@ pairwise.wilcox.test(
 )
 ```
 
-### Novel tasks gained
+## Novel tasks gained along final dominant lineages
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fill=condition)) +
@@ -610,6 +595,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fi
     limits=condition_order
   ) +
   ylab("Extra tasks gained along dominant lineage") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -624,7 +616,7 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fi
   )
 ```
 
-### Novel tasks lost
+## Novel task loss along final dominant lineages
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost, fill=condition)) +
@@ -648,6 +640,13 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost, fill
     limits=condition_order
   ) +
   ylab("Extra tasks lost along dominant lineage") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -691,72 +690,7 @@ pairwise.wilcox.test(
 )
 ```
 
-#### Novel traits lost per step
-
-Again, not totally fair to non-plastic lineages.
-
-```{r}
-summary_data$dominant_lineage_extra_traits_lost_per_step <- summary_data$dominant_lineage_extra_traits_lost / summary_data$dominant_lineage_length_genotypes
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost_per_step, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Extra tasks lost along dominant lineage (per step)") +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
-  theme(
-    legend.position="none"
-  )
-```
-
-```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_lost_per_step)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_lost_per_step)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_lost_per_step)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
-kruskal.test(
-  formula=dominant_lineage_extra_traits_lost_per_step~condition,
-  data=dom_task_data
-)
-pairwise.wilcox.test(
-  x=dom_task_data$dominant_lineage_extra_traits_lost_per_step,
-  g=dom_task_data$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-```
-
-#### Novel traits lost per generation
+### Per-generation novel task loss along final dominant lineages
 
 ```{r}
 summary_data$dominant_lineage_extra_traits_lost_per_generation <- summary_data$dominant_lineage_extra_traits_lost / summary_data$dominant_generation_born
@@ -785,9 +719,17 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost_per_g
     ~extra_task_value,
     labeller=label_both
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   theme(
     legend.position="none"
-  )
+  ) +
+  ggsave(paste0(working_directory, "plots/", "tasks-lost-per-generation.png"))
 ```
 
 ```{r}
@@ -819,7 +761,7 @@ pairwise.wilcox.test(
 )
 ```
 
-#### How many instances of novel trait loss co-occur with changes in base phenotype?
+## How many instances of novel trait loss co-occurred with changes in base phenotype?
 
 Task loss linked with primary trait changes.
 
@@ -827,20 +769,26 @@ Task loss linked with primary trait changes.
 lost_traits_summary_data <- filter(summary_data, extra_task_value==0.1 & dominant_lineage_extra_traits_lost>0)
 lost_traits_summary_data$frac_linked_extra_trait_loss <- lost_traits_summary_data$dominant_lineage_extra_traits_lost_linked_to_primary_change / lost_traits_summary_data$dominant_lineage_extra_traits_lost
 
-ggplot(lost_traits_summary_data, aes(x=frac_linked_extra_trait_loss)) +
-  geom_density() +
-  facet_grid(
-    condition~extra_task_value,
-    labeller=label_both
-  ) +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-extra-tasks-lost-linkage.pdf"),
-    width=15,
-    height=10
-  )
+# ggplot(lost_traits_summary_data, aes(x=frac_linked_extra_trait_loss, fill=condition)) +
+#   geom_density() +
+#   facet_grid(
+#     condition~extra_task_value,
+#     labeller=label_both
+#   ) +
+#   theme(
+#     legend.position="none"
+#   ) +
+#   scale_fill_brewer(
+#     palette="Paired"
+#   ) +
+#   scale_color_brewer(
+#     palette="Paired"
+#   ) +
+#   ggsave(
+#     paste0(working_directory, "plots/dominant-lineage-extra-tasks-lost-linkage.png"),
+#     width=15,
+#     height=10
+#   )
 ```
 
 ```{r}
@@ -864,6 +812,13 @@ ggplot(lost_traits_summary_data, aes(x=condition, y=frac_linked_extra_trait_loss
     name="Condition",
     limits=condition_order
   ) +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
   facet_wrap(
     ~extra_task_value,
     labeller=label_both
@@ -917,67 +872,9 @@ aggregate_frac_linked_extra_trait_loss_nonplastic <- sum(filter(lost_traits_summ
 aggregate_frac_linked_extra_trait_loss_nonplastic
 ```
 
-```{r, include=FALSE}
-samplemean <- function(x, d) {
-  return(mean(x[d]))
-}
-```
-
-## Extra task performance over time
-
-Match score over time
-
-```{r}
-lineage_reward10 <- filter(lineage_time_series_data, extra_task_value=="0.1")
-
-ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y=match_score_even, color=condition, fill=condition)) +
-  stat_summary(fun="mean", geom="line") +
-  stat_summary(
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    geom="ribbon",
-    alpha=0.2,
-    linetype=0
-  ) +
-  ylab("Match score (even environment)") +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-match-score-even-val10.png"),
-    width=15,
-    height=10
-  )
-```
-
-Extra tasks over time
-
-```{r}
-ggplot(filter(lineage_reward10, update>198000 & update<=200000), aes(x=update, y=extra_traits, color=condition, fill=condition)) +
-  stat_summary(fun="mean", geom="line") +
-  stat_summary(
-    fun.data="mean_cl_boot",
-    fun.args=list(conf.int=0.95),
-    geom="ribbon",
-    alpha=0.2,
-    linetype=0
-  ) +
-  ylab("Number of extra traits") +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-extra-traits-val10.png"),
-    width=15,
-    height=10
-  )
-```
-
 ## Manuscript figures
 
-Final dominant extra tasks.
+### Overall task performance
 
 ```{r}
 extra_task_reward_value=0.1
@@ -1021,7 +918,7 @@ dominant_extra_tasks_fig <- ggplot(
 dominant_extra_tasks_fig
 ```
 
-Final dominant lineage tasks discovered.
+### Overall task discovery
 
 ```{r}
 lineage_extra_tasks_discovered_fig <- ggplot(
@@ -1064,7 +961,7 @@ lineage_extra_tasks_discovered_fig <- ggplot(
 lineage_extra_tasks_discovered_fig
 ```
 
-Final dominant lineage tasks lost.
+### Overall task loss
 
 ```{r}
 lineage_extra_tasks_lost_fig <- ggplot(
@@ -1111,22 +1008,113 @@ lineage_extra_tasks_lost_fig <- ggplot(
 lineage_extra_tasks_lost_fig
 ```
 
-Pull it all together.
+
+### Per-generation task discovery
+
+```{r}
+lineage_per_gen_task_discovery <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_extra_traits_discovered_per_generation, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Per-generation task discovery") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position="none"
+  )
+lineage_per_gen_task_discovery
+```
+
+### Per-generation task loss
+
+```{r}
+lineage_per_gen_task_loss <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_extra_traits_lost_per_generation, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Per-generation task loss") +
+  scale_fill_brewer(
+    palette="Paired"
+  ) +
+  scale_color_brewer(
+    palette="Paired"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position="none"
+  )
+lineage_per_gen_task_loss
+```
+
+## Combined panel
 
 ```{r}
 grid <- plot_grid(
   dominant_extra_tasks_fig,
   lineage_extra_tasks_discovered_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
   lineage_extra_tasks_lost_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
-  nrow=1,
+  NULL,
+  lineage_per_gen_task_discovery,
+  lineage_per_gen_task_loss + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+  nrow=2,
   align="v",
-  labels="auto"
+  # labels="auto"
+  labels=c("a", "b","c","", "d","e")
 )
 save_plot(
    paste0(working_directory, "plots/", "complex-traits-panel.pdf"),
    grid,
-   base_height=6,
-   base_asp=2.5
+   base_height=12,
+   base_asp=3/2
 )
 grid
+# save_plot(
+#    paste0(working_directory, "plots/", "complex-traits-panel.png"),
+#    grid,
+#    base_height=6,
+#    base_asp=2.5
+# )
 ```
