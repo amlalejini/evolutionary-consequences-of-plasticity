@@ -1111,7 +1111,7 @@ genotypic_fidelity_fig <- ggplot(
   scale_y_continuous(
     name="Genotypic fidelity",
     limits=c(0.85, 1.01),
-    breaks=seq(0.85, 1.0, 0.01)
+    breaks=c(0.85, 0.90, 0.95, 1.0) #seq(0.85, 1.0, 0.02)
   ) +
   scale_fill_brewer(
     palette="Paired"
@@ -1161,7 +1161,7 @@ phenotypic_fidelity_fig <- ggplot(
   scale_y_continuous(
     name="Phenotypic fidelity",
     limits=c(0.94, 1.01),
-    breaks=seq(0.94, 1.0, 0.01)
+    breaks=c(0.94, 0.96, 0.98, 1.0) #seq(0.94, 1.0, 0.01)
   ) +
   scale_fill_brewer(
     palette="Paired"
@@ -1309,6 +1309,6 @@ save_plot(
    paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),
    grid,
    base_height=12,
-   base_asp=2.5
+   base_asp=3/2
 )
 ```
