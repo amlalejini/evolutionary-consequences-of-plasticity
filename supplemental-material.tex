@@ -1852,7 +1852,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.8247126 -0.0001218391  0.04033706
+## t1* 0.8247126 -0.0003962644  0.04035776
 \end{verbatim}
 
 \begin{Shaded}
@@ -1870,7 +1870,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.9023 )  
+## 95%   ( 0.7443,  0.8994 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -1957,7 +1957,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -0.0001505747  0.03917146
+## t1* 0.5172414 -0.0005409195  0.03950667
 \end{verbatim}
 
 \begin{Shaded}
@@ -1975,7 +1975,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4402,  0.5942 )  
+## 95%   ( 0.4391,  0.5954 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2018,8 +2018,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.4827586 3.494253e-05  0.03939897
+##      original        bias    std. error
+## t1* 0.4827586 -2.758621e-06  0.03893272
 \end{verbatim}
 
 \begin{Shaded}
@@ -2037,7 +2037,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4069,  0.5598 )  
+## 95%   ( 0.4046,  0.5575 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2542,7 +2542,7 @@ Selective sweeps, mutation accumulation, phenotypic volatility.
 \hypertarget{evolution-and-maintenance-of-novel-traits}{%
 \chapter{Evolution and maintenance of novel traits}\label{evolution-and-maintenance-of-novel-traits}}
 
-The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits.
+The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel tasks.
 
 \hypertarget{overview-2}{%
 \section{Overview}\label{overview-2}}
@@ -2720,12 +2720,17 @@ These analyses were conducted/knitted with the following computing environment:
 \CommentTok{####### misc #######}
 \CommentTok{# Configure our default graphing theme}
 \KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
+\CommentTok{# Create directory to dump plots}
 \KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\CommentTok{# Sample mean function}
+\NormalTok{samplemean <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, d) \{}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{mean}\NormalTok{(x[d]))}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{evolution-of-phenotypic-plasticity-1}{%
-\section{Evolution of phenotypic plasticity}\label{evolution-of-phenotypic-plasticity-1}}
+\hypertarget{the-evolution-of-phenotypic-plasticity-1}{%
+\section{The evolution of phenotypic plasticity}\label{the-evolution-of-phenotypic-plasticity-1}}
 
 For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase two.
 
@@ -2740,6 +2745,12 @@ For sensor-enabled populations in fluctuating environments, we only transfered p
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Number of replicates in phase two"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{extra_task_value, }\DataTypeTok{labeller=}\NormalTok{label_both) }\OperatorTok{+}
@@ -2763,6 +2774,12 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label=}\NormalTok{n, }\DataTypeTok{y=}\NormalTok{n}\OperatorTok{+}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Number of replicates with a plastic dominant genotype"}\NormalTok{) }\OperatorTok{+}
@@ -2775,8 +2792,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-52-1.pdf}
 
-\hypertarget{final-dominant-novel-task-performance}{%
-\section{Final dominant novel task performance}\label{final-dominant-novel-task-performance}}
+\hypertarget{novel-task-performance---final-dominant-genotype}{%
+\section{Novel task performance - final dominant genotype}\label{novel-task-performance---final-dominant-genotype}}
 
 How many novel tasks do final dominant genotypes perform?
 
@@ -2803,6 +2820,13 @@ How many novel tasks do final dominant genotypes perform?
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Novel tasks performed by final dominant"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
@@ -2903,8 +2927,8 @@ How many novel tasks do final dominant genotypes perform?
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{final-population-novel-task-performance}{%
-\section{Final population novel task performance}\label{final-population-novel-task-performance}}
+\hypertarget{novel-task-performance---final-population}{%
+\section{Novel task performance - final population}\label{novel-task-performance---final-population}}
 
 How many novel tasks are performed across the final population (1\% of organisms must perform to count)?
 
@@ -2930,6 +2954,13 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
@@ -3025,8 +3056,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{population-level-novel-tasks-discovered}{%
-\section{Population-level novel tasks discovered}\label{population-level-novel-tasks-discovered}}
+\hypertarget{novel-task-discovery---population}{%
+\section{Novel task discovery - population}\label{novel-task-discovery---population}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3050,6 +3081,13 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
@@ -3145,11 +3183,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{novel-tasks-along-lineage-of-final-dominant-genotype}{%
-\section{Novel tasks along lineage of final dominant genotype}\label{novel-tasks-along-lineage-of-final-dominant-genotype}}
-
-\hypertarget{novel-tasks-discovered}{%
-\subsection{Novel tasks discovered}\label{novel-tasks-discovered}}
+\hypertarget{novel-task-discovery---lineage-of-final-dominant-genotype}{%
+\section{Novel task discovery - lineage of final dominant genotype}\label{novel-task-discovery---lineage-of-final-dominant-genotype}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3174,6 +3209,13 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Extra tasks discovered along dominant lineage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
@@ -3274,133 +3316,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{novel-traits-discovered-per-step}{%
-\subsubsection{Novel traits discovered per step}\label{novel-traits-discovered-per-step}}
-
-This isn't totally fair to non-plastic lineages because they're continuously re-adapting, so they have
-more genotypes along lineage.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered_per_step <-}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered }\OperatorTok{/}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_length_genotypes}
-\KeywordTok{ggplot}\NormalTok{(summary_data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_discovered_per_step, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
-    \DataTypeTok{alpha =} \FloatTok{.8}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
-    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
-    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
-    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
-    \DataTypeTok{alpha =} \FloatTok{0.8}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
-    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
-    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
-    \DataTypeTok{alpha =} \FloatTok{0.5}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
-    \DataTypeTok{limits=}\NormalTok{condition_order}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Lineage task discovery (per step)"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
-    \OperatorTok{~}\NormalTok{extra_task_value,}
-    \DataTypeTok{labeller=}\NormalTok{label_both}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme}\NormalTok{(}
-    \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-61-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{paste0}\NormalTok{(}
-  \StringTok{"PLASTIC median: "}\NormalTok{,}
-  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered_per_step)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "PLASTIC median: 0.00484428434398198"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{paste0}\NormalTok{(}
-  \StringTok{"STATIC median: "}\NormalTok{,}
-  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"STATIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered_per_step)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "STATIC median: 0.00480194844967106"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{paste0}\NormalTok{(}
-  \StringTok{"NON-PLASTIC median: "}\NormalTok{,}
-  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered_per_step)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "NON-PLASTIC median: 0.00139827576402932"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{reward_level <-}\StringTok{ }\FloatTok{0.1}
-\NormalTok{dom_task_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(summary_data, extra_task_value}\OperatorTok{==}\NormalTok{reward_level)}
-\KeywordTok{kruskal.test}\NormalTok{(}
-  \DataTypeTok{formula=}\NormalTok{dominant_lineage_extra_traits_discovered_per_step}\OperatorTok{~}\NormalTok{condition,}
-  \DataTypeTok{data=}\NormalTok{dom_task_data}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 
-##  Kruskal-Wallis rank sum test
-## 
-## data:  dominant_lineage_extra_traits_discovered_per_step by condition
-## Kruskal-Wallis chi-squared = 106.72, df = 2, p-value < 2.2e-16
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{pairwise.wilcox.test}\NormalTok{(}
-  \DataTypeTok{x=}\NormalTok{dom_task_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered_per_step,}
-  \DataTypeTok{g=}\NormalTok{dom_task_data}\OperatorTok{$}\NormalTok{condition,}
-  \DataTypeTok{p.adjust.method=}\StringTok{"bonferroni"}\NormalTok{,}
-  \DataTypeTok{conf.int=}\OtherTok{TRUE}\NormalTok{,}
-  \DataTypeTok{conf.level=}\FloatTok{0.95}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 
-##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
-## 
-## data:  dom_task_data$dominant_lineage_extra_traits_discovered_per_step and dom_task_data$condition 
-## 
-##         NON-PLASTIC PLASTIC
-## PLASTIC 9.7e-11     -      
-## STATIC  < 2e-16     0.67   
-## 
-## P value adjustment method: bonferroni
-\end{verbatim}
-
-\hypertarget{novel-tasks-discovered-per-generation}{%
-\subsection{Novel tasks discovered per generation}\label{novel-tasks-discovered-per-generation}}
+\hypertarget{per-generation-novel-task-discovery---lineage-of-final-dominant-genotype}{%
+\subsection{Per-generation novel task discovery - lineage of final dominant genotype}\label{per-generation-novel-task-discovery---lineage-of-final-dominant-genotype}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3430,13 +3347,25 @@ more genotypes along lineage.
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"discovery-per-generation.png"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-61-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3521,8 +3450,8 @@ more genotypes along lineage.
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{novel-tasks-gained}{%
-\subsection{Novel tasks gained}\label{novel-tasks-gained}}
+\hypertarget{novel-tasks-gained-along-final-dominant-lineages}{%
+\section{Novel tasks gained along final dominant lineages}\label{novel-tasks-gained-along-final-dominant-lineages}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3547,6 +3476,13 @@ more genotypes along lineage.
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Extra tasks gained along dominant lineage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
@@ -3562,10 +3498,10 @@ more genotypes along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-65-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-63-1.pdf}
 
-\hypertarget{novel-tasks-lost}{%
-\subsection{Novel tasks lost}\label{novel-tasks-lost}}
+\hypertarget{novel-task-loss-along-final-dominant-lineages}{%
+\section{Novel task loss along final dominant lineages}\label{novel-task-loss-along-final-dominant-lineages}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3590,6 +3526,13 @@ more genotypes along lineage.
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Extra tasks lost along dominant lineage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
@@ -3605,7 +3548,7 @@ more genotypes along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-66-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-64-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3690,132 +3633,8 @@ more genotypes along lineage.
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{novel-traits-lost-per-step}{%
-\subsubsection{Novel traits lost per step}\label{novel-traits-lost-per-step}}
-
-Again, not totally fair to non-plastic lineages.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost_per_step <-}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost }\OperatorTok{/}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_length_genotypes}
-\KeywordTok{ggplot}\NormalTok{(summary_data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_lost_per_step, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
-    \DataTypeTok{alpha =} \FloatTok{.8}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
-    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
-    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
-    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
-    \DataTypeTok{alpha =} \FloatTok{0.8}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
-    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
-    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
-    \DataTypeTok{alpha =} \FloatTok{0.5}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
-    \DataTypeTok{limits=}\NormalTok{condition_order}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Extra tasks lost along dominant lineage (per step)"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
-    \OperatorTok{~}\NormalTok{extra_task_value,}
-    \DataTypeTok{labeller=}\NormalTok{label_both}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme}\NormalTok{(}
-    \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-68-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{paste0}\NormalTok{(}
-  \StringTok{"PLASTIC median: "}\NormalTok{,}
-  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost_per_step)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "PLASTIC median: 0.00238455242036334"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{paste0}\NormalTok{(}
-  \StringTok{"STATIC median: "}\NormalTok{,}
-  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"STATIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost_per_step)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "STATIC median: 0.00544747485837901"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{paste0}\NormalTok{(}
-  \StringTok{"NON-PLASTIC median: "}\NormalTok{,}
-  \KeywordTok{median}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost_per_step)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "NON-PLASTIC median: 0.0216427755153431"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{reward_level <-}\StringTok{ }\FloatTok{0.1}
-\NormalTok{dom_task_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(summary_data, extra_task_value}\OperatorTok{==}\NormalTok{reward_level)}
-\KeywordTok{kruskal.test}\NormalTok{(}
-  \DataTypeTok{formula=}\NormalTok{dominant_lineage_extra_traits_lost_per_step}\OperatorTok{~}\NormalTok{condition,}
-  \DataTypeTok{data=}\NormalTok{dom_task_data}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 
-##  Kruskal-Wallis rank sum test
-## 
-## data:  dominant_lineage_extra_traits_lost_per_step by condition
-## Kruskal-Wallis chi-squared = 65.779, df = 2, p-value = 5.204e-15
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{pairwise.wilcox.test}\NormalTok{(}
-  \DataTypeTok{x=}\NormalTok{dom_task_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost_per_step,}
-  \DataTypeTok{g=}\NormalTok{dom_task_data}\OperatorTok{$}\NormalTok{condition,}
-  \DataTypeTok{p.adjust.method=}\StringTok{"bonferroni"}\NormalTok{,}
-  \DataTypeTok{conf.int=}\OtherTok{TRUE}\NormalTok{,}
-  \DataTypeTok{conf.level=}\FloatTok{0.95}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 
-##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
-## 
-## data:  dom_task_data$dominant_lineage_extra_traits_lost_per_step and dom_task_data$condition 
-## 
-##         NON-PLASTIC PLASTIC
-## PLASTIC 1.3e-10     -      
-## STATIC  1.7e-10     0.0092 
-## 
-## P value adjustment method: bonferroni
-\end{verbatim}
-
-\hypertarget{novel-traits-lost-per-generation}{%
-\subsubsection{Novel traits lost per generation}\label{novel-traits-lost-per-generation}}
+\hypertarget{per-generation-novel-task-loss-along-final-dominant-lineages}{%
+\subsection{Per-generation novel task loss along final dominant lineages}\label{per-generation-novel-task-loss-along-final-dominant-lineages}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3845,13 +3664,25 @@ Again, not totally fair to non-plastic lineages.
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"tasks-lost-per-generation.png"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-70-1.pdf}
+\begin{verbatim}
+## Saving 6.5 x 4.5 in image
+\end{verbatim}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-66-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3936,8 +3767,8 @@ Again, not totally fair to non-plastic lineages.
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{how-many-instances-of-novel-trait-loss-co-occur-with-changes-in-base-phenotype}{%
-\subsubsection{How many instances of novel trait loss co-occur with changes in base phenotype?}\label{how-many-instances-of-novel-trait-loss-co-occur-with-changes-in-base-phenotype}}
+\hypertarget{how-many-instances-of-novel-trait-loss-co-occurred-with-changes-in-base-phenotype}{%
+\section{How many instances of novel trait loss co-occurred with changes in base phenotype?}\label{how-many-instances-of-novel-trait-loss-co-occurred-with-changes-in-base-phenotype}}
 
 Task loss linked with primary trait changes.
 
@@ -3946,24 +3777,28 @@ Task loss linked with primary trait changes.
 \NormalTok{lost_traits_summary_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(summary_data, extra_task_value}\OperatorTok{==}\FloatTok{0.1} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_lineage_extra_traits_lost}\OperatorTok{>}\DecValTok{0}\NormalTok{)}
 \NormalTok{lost_traits_summary_data}\OperatorTok{$}\NormalTok{frac_linked_extra_trait_loss <-}\StringTok{ }\NormalTok{lost_traits_summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost_linked_to_primary_change }\OperatorTok{/}\StringTok{ }\NormalTok{lost_traits_summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost}
 
-\KeywordTok{ggplot}\NormalTok{(lost_traits_summary_data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{frac_linked_extra_trait_loss)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_density}\NormalTok{() }\OperatorTok{+}
-\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(}
-\NormalTok{    condition}\OperatorTok{~}\NormalTok{extra_task_value,}
-    \DataTypeTok{labeller=}\NormalTok{label_both}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme}\NormalTok{(}
-    \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-extra-tasks-lost-linkage.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
-\NormalTok{  )}
+\CommentTok{# ggplot(lost_traits_summary_data, aes(x=frac_linked_extra_trait_loss, fill=condition)) +}
+\CommentTok{#   geom_density() +}
+\CommentTok{#   facet_grid(}
+\CommentTok{#     condition~extra_task_value,}
+\CommentTok{#     labeller=label_both}
+\CommentTok{#   ) +}
+\CommentTok{#   theme(}
+\CommentTok{#     legend.position="none"}
+\CommentTok{#   ) +}
+\CommentTok{#   scale_fill_brewer(}
+\CommentTok{#     palette="Paired"}
+\CommentTok{#   ) +}
+\CommentTok{#   scale_color_brewer(}
+\CommentTok{#     palette="Paired"}
+\CommentTok{#   ) +}
+\CommentTok{#   ggsave(}
+\CommentTok{#     paste0(working_directory, "plots/dominant-lineage-extra-tasks-lost-linkage.png"),}
+\CommentTok{#     width=15,}
+\CommentTok{#     height=10}
+\CommentTok{#   )}
 \end{Highlighting}
 \end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-72-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3987,6 +3822,13 @@ Task loss linked with primary trait changes.
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{extra_task_value,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
@@ -3997,7 +3839,7 @@ Task loss linked with primary trait changes.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-73-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4173,71 +4015,11 @@ Task loss linked with primary trait changes.
 ## [1] 0.02060222
 \end{verbatim}
 
-\hypertarget{extra-task-performance-over-time}{%
-\section{Extra task performance over time}\label{extra-task-performance-over-time}}
-
-Match score over time
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{lineage_reward10 <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(lineage_time_series_data, extra_task_value}\OperatorTok{==}\StringTok{"0.1"}\NormalTok{)}
-
-\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(lineage_reward10, update}\OperatorTok{>}\DecValTok{198000} \OperatorTok{&}\StringTok{ }\NormalTok{update}\OperatorTok{<=}\DecValTok{200000}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{update, }\DataTypeTok{y=}\NormalTok{match_score_even, }\DataTypeTok{color=}\NormalTok{condition, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun=}\StringTok{"mean"}\NormalTok{, }\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
-    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
-    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
-    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
-    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
-    \DataTypeTok{linetype=}\DecValTok{0}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Match score (even environment)"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
-    \OperatorTok{~}\NormalTok{extra_task_value,}
-    \DataTypeTok{labeller=}\NormalTok{label_both}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-match-score-even-val10.png"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
-\NormalTok{  )}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-77-1.pdf}
-
-Extra tasks over time
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(lineage_reward10, update}\OperatorTok{>}\DecValTok{198000} \OperatorTok{&}\StringTok{ }\NormalTok{update}\OperatorTok{<=}\DecValTok{200000}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{update, }\DataTypeTok{y=}\NormalTok{extra_traits, }\DataTypeTok{color=}\NormalTok{condition, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\DataTypeTok{fun=}\StringTok{"mean"}\NormalTok{, }\DataTypeTok{geom=}\StringTok{"line"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}
-    \DataTypeTok{fun.data=}\StringTok{"mean_cl_boot"}\NormalTok{,}
-    \DataTypeTok{fun.args=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{conf.int=}\FloatTok{0.95}\NormalTok{),}
-    \DataTypeTok{geom=}\StringTok{"ribbon"}\NormalTok{,}
-    \DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{,}
-    \DataTypeTok{linetype=}\DecValTok{0}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Number of extra traits"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
-    \OperatorTok{~}\NormalTok{extra_task_value,}
-    \DataTypeTok{labeller=}\NormalTok{label_both}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-extra-traits-val10.png"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
-\NormalTok{  )}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-78-1.pdf}
-
 \hypertarget{manuscript-figures-1}{%
 \section{Manuscript figures}\label{manuscript-figures-1}}
 
-Final dominant extra tasks.
+\hypertarget{overall-task-performance}{%
+\subsection{Overall task performance}\label{overall-task-performance}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4283,9 +4065,10 @@ Final dominant extra tasks.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-79-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-72-1.pdf}
 
-Final dominant lineage tasks discovered.
+\hypertarget{overall-task-discovery}{%
+\subsection{Overall task discovery}\label{overall-task-discovery}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4330,9 +4113,10 @@ Final dominant lineage tasks discovered.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-80-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-73-1.pdf}
 
-Final dominant lineage tasks lost.
+\hypertarget{overall-task-loss}{%
+\subsection{Overall task loss}\label{overall-task-loss}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4381,9 +4165,100 @@ Final dominant lineage tasks lost.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-81-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-74-1.pdf}
 
-Pull it all together.
+\hypertarget{per-generation-task-discovery}{%
+\subsection{Per-generation task discovery}\label{per-generation-task-discovery}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lineage_per_gen_task_discovery <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    summary_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_discovered_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Per-generation task discovery"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{lineage_per_gen_task_discovery}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
+
+\hypertarget{per-generation-task-loss}{%
+\subsection{Per-generation task loss}\label{per-generation-task-loss}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lineage_per_gen_task_loss <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+\NormalTok{    summary_data,}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_lost_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Per-generation task loss"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  )}
+\NormalTok{lineage_per_gen_task_loss}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-76-1.pdf}
+
+\hypertarget{combined-panel}{%
+\section{Combined panel}\label{combined-panel}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4391,21 +4266,36 @@ Pull it all together.
 \NormalTok{  dominant_extra_tasks_fig,}
 \NormalTok{  lineage_extra_tasks_discovered_fig }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.title.y=}\KeywordTok{element_blank}\NormalTok{()),}
 \NormalTok{  lineage_extra_tasks_lost_fig }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.title.y=}\KeywordTok{element_blank}\NormalTok{()),}
-  \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
+  \OtherTok{NULL}\NormalTok{,}
+\NormalTok{  lineage_per_gen_task_discovery,}
+\NormalTok{  lineage_per_gen_task_loss }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.title.y=}\KeywordTok{element_blank}\NormalTok{()),}
+  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
-  \DataTypeTok{labels=}\StringTok{"auto"}
+  \CommentTok{# labels="auto"}
+  \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"a"}\NormalTok{, }\StringTok{"b"}\NormalTok{,}\StringTok{"c"}\NormalTok{,}\StringTok{""}\NormalTok{, }\StringTok{"d"}\NormalTok{,}\StringTok{"e"}\NormalTok{)}
 \NormalTok{)}
 \KeywordTok{save_plot}\NormalTok{(}
    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"complex-traits-panel.pdf"}\NormalTok{),}
 \NormalTok{   grid,}
-   \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
-   \DataTypeTok{base_asp=}\FloatTok{2.5}
+   \DataTypeTok{base_height=}\DecValTok{12}\NormalTok{,}
+   \DataTypeTok{base_asp=}\DecValTok{3}\OperatorTok{/}\DecValTok{2}
 \NormalTok{)}
 \NormalTok{grid}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-82-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-77-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# save_plot(}
+\CommentTok{#    paste0(working_directory, "plots/", "complex-traits-panel.png"),}
+\CommentTok{#    grid,}
+\CommentTok{#    base_height=6,}
+\CommentTok{#    base_asp=2.5}
+\CommentTok{# )}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{genetic-hitchhiking}{%
 \chapter{Genetic hitchhiking}\label{genetic-hitchhiking}}
@@ -4566,8 +4456,8 @@ These analyses were conducted/knitted with the following computing environment:
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{evolution-of-phenotypic-plasticity-2}{%
-\section{Evolution of phenotypic plasticity}\label{evolution-of-phenotypic-plasticity-2}}
+\hypertarget{evolution-of-phenotypic-plasticity-1}{%
+\section{Evolution of phenotypic plasticity}\label{evolution-of-phenotypic-plasticity-1}}
 
 For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.
 
@@ -4591,7 +4481,7 @@ For sensor-enabled populations in fluctuating environments, we only transfered p
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-87-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-82-1.pdf}
 
 We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.
 
@@ -4624,7 +4514,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-88-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-83-1.pdf}
 
 \hypertarget{hitchhiking-instruction-execution}{%
 \section{Hitchhiking instruction execution}\label{hitchhiking-instruction-execution}}
@@ -4720,7 +4610,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-91-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-86-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4858,7 +4748,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-93-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-88-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4996,7 +4886,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-95-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-90-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5143,7 +5033,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-97-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-92-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5321,7 +5211,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-99-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-94-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5450,7 +5340,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-101-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-96-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5485,7 +5375,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-101-2.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-96-2.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5646,7 +5536,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-103-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5705,7 +5595,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-105-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-100-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5751,7 +5641,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-105-2.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-100-2.pdf}
 
 Number of poison increases along lineage.
 
@@ -5799,7 +5689,7 @@ Number of poison increases along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-106-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-101-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5845,7 +5735,7 @@ Number of poison increases along lineage.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-107-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-102-1.pdf}
 
 Pull it all together.
 
@@ -6024,7 +5914,7 @@ These analyses were conducted/knitted with the following computing environment:
 ## Saving 6.5 x 4.5 in image
 \end{verbatim}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-113-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-108-1.pdf}
 
 \hypertarget{what-is-the-distrubution-of-toggled-sequence-sizes}{%
 \section{What is the distrubution of toggled sequence sizes?}\label{what-is-the-distrubution-of-toggled-sequence-sizes}}
@@ -6073,7 +5963,7 @@ These analyses were conducted/knitted with the following computing environment:
 ## Warning: Removed 2 rows containing missing values (geom_bar).
 \end{verbatim}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-114-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-109-1.pdf}
 
 \bibliography{packages.bib,supplemental.bib}
 
