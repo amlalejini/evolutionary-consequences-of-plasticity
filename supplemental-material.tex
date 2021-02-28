@@ -1851,8 +1851,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.8247126 -0.0003962644  0.04035776
+##      original      bias    std. error
+## t1* 0.8247126 0.000641954  0.04028272
 \end{verbatim}
 
 \begin{Shaded}
@@ -1870,7 +1870,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.8994 )  
+## 95%   ( 0.7443,  0.9023 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -1956,8 +1956,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.5172414 -0.0005409195  0.03950667
+##      original      bias    std. error
+## t1* 0.5172414 0.000305977  0.03987936
 \end{verbatim}
 
 \begin{Shaded}
@@ -1975,7 +1975,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4391,  0.5954 )  
+## 95%   ( 0.4402,  0.5966 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2018,8 +2018,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.4827586 -2.758621e-06  0.03893272
+##      original       bias    std. error
+## t1* 0.4827586 0.0002496552  0.03981286
 \end{verbatim}
 
 \begin{Shaded}
@@ -2037,7 +2037,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4046,  0.5575 )  
+## 95%   ( 0.4034,  0.5609 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -4297,10 +4297,10 @@ Task loss linked with primary trait changes.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{genetic-hitchhiking}{%
-\chapter{Genetic hitchhiking}\label{genetic-hitchhiking}}
+\hypertarget{accumulation-of-deleterious-instructions}{%
+\chapter{Accumulation of deleterious instructions}\label{accumulation-of-deleterious-instructions}}
 
-The effect of adaptive phenotypic plasticity on (deleterious) genetic hitchhiking.
+The effect of adaptive phenotypic plasticity on the accumulation of deleterious genes.
 
 \hypertarget{overview-3}{%
 \section{Overview}\label{overview-3}}
@@ -4334,6 +4334,7 @@ Load all required R libraries.
 \KeywordTok{library}\NormalTok{(Hmisc)}
 \KeywordTok{library}\NormalTok{(boot)}
 \KeywordTok{library}\NormalTok{(fmsb)}
+\KeywordTok{library}\NormalTok{(knitr)}
 \KeywordTok{source}\NormalTok{(}\StringTok{"https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -4453,6 +4454,9 @@ These analyses were conducted/knitted with the following computing environment:
 \CommentTok{# Configure our default graphing theme}
 \KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_cowplot}\NormalTok{())}
 \KeywordTok{dir.create}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots"}\NormalTok{), }\DataTypeTok{showWarnings=}\OtherTok{FALSE}\NormalTok{)}
+\NormalTok{samplemean <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, d) \{}
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{mean}\NormalTok{(x[d]))}
+\NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
 
@@ -4472,6 +4476,12 @@ For sensor-enabled populations in fluctuating environments, we only transfered p
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Number of replicates in phase two"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{POISON_PENALTY, }\DataTypeTok{labeller=}\NormalTok{label_both) }\OperatorTok{+}
@@ -4505,6 +4515,12 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label=}\NormalTok{n, }\DataTypeTok{y=}\NormalTok{n}\OperatorTok{+}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Number of replicates with a plastic dominant genotype"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{POISON_PENALTY, }\DataTypeTok{labeller=}\NormalTok{label_both) }\OperatorTok{+}
@@ -4516,29 +4532,29 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-83-1.pdf}
 
-\hypertarget{hitchhiking-instruction-execution}{%
-\section{Hitchhiking instruction execution}\label{hitchhiking-instruction-execution}}
+\hypertarget{poison-instruction-execution}{%
+\section{Poison instruction execution}\label{poison-instruction-execution}}
 
-\hypertarget{number-of-replicates-where-final-dominant-genotype-executes-hitchhiker-instruction}{%
-\subsection{Number of replicates where final dominant genotype executes hitchhiker instruction}\label{number-of-replicates-where-final-dominant-genotype-executes-hitchhiker-instruction}}
+\hypertarget{number-of-replicates-where-final-dominant-genotype-executes-the-poison-instruction}{%
+\subsection{Number of replicates where final dominant genotype executes the poison instruction}\label{number-of-replicates-where-final-dominant-genotype-executes-the-poison-instruction}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{hitchiker_penalty <-}\StringTok{ }\FloatTok{0.1}
+\NormalTok{poison_penalty <-}\StringTok{ }\FloatTok{0.1}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{occurrences <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
-  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"STATIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED)}
+  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
+  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
+  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"STATIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED)}
 \NormalTok{)}
 \NormalTok{trials <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
-  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"STATIC"}\NormalTok{ )}\OperatorTok{$}\NormalTok{RANDOM_SEED)}
+  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
+  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
+  \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"STATIC"}\NormalTok{ )}\OperatorTok{$}\NormalTok{RANDOM_SEED)}
 \NormalTok{)}
 \KeywordTok{names}\NormalTok{(trials) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
   \StringTok{"NON-PLASTIC"}\NormalTok{,}
@@ -4551,6 +4567,28 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
   \StringTok{"STATIC"}
 \NormalTok{)}
 
+\NormalTok{poison_exec_table <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
+  \DataTypeTok{executes.poison=}\NormalTok{occurrences,}
+  \DataTypeTok{replicates=}\NormalTok{trials}
+\NormalTok{)}
+\KeywordTok{kable}\NormalTok{(poison_exec_table)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|r|r}
+\hline
+  & executes.poison & replicates\\
+\hline
+NON-PLASTIC & 14 & 100\\
+\hline
+PLASTIC & 0 & 43\\
+\hline
+STATIC & 0 & 100\\
+\hline
+\end{tabular}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{pairwise.fisher.test}\NormalTok{(}\DataTypeTok{x=}\NormalTok{occurrences, }\DataTypeTok{n=}\NormalTok{trials, }\DataTypeTok{p.adjust.method=}\StringTok{"bonferroni"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -4568,142 +4606,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{final-dominant-genotype-hitchhiker-execution}{%
-\subsection{Final dominant genotype hitchhiker execution}\label{final-dominant-genotype-hitchhiker-execution}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(summary_data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_times_poison_executed, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
-    \DataTypeTok{alpha =} \FloatTok{.8}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
-    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
-    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
-    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
-    \DataTypeTok{alpha =} \FloatTok{0.8}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
-    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
-    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
-    \DataTypeTok{alpha =} \FloatTok{0.5}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
-    \DataTypeTok{limits=}\NormalTok{condition_order}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"poison instruction executions (final dominant)"}\NormalTok{) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
-    \OperatorTok{~}\NormalTok{POISON_PENALTY,}
-    \DataTypeTok{labeller=}\NormalTok{label_both,}
-    \DataTypeTok{scale=}\StringTok{"free_y"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme}\NormalTok{(}
-    \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-poison.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
-\NormalTok{  )}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-86-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{penalties <-}\StringTok{ }\KeywordTok{levels}\NormalTok{(summary_data}\OperatorTok{$}\NormalTok{POISON_PENALTY)}
-\ControlFlowTok{for}\NormalTok{ (penalty }\ControlFlowTok{in}\NormalTok{ penalties) \{}
-\NormalTok{  stat_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{penalty)}
-  \KeywordTok{print}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(}
-      \StringTok{"PENALTY: "}\NormalTok{, penalty}
-\NormalTok{    )}
-\NormalTok{  )}
-\NormalTok{  kt <-}\StringTok{ }\KeywordTok{kruskal.test}\NormalTok{(}
-      \DataTypeTok{formula=}\NormalTok{dominant_times_poison_executed}\OperatorTok{~}\NormalTok{condition,}
-      \DataTypeTok{data=}\NormalTok{stat_data}
-\NormalTok{    )}
-  \KeywordTok{print}\NormalTok{(}
-\NormalTok{    kt}
-\NormalTok{  )}
-  \ControlFlowTok{if}\NormalTok{ (}\KeywordTok{is.na}\NormalTok{(kt}\OperatorTok{$}\NormalTok{p.value)) \{ }\ControlFlowTok{next}\NormalTok{ \}}
-  \ControlFlowTok{if}\NormalTok{ (kt}\OperatorTok{$}\NormalTok{p.value }\OperatorTok{>}\StringTok{ }\FloatTok{0.05}\NormalTok{) \{ }\ControlFlowTok{next}\NormalTok{ \}}
-  \KeywordTok{print}\NormalTok{(}
-    \KeywordTok{pairwise.wilcox.test}\NormalTok{(}
-      \DataTypeTok{x=}\NormalTok{stat_data}\OperatorTok{$}\NormalTok{dominant_times_poison_executed,}
-      \DataTypeTok{g=}\NormalTok{stat_data}\OperatorTok{$}\NormalTok{condition,}
-      \DataTypeTok{p.adjust.method=}\StringTok{"bonferroni"}
-\NormalTok{    )}
-\NormalTok{  )}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "PENALTY: 0"
-## 
-##  Kruskal-Wallis rank sum test
-## 
-## data:  dominant_times_poison_executed by condition
-## Kruskal-Wallis chi-squared = 36.988, df = 2, p-value = 9.294e-09
-## 
-## 
-##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
-## 
-## data:  stat_data$dominant_times_poison_executed and stat_data$condition 
-## 
-##         NON-PLASTIC PLASTIC
-## PLASTIC 2.8e-07     -      
-## STATIC  0.00015     0.00198
-## 
-## P value adjustment method: bonferroni 
-## [1] "PENALTY: 0.03"
-## 
-##  Kruskal-Wallis rank sum test
-## 
-## data:  dominant_times_poison_executed by condition
-## Kruskal-Wallis chi-squared = 72.995, df = 2, p-value < 2.2e-16
-## 
-## 
-##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
-## 
-## data:  stat_data$dominant_times_poison_executed and stat_data$condition 
-## 
-##         NON-PLASTIC PLASTIC
-## PLASTIC 2.0e-06     -      
-## STATIC  2.8e-13     1      
-## 
-## P value adjustment method: bonferroni 
-## [1] "PENALTY: 0.1"
-## 
-##  Kruskal-Wallis rank sum test
-## 
-## data:  dominant_times_poison_executed by condition
-## Kruskal-Wallis chi-squared = 21.157, df = 2, p-value = 2.546e-05
-## 
-## 
-##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
-## 
-## data:  stat_data$dominant_times_poison_executed and stat_data$condition 
-## 
-##         NON-PLASTIC PLASTIC
-## PLASTIC 0.02034     -      
-## STATIC  0.00022     -      
-## 
-## P value adjustment method: bonferroni 
-## [1] "PENALTY: 0.3"
-## 
-##  Kruskal-Wallis rank sum test
-## 
-## data:  dominant_times_poison_executed by condition
-## Kruskal-Wallis chi-squared = NaN, df = 2, p-value = NA
-\end{verbatim}
-
-\hypertarget{hitchhiker-instruction-execution-in-final-population}{%
-\subsection{Hitchhiker instruction execution in final population}\label{hitchhiker-instruction-execution-in-final-population}}
+\hypertarget{poison-instruction-execution-in-final-population}{%
+\subsection{Poison instruction execution in final population}\label{poison-instruction-execution-in-final-population}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4730,13 +4634,20 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"poison instruction executions (final population)"}\NormalTok{,}
     \DataTypeTok{trans=}\StringTok{"pseudo_log"}\NormalTok{,}
-    \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{1000}\NormalTok{, }\DecValTok{10000}\NormalTok{, }\DecValTok{100000}\NormalTok{, }\DecValTok{1000000}\NormalTok{),}
+    \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{10000}\NormalTok{,}\DecValTok{1000000}\NormalTok{),}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{1000000}\NormalTok{)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{POISON_PENALTY,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4748,7 +4659,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-88-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-87-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4840,8 +4751,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## Kruskal-Wallis chi-squared = 3.3994, df = 2, p-value = 0.1827
 \end{verbatim}
 
-\hypertarget{hitchhiker-instruction-execution-along-final-dominant-lineage-cummulative}{%
-\subsection{Hitchhiker instruction execution along final dominant lineage (cummulative)}\label{hitchhiker-instruction-execution-along-final-dominant-lineage-cummulative}}
+\hypertarget{poison-instruction-execution-along-final-dominant-lineage-cummulative}{%
+\subsection{Poison instruction execution along final dominant lineage (cummulative)}\label{poison-instruction-execution-along-final-dominant-lineage-cummulative}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4868,13 +4779,20 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"poison instruction executions (dominant lineage)"}\NormalTok{,}
     \DataTypeTok{trans=}\StringTok{"pseudo_log"}\NormalTok{,}
-    \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{1000}\NormalTok{,}\DecValTok{10000}\NormalTok{,}\DecValTok{100000}\NormalTok{),}
+    \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{1000}\NormalTok{,}\DecValTok{100000}\NormalTok{),}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{100000}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{POISON_PENALTY,}
     \DataTypeTok{labeller=}\NormalTok{label_both}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4886,7 +4804,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-90-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-89-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4989,11 +4907,11 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{characterizing-mutations-that-increase-hitchhiker-instruction-execution}{%
-\section{Characterizing mutations that increase hitchhiker instruction execution}\label{characterizing-mutations-that-increase-hitchhiker-instruction-execution}}
+\hypertarget{characterizing-mutations-that-increase-poison-instruction-execution}{%
+\section{Characterizing mutations that increase poison instruction execution}\label{characterizing-mutations-that-increase-poison-instruction-execution}}
 
-\hypertarget{number-of-offspring-along-dominant-lineage-with-increase-in-hitchiker-instruction-execution}{%
-\subsection{Number of offspring along dominant lineage with increase in hitchiker instruction execution}\label{number-of-offspring-along-dominant-lineage-with-increase-in-hitchiker-instruction-execution}}
+\hypertarget{number-of-offspring-along-dominant-lineage-with-increase-in-poison-instruction-execution}{%
+\subsection{Number of offspring along dominant lineage with increase in poison instruction execution}\label{number-of-offspring-along-dominant-lineage-with-increase-in-poison-instruction-execution}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5017,6 +4935,13 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{POISON_PENALTY,}
     \DataTypeTok{labeller=}\NormalTok{label_both,}
@@ -5026,14 +4951,14 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-dominant-lineage-poison-increase-num-mutants-log.pdf"}\NormalTok{),}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-dominant-lineage-poison-increase-num-mutants-log.png"}\NormalTok{),}
     \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
     \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-92-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-91-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5174,8 +5099,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{normalized-by-generations}{%
-\subsubsection{Normalized by generations}\label{normalized-by-generations}}
+\hypertarget{per-generation-increases-in-poison-instruction-execution}{%
+\subsection{Per-generation increases in poison instruction execution}\label{per-generation-increases-in-poison-instruction-execution}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5200,18 +5125,30 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{POISON_PENALTY,}
     \DataTypeTok{labeller=}\NormalTok{label_both,}
     \DataTypeTok{scales=}\StringTok{"free_y"}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-dominant-lineage-poison-increase-per-generation.png"}\NormalTok{),}
+    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+    \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-94-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-93-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5314,33 +5251,38 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{what-fraction-of-mutations-that-increase-hitchhiker-instruction-execution-co-occur-with-base-trait-changes}{%
-\subsection{What fraction of mutations that increase hitchhiker instruction execution co-occur with base trait changes?}\label{what-fraction-of-mutations-that-increase-hitchhiker-instruction-execution-co-occur-with-base-trait-changes}}
+\hypertarget{what-fraction-of-mutations-that-increase-poison-instruction-execution-co-occur-with-base-trait-changes}{%
+\subsection{What fraction of mutations that increase poison instruction execution co-occur with base trait changes?}\label{what-fraction-of-mutations-that-increase-poison-instruction-execution-co-occur-with-base-trait-changes}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# Fraction of unexpressed vs expressed increases in hitchhiker instructions}
 \NormalTok{summary_data}\OperatorTok{$}\NormalTok{frac_hitchhiking_linked_trait_change <-}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change }\OperatorTok{/}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases}
 
-\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases}\OperatorTok{>}\DecValTok{0}\NormalTok{ ), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{frac_hitchhiking_linked_trait_change)) }\OperatorTok{+}
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases}\OperatorTok{>}\DecValTok{0}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{frac_hitchhiking_linked_trait_change, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_density}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_grid}\NormalTok{(}
 \NormalTok{    condition}\OperatorTok{~}\NormalTok{POISON_PENALTY,}
     \DataTypeTok{labeller=}\NormalTok{label_both,}
     \DataTypeTok{scales=}\StringTok{"free_y"}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-frac_hitchhiking_linked_trait_change.pdf"}\NormalTok{),}
+    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-frac_hitchhiking_linked_trait_change.png"}\NormalTok{),}
     \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
     \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-96-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-95-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5364,18 +5306,25 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}
     \OperatorTok{~}\NormalTok{POISON_PENALTY,}
     \DataTypeTok{labeller=}\NormalTok{label_both,}
     \DataTypeTok{scales=}\StringTok{"free_y"}
 \NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-96-2.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-96-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5515,8 +5464,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## [1] "STATIC: 0 (0/58)"
 \end{verbatim}
 
-\hypertarget{what-about-unexpressed-vs-expressed-trait-changes-in-plastic-populations}{%
-\subsection{What about unexpressed vs expressed trait changes in plastic populations?}\label{what-about-unexpressed-vs-expressed-trait-changes-in-plastic-populations}}
+\hypertarget{what-fraction-of-poison-execution-increases-occur-in-unexpressed-phenotype-as-cryptic-variation}{%
+\section{What fraction of poison execution increases occur in unexpressed phenotype (as cryptic variation)?}\label{what-fraction-of-poison-execution-increases-occur-in-unexpressed-phenotype-as-cryptic-variation}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5540,115 +5489,32 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0 & condition=="PLASTIC"), aes(x=frac_expressed_hitchiker_inc)) +}
-\CommentTok{#   geom_density() +}
-\CommentTok{#   facet_grid(}
-\CommentTok{#     condition~POISON_PENALTY,}
-\CommentTok{#     labeller=label_both,}
-\CommentTok{#     scales="free_y"}
-\CommentTok{#   ) +}
-\CommentTok{#   theme(}
-\CommentTok{#     legend.position="none"}
-\CommentTok{#   )}
+\NormalTok{denom <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{POISON_PENALTY}\OperatorTok{==}\FloatTok{0.1}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases)}
+\NormalTok{num <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, condition}\OperatorTok{==}\StringTok{"PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{POISON_PENALTY}\OperatorTok{==}\FloatTok{0.1}\NormalTok{)}\OperatorTok{$}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype)}
+\KeywordTok{paste0}\NormalTok{(}\StringTok{"PLASTIC: "}\NormalTok{, num}\OperatorTok{/}\NormalTok{denom, }\StringTok{" ("}\NormalTok{, num, }\StringTok{"/"}\NormalTok{, denom, }\StringTok{")"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## [1] "PLASTIC: 0.0555555555555556 (1/18)"
+\end{verbatim}
 
 \hypertarget{manuscript-figures-2}{%
 \section{Manuscript figures}\label{manuscript-figures-2}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{hitchiker_penalty <-}\StringTok{ }\FloatTok{0.1}
+\NormalTok{poison_penalty <-}\StringTok{ }\FloatTok{0.1}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{fill=}\NormalTok{condition) ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_bar}\NormalTok{() }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_text}\NormalTok{(}
-    \DataTypeTok{stat=}\StringTok{"count"}\NormalTok{,}
-    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label=}\NormalTok{..count..),}
-    \DataTypeTok{position=}\KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.9}\NormalTok{),}
-    \DataTypeTok{vjust=}\DecValTok{0}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Number of replicates where poison is executed by dominant genotype"}\NormalTok{,}
-    \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, replicates}\OperatorTok{+}\DecValTok{2}\NormalTok{)}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
-    \DataTypeTok{limits=}\NormalTok{condition_order,}
-    \DataTypeTok{labels=}\NormalTok{condition_order,}
-    \DataTypeTok{breaks=}\NormalTok{condition_order}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
-    \DataTypeTok{palette=}\StringTok{"Paired"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
-    \DataTypeTok{palette=}\StringTok{"Paired"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme}\NormalTok{(}
-    \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-100-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{fig_data <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
-  \DataTypeTok{num_execute_poison=}\KeywordTok{c}\NormalTok{(}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"STATIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED)}
-\NormalTok{  ),}
-  \DataTypeTok{num_execute_no_poison=}\KeywordTok{c}\NormalTok{(}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"PLASTIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"STATIC"} \OperatorTok{&}\StringTok{ }\NormalTok{dominant_times_poison_executed }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED)}
-\NormalTok{  ),}
-  \DataTypeTok{total=}\KeywordTok{c}\NormalTok{(}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"NON-PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"PLASTIC"}\NormalTok{)}\OperatorTok{$}\NormalTok{RANDOM_SEED),}
-    \KeywordTok{length}\NormalTok{(}\KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{condition}\OperatorTok{==}\StringTok{"STATIC"}\NormalTok{ )}\OperatorTok{$}\NormalTok{RANDOM_SEED)}
-\NormalTok{  ),}
-  \DataTypeTok{condition=}\KeywordTok{c}\NormalTok{(}
-    \StringTok{"NON-PLASTIC"}\NormalTok{,}
-    \StringTok{"PLASTIC"}\NormalTok{,}
-    \StringTok{"STATIC"}
-\NormalTok{  )}
-\NormalTok{)}
-
-\KeywordTok{ggplot}\NormalTok{(fig_data, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{num_execute_poison, }\DataTypeTok{fill=}\NormalTok{condition)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\DataTypeTok{position=}\KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.9}\NormalTok{)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_text}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{label=}\NormalTok{num_execute_poison, }\DataTypeTok{y=}\NormalTok{num_execute_poison}\FloatTok{+0.25}\NormalTok{)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
-    \DataTypeTok{limits=}\NormalTok{condition_order}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
-    \DataTypeTok{palette=}\StringTok{"Paired"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
-    \DataTypeTok{palette=}\StringTok{"Paired"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{theme}\NormalTok{(}
-    \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  )}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-100-2.pdf}
-
-Number of poison increases along lineage.
+\hypertarget{total-poison-execution-increases-along-lineage.}{%
+\subsection{Total poison execution increases along lineage.}\label{total-poison-execution-increases-along-lineage.}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{poison_increases_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
-    \KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty),}
+    \KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty),}
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
@@ -5672,7 +5538,7 @@ Number of poison increases along lineage.
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Increases in poison instruction execution along lineage"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Increases in poison execution along lineage"}\NormalTok{,}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
@@ -5691,10 +5557,13 @@ Number of poison increases along lineage.
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-101-1.pdf}
 
+\hypertarget{per-generation-poison-execution-increases-along-lineage}{%
+\subsection{Per-generation poison execution increases along lineage}\label{per-generation-poison-execution-increases-along-lineage}}
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{poison_increases_per_gen_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
-    \KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{hitchiker_penalty),}
+    \KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty),}
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
@@ -5718,7 +5587,7 @@ Number of poison increases along lineage.
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Increases in poison instruction execution along lineage (per generation)"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Per-generation increase in poison execution along lineage"}\NormalTok{,}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
@@ -5737,27 +5606,78 @@ Number of poison increases along lineage.
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-102-1.pdf}
 
-Pull it all together.
+\hypertarget{co-occurrence}{%
+\subsection{Co-occurrence}\label{co-occurrence}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# grid <- plot_grid(}
-\CommentTok{#   dominant_extra_tasks_fig,}
-\CommentTok{#   lineage_extra_tasks_discovered_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),}
-\CommentTok{#   lineage_extra_tasks_lost_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),}
-\CommentTok{#   nrow=1,}
-\CommentTok{#   align="v",}
-\CommentTok{#   labels="auto"}
-\CommentTok{# )}
-\CommentTok{# save_plot(}
-\CommentTok{#    paste0(working_directory, "plots/", "complex-traits-panel.pdf"),}
-\CommentTok{#    grid,}
-\CommentTok{#    base_height=6,}
-\CommentTok{#    base_asp=2.5}
-\CommentTok{# )}
-\CommentTok{# grid}
+\NormalTok{linked_trait_change_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
+    \KeywordTok{filter}\NormalTok{(summary_data, POISON_PENALTY}\OperatorTok{==}\NormalTok{poison_penalty }\OperatorTok{&}\StringTok{ }\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases}\OperatorTok{>}\DecValTok{0}\NormalTok{),}
+    \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{frac_hitchhiking_linked_trait_change, }\DataTypeTok{fill=}\NormalTok{condition)}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
+    \DataTypeTok{alpha =} \FloatTok{.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}
+    \DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{condition),}
+    \DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{),}
+    \DataTypeTok{size =} \FloatTok{.5}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.8}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}
+    \DataTypeTok{width =} \FloatTok{.1}\NormalTok{,}
+    \DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{,}
+    \DataTypeTok{alpha =} \FloatTok{0.5}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
+    \DataTypeTok{limits=}\NormalTok{condition_order,}
+    \DataTypeTok{labels=}\NormalTok{condition_order}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
+    \DataTypeTok{name=}\StringTok{"[Fraction of poison instruction increase co-occurrences]"}\NormalTok{,}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
+    \DataTypeTok{palette=}\StringTok{"Paired"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}
+    \DataTypeTok{legend.position=}\StringTok{"none"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{()}
+\NormalTok{linked_trait_change_fig}
 \end{Highlighting}
 \end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-103-1.pdf}
+
+\hypertarget{combined-panel-1}{%
+\subsection{Combined panel}\label{combined-panel-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\NormalTok{  poison_increases_fig,}
+\NormalTok{  poison_increases_per_gen_fig }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.title.y=}\KeywordTok{element_blank}\NormalTok{()),}
+\NormalTok{  linked_trait_change_fig }\OperatorTok{+}\StringTok{ }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.ticks.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.text.y=}\KeywordTok{element_blank}\NormalTok{(),}\DataTypeTok{axis.title.y=}\KeywordTok{element_blank}\NormalTok{()),}
+  \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+\KeywordTok{save_plot}\NormalTok{(}
+   \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"poison-accumulation-panel.pdf"}\NormalTok{),}
+\NormalTok{   grid,}
+   \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
+   \DataTypeTok{base_asp=}\DecValTok{3}\OperatorTok{/}\DecValTok{1}
+\NormalTok{)}
+\NormalTok{grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-104-1.pdf}
 
 \hypertarget{regulation-in-avida}{%
 \chapter{Regulation in Avida}\label{regulation-in-avida}}
@@ -5914,7 +5834,7 @@ These analyses were conducted/knitted with the following computing environment:
 ## Saving 6.5 x 4.5 in image
 \end{verbatim}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-108-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-109-1.pdf}
 
 \hypertarget{what-is-the-distrubution-of-toggled-sequence-sizes}{%
 \section{What is the distrubution of toggled sequence sizes?}\label{what-is-the-distrubution-of-toggled-sequence-sizes}}
@@ -5963,7 +5883,7 @@ These analyses were conducted/knitted with the following computing environment:
 ## Warning: Removed 2 rows containing missing values (geom_bar).
 \end{verbatim}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-109-1.pdf}
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-110-1.pdf}
 
 \bibliography{packages.bib,supplemental.bib}
 
