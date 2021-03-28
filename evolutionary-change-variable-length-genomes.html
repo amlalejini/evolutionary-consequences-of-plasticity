@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Evolutionary change (variable length genomes) | Supplemental Material</title>
+  <meta name="description" content="Supplemental material" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Evolutionary change (variable length genomes) | Supplemental Material" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Supplemental material" />
+  <meta name="github-repo" content="amlalejini/evolutionary-consequences-of-plasticity" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Evolutionary change (variable length genomes) | Supplemental Material" />
+  
+  <meta name="twitter:description" content="Supplemental material" />
+  
+
+<meta name="author" content="Alexander Lalejini, Austin J. Ferguson, Nkrumah Grant, and Charles Ofria" />
+
+
+<meta name="date" content="2021-03-28" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="regulation-in-avida.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Supplemental material</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="validation-experiment.html"><a href="validation-experiment.html"><i class="fa fa-check"></i><b>2</b> Validation experiment</a><ul>
+<li class="chapter" data-level="2.1" data-path="validation-experiment.html"><a href="validation-experiment.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="validation-experiment.html"><a href="validation-experiment.html#analysis-dependencies"><i class="fa fa-check"></i><b>2.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="2.3" data-path="validation-experiment.html"><a href="validation-experiment.html#setup"><i class="fa fa-check"></i><b>2.3</b> Setup</a></li>
+<li class="chapter" data-level="2.4" data-path="validation-experiment.html"><a href="validation-experiment.html#evolution-of-phenotypic-plasticity"><i class="fa fa-check"></i><b>2.4</b> Evolution of phenotypic plasticity</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="evolutionary-change.html"><a href="evolutionary-change.html"><i class="fa fa-check"></i><b>3</b> Evolutionary change</a><ul>
+<li class="chapter" data-level="3.1" data-path="evolutionary-change.html"><a href="evolutionary-change.html#overview-1"><i class="fa fa-check"></i><b>3.1</b> Overview</a></li>
+<li class="chapter" data-level="3.2" data-path="evolutionary-change.html"><a href="evolutionary-change.html#analysis-dependencies-1"><i class="fa fa-check"></i><b>3.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="3.3" data-path="evolutionary-change.html"><a href="evolutionary-change.html#setup-1"><i class="fa fa-check"></i><b>3.3</b> Setup</a></li>
+<li class="chapter" data-level="3.4" data-path="evolutionary-change.html"><a href="evolutionary-change.html#the-evolution-of-phenotypic-plasticity"><i class="fa fa-check"></i><b>3.4</b> The evolution of phenotypic plasticity</a></li>
+<li class="chapter" data-level="3.5" data-path="evolutionary-change.html"><a href="evolutionary-change.html#average-generation"><i class="fa fa-check"></i><b>3.5</b> Average generation</a></li>
+<li class="chapter" data-level="3.6" data-path="evolutionary-change.html"><a href="evolutionary-change.html#selective-sweeps"><i class="fa fa-check"></i><b>3.6</b> Selective sweeps</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="evolutionary-change.html"><a href="evolutionary-change.html#average-number-of-generations-between-selective-sweeps"><i class="fa fa-check"></i><b>3.6.1</b> Average number of generations between selective sweeps</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="evolutionary-change.html"><a href="evolutionary-change.html#phenotypic-volatility-along-the-dominant-lineage"><i class="fa fa-check"></i><b>3.7</b> Phenotypic volatility along the dominant lineage</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="evolutionary-change.html"><a href="evolutionary-change.html#phenotypic-volatility-normalized-by-generations-elapsed"><i class="fa fa-check"></i><b>3.7.1</b> Phenotypic volatility normalized by generations elapsed</a></li>
+<li class="chapter" data-level="3.7.2" data-path="evolutionary-change.html"><a href="evolutionary-change.html#phenotypic-fidelity"><i class="fa fa-check"></i><b>3.7.2</b> Phenotypic fidelity</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="evolutionary-change.html"><a href="evolutionary-change.html#mutation-accumulation-along-the-dominant-lineage"><i class="fa fa-check"></i><b>3.8</b> Mutation accumulation along the dominant lineage</a><ul>
+<li class="chapter" data-level="3.8.1" data-path="evolutionary-change.html"><a href="evolutionary-change.html#mutation-accumulation-normalized-by-generations-elapsed"><i class="fa fa-check"></i><b>3.8.1</b> Mutation accumulation normalized by generations elapsed</a></li>
+<li class="chapter" data-level="3.8.2" data-path="evolutionary-change.html"><a href="evolutionary-change.html#genotypic-fidelity"><i class="fa fa-check"></i><b>3.8.2</b> Genotypic fidelity</a></li>
+</ul></li>
+<li class="chapter" data-level="3.9" data-path="evolutionary-change.html"><a href="evolutionary-change.html#characterizing-variation-along-dominant-lineages"><i class="fa fa-check"></i><b>3.9</b> Characterizing variation along dominant lineages</a><ul>
+<li class="chapter" data-level="3.9.1" data-path="evolutionary-change.html"><a href="evolutionary-change.html#what-fraction-of-mutations-along-the-lineage-result-in-phenotypic-changes"><i class="fa fa-check"></i><b>3.9.1</b> What fraction of mutations along the lineage result in phenotypic changes?</a></li>
+<li class="chapter" data-level="3.9.2" data-path="evolutionary-change.html"><a href="evolutionary-change.html#for-plastic-populations-what-fraction-of-phenotype-altering-mutations-occurred-in-the-unexpressed-phenotype"><i class="fa fa-check"></i><b>3.9.2</b> For PLASTIC populations, what fraction of phenotype-altering mutations occurred in the unexpressed phenotype?</a></li>
+<li class="chapter" data-level="3.9.3" data-path="evolutionary-change.html"><a href="evolutionary-change.html#for-plastic-populations-what-fraction-of-mutations-that-affect-the-unexpressed-phenotype-are-deleterious-versus-beneficial"><i class="fa fa-check"></i><b>3.9.3</b> For PLASTIC populations, what fraction of mutations that affect the unexpressed phenotype are deleterious versus beneficial?</a></li>
+</ul></li>
+<li class="chapter" data-level="3.10" data-path="evolutionary-change.html"><a href="evolutionary-change.html#manuscript-figures"><i class="fa fa-check"></i><b>3.10</b> Manuscript figures</a><ul>
+<li class="chapter" data-level="3.10.1" data-path="evolutionary-change.html"><a href="evolutionary-change.html#total-evolutionary-change"><i class="fa fa-check"></i><b>3.10.1</b> Total evolutionary change</a></li>
+<li class="chapter" data-level="3.10.2" data-path="evolutionary-change.html"><a href="evolutionary-change.html#rate-of-evolutionary-change"><i class="fa fa-check"></i><b>3.10.2</b> Rate of evolutionary change</a></li>
+<li class="chapter" data-level="3.10.3" data-path="evolutionary-change.html"><a href="evolutionary-change.html#full-panel"><i class="fa fa-check"></i><b>3.10.3</b> Full panel</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html"><i class="fa fa-check"></i><b>4</b> Evolution and maintenance of novel traits</a><ul>
+<li class="chapter" data-level="4.1" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#overview-2"><i class="fa fa-check"></i><b>4.1</b> Overview</a></li>
+<li class="chapter" data-level="4.2" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#analysis-dependencies-2"><i class="fa fa-check"></i><b>4.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="4.3" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#setup-2"><i class="fa fa-check"></i><b>4.3</b> Setup</a></li>
+<li class="chapter" data-level="4.4" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#the-evolution-of-phenotypic-plasticity-1"><i class="fa fa-check"></i><b>4.4</b> The evolution of phenotypic plasticity</a></li>
+<li class="chapter" data-level="4.5" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#novel-task-performance---final-dominant-genotype"><i class="fa fa-check"></i><b>4.5</b> Novel task performance - final dominant genotype</a></li>
+<li class="chapter" data-level="4.6" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#novel-task-performance---final-population"><i class="fa fa-check"></i><b>4.6</b> Novel task performance - final population</a></li>
+<li class="chapter" data-level="4.7" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#novel-task-discovery---population"><i class="fa fa-check"></i><b>4.7</b> Novel task discovery - population</a></li>
+<li class="chapter" data-level="4.8" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#novel-task-discovery---lineage-of-final-dominant-genotype"><i class="fa fa-check"></i><b>4.8</b> Novel task discovery - lineage of final dominant genotype</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#per-generation-novel-task-discovery---lineage-of-final-dominant-genotype"><i class="fa fa-check"></i><b>4.8.1</b> Per-generation novel task discovery - lineage of final dominant genotype</a></li>
+</ul></li>
+<li class="chapter" data-level="4.9" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#novel-tasks-gained-along-final-dominant-lineages"><i class="fa fa-check"></i><b>4.9</b> Novel tasks gained along final dominant lineages</a></li>
+<li class="chapter" data-level="4.10" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#novel-task-loss-along-final-dominant-lineages"><i class="fa fa-check"></i><b>4.10</b> Novel task loss along final dominant lineages</a><ul>
+<li class="chapter" data-level="4.10.1" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#per-generation-novel-task-loss-along-final-dominant-lineages"><i class="fa fa-check"></i><b>4.10.1</b> Per-generation novel task loss along final dominant lineages</a></li>
+</ul></li>
+<li class="chapter" data-level="4.11" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#how-many-instances-of-novel-trait-loss-co-occurred-with-changes-in-base-phenotype"><i class="fa fa-check"></i><b>4.11</b> How many instances of novel trait loss co-occurred with changes in base phenotype?</a></li>
+<li class="chapter" data-level="4.12" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#manuscript-figures-1"><i class="fa fa-check"></i><b>4.12</b> Manuscript figures</a><ul>
+<li class="chapter" data-level="4.12.1" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#overall-task-performance"><i class="fa fa-check"></i><b>4.12.1</b> Overall task performance</a></li>
+<li class="chapter" data-level="4.12.2" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#overall-task-discovery"><i class="fa fa-check"></i><b>4.12.2</b> Overall task discovery</a></li>
+<li class="chapter" data-level="4.12.3" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#overall-task-loss"><i class="fa fa-check"></i><b>4.12.3</b> Overall task loss</a></li>
+<li class="chapter" data-level="4.12.4" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#per-generation-task-discovery"><i class="fa fa-check"></i><b>4.12.4</b> Per-generation task discovery</a></li>
+<li class="chapter" data-level="4.12.5" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#per-generation-task-loss"><i class="fa fa-check"></i><b>4.12.5</b> Per-generation task loss</a></li>
+</ul></li>
+<li class="chapter" data-level="4.13" data-path="evolution-and-maintenance-of-novel-traits.html"><a href="evolution-and-maintenance-of-novel-traits.html#combined-panel"><i class="fa fa-check"></i><b>4.13</b> Combined panel</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html"><i class="fa fa-check"></i><b>5</b> Accumulation of deleterious instructions</a><ul>
+<li class="chapter" data-level="5.1" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#overview-3"><i class="fa fa-check"></i><b>5.1</b> Overview</a></li>
+<li class="chapter" data-level="5.2" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#analysis-dependencies-3"><i class="fa fa-check"></i><b>5.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="5.3" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#setup-3"><i class="fa fa-check"></i><b>5.3</b> Setup</a></li>
+<li class="chapter" data-level="5.4" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#evolution-of-phenotypic-plasticity-1"><i class="fa fa-check"></i><b>5.4</b> Evolution of phenotypic plasticity</a></li>
+<li class="chapter" data-level="5.5" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#poison-instruction-execution"><i class="fa fa-check"></i><b>5.5</b> Poison instruction execution</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#number-of-replicates-where-final-dominant-genotype-executes-the-poison-instruction"><i class="fa fa-check"></i><b>5.5.1</b> Number of replicates where final dominant genotype executes the poison instruction</a></li>
+<li class="chapter" data-level="5.5.2" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#poison-instruction-execution-in-final-population"><i class="fa fa-check"></i><b>5.5.2</b> Poison instruction execution in final population</a></li>
+<li class="chapter" data-level="5.5.3" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#poison-instruction-execution-along-final-dominant-lineage-cummulative"><i class="fa fa-check"></i><b>5.5.3</b> Poison instruction execution along final dominant lineage (cummulative)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#characterizing-mutations-that-increase-poison-instruction-execution"><i class="fa fa-check"></i><b>5.6</b> Characterizing mutations that increase poison instruction execution</a><ul>
+<li class="chapter" data-level="5.6.1" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#number-of-offspring-along-dominant-lineage-with-increase-in-poison-instruction-execution"><i class="fa fa-check"></i><b>5.6.1</b> Number of offspring along dominant lineage with increase in poison instruction execution</a></li>
+<li class="chapter" data-level="5.6.2" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#per-generation-increases-in-poison-instruction-execution"><i class="fa fa-check"></i><b>5.6.2</b> Per-generation increases in poison instruction execution</a></li>
+<li class="chapter" data-level="5.6.3" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#what-fraction-of-mutations-that-increase-poison-instruction-execution-co-occur-with-base-trait-changes"><i class="fa fa-check"></i><b>5.6.3</b> What fraction of mutations that increase poison instruction execution co-occur with base trait changes?</a></li>
+</ul></li>
+<li class="chapter" data-level="5.7" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#what-fraction-of-poison-execution-increases-occur-in-unexpressed-phenotype-as-cryptic-variation"><i class="fa fa-check"></i><b>5.7</b> What fraction of poison execution increases occur in unexpressed phenotype (as cryptic variation)?</a></li>
+<li class="chapter" data-level="5.8" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#manuscript-figures-2"><i class="fa fa-check"></i><b>5.8</b> Manuscript figures</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#total-poison-execution-increases-along-lineage."><i class="fa fa-check"></i><b>5.8.1</b> Total poison execution increases along lineage.</a></li>
+<li class="chapter" data-level="5.8.2" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#per-generation-poison-execution-increases-along-lineage"><i class="fa fa-check"></i><b>5.8.2</b> Per-generation poison execution increases along lineage</a></li>
+<li class="chapter" data-level="5.8.3" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#co-occurrence"><i class="fa fa-check"></i><b>5.8.3</b> Co-occurrence</a></li>
+<li class="chapter" data-level="5.8.4" data-path="accumulation-of-deleterious-instructions.html"><a href="accumulation-of-deleterious-instructions.html#combined-panel-1"><i class="fa fa-check"></i><b>5.8.4</b> Combined panel</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html"><i class="fa fa-check"></i><b>6</b> Regulation in Avida</a><ul>
+<li class="chapter" data-level="6.1" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#overview-4"><i class="fa fa-check"></i><b>6.1</b> Overview</a></li>
+<li class="chapter" data-level="6.2" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#analysis-dependencies-4"><i class="fa fa-check"></i><b>6.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="6.3" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#setup-4"><i class="fa fa-check"></i><b>6.3</b> Setup</a></li>
+<li class="chapter" data-level="6.4" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#how-many-instructions-do-plastic-genomes-toggle-depending-on-environmental-context"><i class="fa fa-check"></i><b>6.4</b> How many instructions do plastic genomes toggle depending on environmental context?</a></li>
+<li class="chapter" data-level="6.5" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#what-is-the-distrubution-of-toggled-sequence-sizes"><i class="fa fa-check"></i><b>6.5</b> What is the distrubution of toggled sequence sizes?</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html"><i class="fa fa-check"></i><b>7</b> Evolutionary change (variable length genomes)</a><ul>
+<li class="chapter" data-level="7.1" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#overview-5"><i class="fa fa-check"></i><b>7.1</b> Overview</a></li>
+<li class="chapter" data-level="7.2" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#analysis-dependencies-5"><i class="fa fa-check"></i><b>7.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="7.3" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#setup-5"><i class="fa fa-check"></i><b>7.3</b> Setup</a></li>
+<li class="chapter" data-level="7.4" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#evolution-of-phenotypic-plasticity-2"><i class="fa fa-check"></i><b>7.4</b> Evolution of phenotypic plasticity</a></li>
+<li class="chapter" data-level="7.5" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#genome-length"><i class="fa fa-check"></i><b>7.5</b> Genome length</a></li>
+<li class="chapter" data-level="7.6" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#average-generation-1"><i class="fa fa-check"></i><b>7.6</b> Average generation</a></li>
+<li class="chapter" data-level="7.7" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#coalescence-events-1"><i class="fa fa-check"></i><b>7.7</b> Coalescence events</a><ul>
+<li class="chapter" data-level="7.7.1" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#average-number-of-generations-between-selective-sweeps-1"><i class="fa fa-check"></i><b>7.7.1</b> Average number of generations between selective sweeps</a></li>
+</ul></li>
+<li class="chapter" data-level="7.8" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#phenotypic-volatility-along-the-dominant-lineage-1"><i class="fa fa-check"></i><b>7.8</b> Phenotypic volatility along the dominant lineage</a></li>
+<li class="chapter" data-level="7.9" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#mutation-accumulation-along-the-dominant-lineage-1"><i class="fa fa-check"></i><b>7.9</b> Mutation accumulation along the dominant lineage</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with ❤ and bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Supplemental Material</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="evolutionary-change-variable-length-genomes" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Evolutionary change (variable length genomes)</h1>
+<div id="overview-5" class="section level2">
+<h2><span class="header-section-number">7.1</span> Overview</h2>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb348-1" title="1">total_updates &lt;-<span class="st"> </span><span class="dv">200000</span></a>
+<a class="sourceLine" id="cb348-2" title="2">replicates &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb348-3" title="3"></a>
+<a class="sourceLine" id="cb348-4" title="4">all_traits &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;not&quot;</span>,<span class="st">&quot;nand&quot;</span>,<span class="st">&quot;and&quot;</span>,<span class="st">&quot;ornot&quot;</span>,<span class="st">&quot;or&quot;</span>,<span class="st">&quot;andnot&quot;</span>)</a>
+<a class="sourceLine" id="cb348-5" title="5">traits_set_a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;not&quot;</span>, <span class="st">&quot;and&quot;</span>, <span class="st">&quot;or&quot;</span>)</a>
+<a class="sourceLine" id="cb348-6" title="6">traits_set_b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;nand&quot;</span>, <span class="st">&quot;ornot&quot;</span>, <span class="st">&quot;andnot&quot;</span>)</a>
+<a class="sourceLine" id="cb348-7" title="7"></a>
+<a class="sourceLine" id="cb348-8" title="8"><span class="co"># Relative location of data.</span></a>
+<a class="sourceLine" id="cb348-9" title="9">working_directory &lt;-<span class="st"> &quot;experiments/2021-01-30-evo-dynamics/analysis/&quot;</span> <span class="co"># &lt;&lt; For bookdown</span></a>
+<a class="sourceLine" id="cb348-10" title="10"><span class="co"># working_directory &lt;- &quot;./&quot;                                              # &lt;&lt; For local analysis</span></a></code></pre></div>
+</div>
+<div id="analysis-dependencies-5" class="section level2">
+<h2><span class="header-section-number">7.2</span> Analysis dependencies</h2>
+<p>Load all required R libraries.</p>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb349-1" title="1"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb349-2" title="2"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb349-3" title="3"><span class="kw">library</span>(cowplot)</a>
+<a class="sourceLine" id="cb349-4" title="4"><span class="kw">library</span>(RColorBrewer)</a>
+<a class="sourceLine" id="cb349-5" title="5"><span class="kw">library</span>(Hmisc)</a>
+<a class="sourceLine" id="cb349-6" title="6"><span class="kw">library</span>(boot)</a>
+<a class="sourceLine" id="cb349-7" title="7"><span class="kw">source</span>(<span class="st">&quot;https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R&quot;</span>)</a></code></pre></div>
+<p>These analyses were conducted/knitted with the following computing environment:</p>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb350-1" title="1"><span class="kw">print</span>(version)</a></code></pre></div>
+<pre><code>##                _                           
+## platform       x86_64-pc-linux-gnu         
+## arch           x86_64                      
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
+## status                                     
+## major          4                           
+## minor          0.4                         
+## year           2021                        
+## month          02                          
+## day            15                          
+## svn rev        80002                       
+## language       R                           
+## version.string R version 4.0.4 (2021-02-15)
+## nickname       Lost Library Book</code></pre>
+</div>
+<div id="setup-5" class="section level2">
+<h2><span class="header-section-number">7.3</span> Setup</h2>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb352-1" title="1">summary_data_loc &lt;-<span class="st"> </span><span class="kw">paste0</span>(working_directory, <span class="st">&quot;data/aggregate.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb352-2" title="2">summary_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(summary_data_loc, <span class="dt">na.strings=</span><span class="st">&quot;NONE&quot;</span>)</a>
+<a class="sourceLine" id="cb352-3" title="3"></a>
+<a class="sourceLine" id="cb352-4" title="4">summary_data<span class="op">$</span>DISABLE_REACTION_SENSORS &lt;-<span class="st"> </span><span class="kw">as.factor</span>(summary_data<span class="op">$</span>DISABLE_REACTION_SENSORS)</a>
+<a class="sourceLine" id="cb352-5" title="5">summary_data<span class="op">$</span>chg_env &lt;-<span class="st"> </span>summary_data<span class="op">$</span>chg_env <span class="op">==</span><span class="st"> &quot;True&quot;</span></a>
+<a class="sourceLine" id="cb352-6" title="6">summary_data<span class="op">$</span>dominant_plastic_odd_even &lt;-<span class="st"> </span><span class="kw">as.factor</span>(summary_data<span class="op">$</span>dominant_plastic_odd_even)</a>
+<a class="sourceLine" id="cb352-7" title="7">summary_data<span class="op">$</span>sensors &lt;-<span class="st"> </span>summary_data<span class="op">$</span>DISABLE_REACTION_SENSORS <span class="op">==</span><span class="st"> &quot;0&quot;</span></a>
+<a class="sourceLine" id="cb352-8" title="8">summary_data<span class="op">$</span>is_plastic &lt;-<span class="st"> </span>summary_data<span class="op">$</span>dominant_plastic_odd_even <span class="op">==</span><span class="st"> &quot;True&quot;</span></a>
+<a class="sourceLine" id="cb352-9" title="9"></a>
+<a class="sourceLine" id="cb352-10" title="10">env_label_fun &lt;-<span class="st"> </span><span class="cf">function</span>(chg_env) {</a>
+<a class="sourceLine" id="cb352-11" title="11">  <span class="cf">if</span> (chg_env) {</a>
+<a class="sourceLine" id="cb352-12" title="12">    <span class="kw">return</span>(<span class="st">&quot;Fluctuating&quot;</span>)</a>
+<a class="sourceLine" id="cb352-13" title="13">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb352-14" title="14">    <span class="kw">return</span>(<span class="st">&quot;Constant&quot;</span>)</a>
+<a class="sourceLine" id="cb352-15" title="15">  }</a>
+<a class="sourceLine" id="cb352-16" title="16">}</a>
+<a class="sourceLine" id="cb352-17" title="17"></a>
+<a class="sourceLine" id="cb352-18" title="18">sensors_label_fun &lt;-<span class="st"> </span><span class="cf">function</span>(has_sensors) {</a>
+<a class="sourceLine" id="cb352-19" title="19">  <span class="cf">if</span> (has_sensors) {</a>
+<a class="sourceLine" id="cb352-20" title="20">    <span class="kw">return</span>(<span class="st">&quot;Sensors&quot;</span>)</a>
+<a class="sourceLine" id="cb352-21" title="21">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb352-22" title="22">    <span class="kw">return</span>(<span class="st">&quot;No sensors&quot;</span>)</a>
+<a class="sourceLine" id="cb352-23" title="23">  }</a>
+<a class="sourceLine" id="cb352-24" title="24">}</a>
+<a class="sourceLine" id="cb352-25" title="25"></a>
+<a class="sourceLine" id="cb352-26" title="26"><span class="co"># note that this labeler makes assumptions about how we set up our experiment</span></a>
+<a class="sourceLine" id="cb352-27" title="27">condition_label_fun &lt;-<span class="st"> </span><span class="cf">function</span>(has_sensors, env_chg) {</a>
+<a class="sourceLine" id="cb352-28" title="28">  <span class="cf">if</span> (has_sensors <span class="op">&amp;&amp;</span><span class="st"> </span>env_chg) {</a>
+<a class="sourceLine" id="cb352-29" title="29">    <span class="kw">return</span>(<span class="st">&quot;PLASTIC&quot;</span>)</a>
+<a class="sourceLine" id="cb352-30" title="30">  } <span class="cf">else</span> <span class="cf">if</span> (env_chg) {</a>
+<a class="sourceLine" id="cb352-31" title="31">    <span class="kw">return</span>(<span class="st">&quot;NON-PLASTIC&quot;</span>)</a>
+<a class="sourceLine" id="cb352-32" title="32">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb352-33" title="33">    <span class="kw">return</span>(<span class="st">&quot;STATIC&quot;</span>)</a>
+<a class="sourceLine" id="cb352-34" title="34">  }</a>
+<a class="sourceLine" id="cb352-35" title="35">}</a>
+<a class="sourceLine" id="cb352-36" title="36"></a>
+<a class="sourceLine" id="cb352-37" title="37">summary_data<span class="op">$</span>env_label &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
+<a class="sourceLine" id="cb352-38" title="38">  env_label_fun,</a>
+<a class="sourceLine" id="cb352-39" title="39">  summary_data<span class="op">$</span>chg_env</a>
+<a class="sourceLine" id="cb352-40" title="40">)</a>
+<a class="sourceLine" id="cb352-41" title="41">summary_data<span class="op">$</span>sensors_label &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
+<a class="sourceLine" id="cb352-42" title="42">  sensors_label_fun,</a>
+<a class="sourceLine" id="cb352-43" title="43">  summary_data<span class="op">$</span>sensors</a>
+<a class="sourceLine" id="cb352-44" title="44">)</a>
+<a class="sourceLine" id="cb352-45" title="45">summary_data<span class="op">$</span>condition &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
+<a class="sourceLine" id="cb352-46" title="46">  condition_label_fun,</a>
+<a class="sourceLine" id="cb352-47" title="47">  summary_data<span class="op">$</span>sensors,</a>
+<a class="sourceLine" id="cb352-48" title="48">  summary_data<span class="op">$</span>chg_env</a>
+<a class="sourceLine" id="cb352-49" title="49">)</a>
+<a class="sourceLine" id="cb352-50" title="50"></a>
+<a class="sourceLine" id="cb352-51" title="51">condition_order =<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb352-52" title="52">  <span class="st">&quot;STATIC&quot;</span>,</a>
+<a class="sourceLine" id="cb352-53" title="53">  <span class="st">&quot;NON-PLASTIC&quot;</span>,</a>
+<a class="sourceLine" id="cb352-54" title="54">  <span class="st">&quot;PLASTIC&quot;</span></a>
+<a class="sourceLine" id="cb352-55" title="55">)</a>
+<a class="sourceLine" id="cb352-56" title="56"></a>
+<a class="sourceLine" id="cb352-57" title="57"><span class="co">####### misc #######</span></a>
+<a class="sourceLine" id="cb352-58" title="58"><span class="co"># Configure our default graphing theme</span></a>
+<a class="sourceLine" id="cb352-59" title="59"><span class="kw">theme_set</span>(<span class="kw">theme_cowplot</span>())</a>
+<a class="sourceLine" id="cb352-60" title="60"><span class="kw">dir.create</span>(<span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots&quot;</span>), <span class="dt">showWarnings=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+</div>
+<div id="evolution-of-phenotypic-plasticity-2" class="section level2">
+<h2><span class="header-section-number">7.4</span> Evolution of phenotypic plasticity</h2>
+<p>For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.</p>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb353-1" title="1">summary_data_grouped =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(summary_data, sensors, env_label, condition)</a>
+<a class="sourceLine" id="cb353-2" title="2">summary_data_group_counts =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(summary_data_grouped, <span class="dt">n=</span>dplyr<span class="op">::</span><span class="kw">n</span>())</a></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;sensors&#39;, &#39;env_label&#39;. You can override using the `.groups` argument.</code></pre>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb355-1" title="1"><span class="kw">ggplot</span>(summary_data_group_counts, <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>n, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb355-2" title="2"><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">position=</span><span class="kw">position_dodge</span>(<span class="fl">0.9</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb355-3" title="3"><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label=</span>n, <span class="dt">y=</span>n<span class="op">+</span><span class="dv">2</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb355-4" title="4"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb355-5" title="5">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb355-6" title="6">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb355-7" title="7">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb355-8" title="8"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb355-9" title="9">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb355-10" title="10">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb355-11" title="11"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb355-12" title="12">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb355-13" title="13">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb355-14" title="14"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Number of replicates in phase two&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb355-15" title="15"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb355-16" title="16">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb355-17" title="17">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-115-1.png" width="672" /></p>
+<p>We can confirm our expectation that the dominant genotypes in non-plastic conditions are not phenotypically plastic.</p>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb356-1" title="1">summary_data_grouped =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(summary_data, condition, is_plastic)</a>
+<a class="sourceLine" id="cb356-2" title="2">summary_data_group_counts =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(summary_data_grouped, <span class="dt">n=</span>dplyr<span class="op">::</span><span class="kw">n</span>())</a>
+<a class="sourceLine" id="cb356-3" title="3"><span class="kw">ggplot</span>(<span class="kw">filter</span>(summary_data_group_counts, is_plastic), <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>n, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb356-4" title="4"><span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">position=</span><span class="kw">position_dodge</span>(<span class="fl">0.9</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb356-5" title="5"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb356-6" title="6">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb356-7" title="7">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb356-8" title="8">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb356-9" title="9"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb356-10" title="10">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb356-11" title="11">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb356-12" title="12"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb356-13" title="13">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb356-14" title="14">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb356-15" title="15"><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label=</span>n, <span class="dt">y=</span>n<span class="op">+</span><span class="dv">1</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb356-16" title="16"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Number of replicates with a plastic dominant genotype&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb356-17" title="17"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb356-18" title="18">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb356-19" title="19">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-116-1.png" width="672" /></p>
+</div>
+<div id="genome-length" class="section level2">
+<h2><span class="header-section-number">7.5</span> Genome length</h2>
+<p>Single-instruction insertions and deletions were possible for this experiment, so genome size also evolved.</p>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb357-1" title="1"><span class="kw">ggplot</span>(summary_data, <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>dominant_genome_length, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-2" title="2"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
+<a class="sourceLine" id="cb357-3" title="3">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb357-4" title="4">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
+<a class="sourceLine" id="cb357-5" title="5">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(</a>
+<a class="sourceLine" id="cb357-7" title="7">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>condition),</a>
+<a class="sourceLine" id="cb357-8" title="8">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
+<a class="sourceLine" id="cb357-9" title="9">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb357-10" title="10">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb357-11" title="11">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-12" title="12"><span class="st">  </span><span class="kw">geom_boxplot</span>(</a>
+<a class="sourceLine" id="cb357-13" title="13">    <span class="dt">width =</span> <span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb357-14" title="14">    <span class="dt">outlier.shape =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb357-15" title="15">    <span class="dt">alpha =</span> <span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb357-16" title="16">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-17" title="17"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb357-18" title="18">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb357-19" title="19">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb357-20" title="20">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-21" title="21"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb357-22" title="22">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb357-23" title="23">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-24" title="24"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb357-25" title="25">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb357-26" title="26">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-27" title="27"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-28" title="28"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Genome length&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb357-29" title="29"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb357-30" title="30">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb357-31" title="31">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-117-1.png" width="672" /></p>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb358-1" title="1"><span class="kw">kruskal.test</span>(</a>
+<a class="sourceLine" id="cb358-2" title="2">  <span class="dt">formula=</span>dominant_genome_length<span class="op">~</span>condition,</a>
+<a class="sourceLine" id="cb358-3" title="3">  <span class="dt">data=</span>summary_data</a>
+<a class="sourceLine" id="cb358-4" title="4">)</a></code></pre></div>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  dominant_genome_length by condition
+## Kruskal-Wallis chi-squared = 82.798, df = 2, p-value &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb360-1" title="1"><span class="kw">pairwise.wilcox.test</span>(</a>
+<a class="sourceLine" id="cb360-2" title="2">  <span class="dt">x=</span>summary_data<span class="op">$</span>dominant_genome_length,</a>
+<a class="sourceLine" id="cb360-3" title="3">  <span class="dt">g=</span>summary_data<span class="op">$</span>condition,</a>
+<a class="sourceLine" id="cb360-4" title="4">  <span class="dt">p.adjust.method=</span><span class="st">&quot;bonferroni&quot;</span>,</a>
+<a class="sourceLine" id="cb360-5" title="5">)</a></code></pre></div>
+<pre><code>## 
+##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+## 
+## data:  summary_data$dominant_genome_length and summary_data$condition 
+## 
+##         NON-PLASTIC PLASTIC
+## PLASTIC 1.8e-10     -      
+## STATIC  &lt; 2e-16     1      
+## 
+## P value adjustment method: bonferroni</code></pre>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb362-1" title="1"><span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)<span class="op">$</span>phylo_mrca_changes)</a></code></pre></div>
+<pre><code>## [1] 45</code></pre>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb364-1" title="1"><span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;STATIC&quot;</span>)<span class="op">$</span>phylo_mrca_changes)</a></code></pre></div>
+<pre><code>## [1] 47</code></pre>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb366-1" title="1"><span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;NON-PLASTIC&quot;</span>)<span class="op">$</span>phylo_mrca_changes)</a></code></pre></div>
+<pre><code>## [1] 393</code></pre>
+</div>
+<div id="average-generation-1" class="section level2">
+<h2><span class="header-section-number">7.6</span> Average generation</h2>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb368-1" title="1"><span class="kw">ggplot</span>(summary_data, <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>time_average_generation, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-2" title="2"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
+<a class="sourceLine" id="cb368-3" title="3">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb368-4" title="4">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
+<a class="sourceLine" id="cb368-5" title="5">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(</a>
+<a class="sourceLine" id="cb368-7" title="7">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>condition),</a>
+<a class="sourceLine" id="cb368-8" title="8">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
+<a class="sourceLine" id="cb368-9" title="9">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb368-10" title="10">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb368-11" title="11">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-12" title="12"><span class="st">  </span><span class="kw">geom_boxplot</span>(</a>
+<a class="sourceLine" id="cb368-13" title="13">    <span class="dt">width =</span> <span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb368-14" title="14">    <span class="dt">outlier.shape =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb368-15" title="15">    <span class="dt">alpha =</span> <span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb368-16" title="16">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-17" title="17"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb368-18" title="18">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb368-19" title="19">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb368-20" title="20">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-21" title="21"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb368-22" title="22">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb368-23" title="23">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-24" title="24"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb368-25" title="25">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb368-26" title="26">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-27" title="27"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-28" title="28"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;average generation&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb368-29" title="29"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb368-30" title="30">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb368-31" title="31">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-119-1.png" width="672" /></p>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb369-1" title="1"><span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)<span class="op">$</span>time_average_generation)</a></code></pre></div>
+<pre><code>## [1] 31028.6</code></pre>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" title="1"><span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;STATIC&quot;</span>)<span class="op">$</span>time_average_generation)</a></code></pre></div>
+<pre><code>## [1] 31147.5</code></pre>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb373-1" title="1"><span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;NON-PLASTIC&quot;</span>)<span class="op">$</span>time_average_generation)</a></code></pre></div>
+<pre><code>## [1] 30817.95</code></pre>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" title="1"><span class="kw">kruskal.test</span>(</a>
+<a class="sourceLine" id="cb375-2" title="2">  <span class="dt">formula=</span>time_average_generation<span class="op">~</span>condition,</a>
+<a class="sourceLine" id="cb375-3" title="3">  <span class="dt">data=</span>summary_data</a>
+<a class="sourceLine" id="cb375-4" title="4">)</a></code></pre></div>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  time_average_generation by condition
+## Kruskal-Wallis chi-squared = 1.3804, df = 2, p-value = 0.5015</code></pre>
+</div>
+<div id="coalescence-events-1" class="section level2">
+<h2><span class="header-section-number">7.7</span> Coalescence events</h2>
+<p>The number of times the most recent common ancestor changes gives us the number of selective sweeps that occur during the experiment.</p>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" title="1"><span class="kw">ggplot</span>(summary_data, <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>phylo_mrca_changes, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-2" title="2"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
+<a class="sourceLine" id="cb377-3" title="3">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb377-4" title="4">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
+<a class="sourceLine" id="cb377-5" title="5">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(</a>
+<a class="sourceLine" id="cb377-7" title="7">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>condition),</a>
+<a class="sourceLine" id="cb377-8" title="8">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
+<a class="sourceLine" id="cb377-9" title="9">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb377-10" title="10">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb377-11" title="11">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-12" title="12"><span class="st">  </span><span class="kw">geom_boxplot</span>(</a>
+<a class="sourceLine" id="cb377-13" title="13">    <span class="dt">width =</span> <span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb377-14" title="14">    <span class="dt">outlier.shape =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb377-15" title="15">    <span class="dt">alpha =</span> <span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb377-16" title="16">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-17" title="17"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb377-18" title="18">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb377-19" title="19">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-20" title="20"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb377-21" title="21">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb377-22" title="22">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-23" title="23"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-24" title="24"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb377-25" title="25">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb377-26" title="26">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb377-27" title="27">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-28" title="28"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Number of selective sweeps&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb377-29" title="29"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb377-30" title="30">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb377-31" title="31">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-121-1.png" width="672" /></p>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb378-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb378-2" title="2">  <span class="st">&quot;PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb378-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)<span class="op">$</span>phylo_mrca_changes)</a>
+<a class="sourceLine" id="cb378-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;PLASTIC: 45&quot;</code></pre>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb380-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb380-2" title="2">  <span class="st">&quot;STATIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb380-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;STATIC&quot;</span>)<span class="op">$</span>phylo_mrca_changes)</a>
+<a class="sourceLine" id="cb380-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;STATIC: 47&quot;</code></pre>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb382-2" title="2">  <span class="st">&quot;NON-PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb382-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;NON-PLASTIC&quot;</span>)<span class="op">$</span>phylo_mrca_changes)</a>
+<a class="sourceLine" id="cb382-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;NON-PLASTIC: 393&quot;</code></pre>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" title="1"><span class="kw">kruskal.test</span>(</a>
+<a class="sourceLine" id="cb384-2" title="2">  <span class="dt">formula=</span>phylo_mrca_changes<span class="op">~</span>condition,</a>
+<a class="sourceLine" id="cb384-3" title="3">  <span class="dt">data=</span>summary_data</a>
+<a class="sourceLine" id="cb384-4" title="4">)</a></code></pre></div>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  phylo_mrca_changes by condition
+## Kruskal-Wallis chi-squared = 168.89, df = 2, p-value &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" title="1"><span class="kw">pairwise.wilcox.test</span>(</a>
+<a class="sourceLine" id="cb386-2" title="2">  <span class="dt">x=</span>summary_data<span class="op">$</span>phylo_mrca_changes,</a>
+<a class="sourceLine" id="cb386-3" title="3">  <span class="dt">g=</span>summary_data<span class="op">$</span>condition,</a>
+<a class="sourceLine" id="cb386-4" title="4">  <span class="dt">p.adjust.method=</span><span class="st">&quot;bonferroni&quot;</span>,</a>
+<a class="sourceLine" id="cb386-5" title="5">)</a></code></pre></div>
+<pre><code>## 
+##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+## 
+## data:  summary_data$phylo_mrca_changes and summary_data$condition 
+## 
+##         NON-PLASTIC PLASTIC
+## PLASTIC &lt;2e-16      -      
+## STATIC  &lt;2e-16      1      
+## 
+## P value adjustment method: bonferroni</code></pre>
+<div id="average-number-of-generations-between-selective-sweeps-1" class="section level3">
+<h3><span class="header-section-number">7.7.1</span> Average number of generations between selective sweeps</h3>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" title="1">summary_data<span class="op">$</span>generations_per_mrca_change &lt;-<span class="st"> </span>summary_data<span class="op">$</span>time_average_generation <span class="op">/</span><span class="st"> </span>summary_data<span class="op">$</span>phylo_mrca_changes</a>
+<a class="sourceLine" id="cb388-2" title="2"></a>
+<a class="sourceLine" id="cb388-3" title="3"><span class="kw">ggplot</span>(summary_data, <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>generations_per_mrca_change, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-4" title="4"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
+<a class="sourceLine" id="cb388-5" title="5">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb388-6" title="6">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
+<a class="sourceLine" id="cb388-7" title="7">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-8" title="8"><span class="st">  </span><span class="kw">geom_point</span>(</a>
+<a class="sourceLine" id="cb388-9" title="9">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>condition),</a>
+<a class="sourceLine" id="cb388-10" title="10">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
+<a class="sourceLine" id="cb388-11" title="11">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb388-12" title="12">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb388-13" title="13">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-14" title="14"><span class="st">  </span><span class="kw">geom_boxplot</span>(</a>
+<a class="sourceLine" id="cb388-15" title="15">    <span class="dt">width =</span> <span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb388-16" title="16">    <span class="dt">outlier.shape =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb388-17" title="17">    <span class="dt">alpha =</span> <span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb388-18" title="18">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-19" title="19"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb388-20" title="20">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb388-21" title="21">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb388-22" title="22">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-23" title="23"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb388-24" title="24">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb388-25" title="25">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-26" title="26"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb388-27" title="27">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb388-28" title="28">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-29" title="29"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb388-30" title="30"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb388-31" title="31">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb388-32" title="32">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-123-1.png" width="672" /></p>
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb389-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb389-2" title="2">  <span class="st">&quot;PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb389-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)<span class="op">$</span>generations_per_mrca_change)</a>
+<a class="sourceLine" id="cb389-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;PLASTIC: 695.504761904762&quot;</code></pre>
+<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb391-2" title="2">  <span class="st">&quot;STATIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb391-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;STATIC&quot;</span>)<span class="op">$</span>generations_per_mrca_change)</a>
+<a class="sourceLine" id="cb391-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;STATIC: 668.25523255814&quot;</code></pre>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb393-2" title="2">  <span class="st">&quot;NON-PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb393-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;NON-PLASTIC&quot;</span>)<span class="op">$</span>generations_per_mrca_change)</a>
+<a class="sourceLine" id="cb393-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;NON-PLASTIC: 81.9208459944751&quot;</code></pre>
+<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb395-1" title="1"><span class="kw">kruskal.test</span>(</a>
+<a class="sourceLine" id="cb395-2" title="2">  <span class="dt">formula=</span>generations_per_mrca_change<span class="op">~</span>condition,</a>
+<a class="sourceLine" id="cb395-3" title="3">  <span class="dt">data=</span>summary_data</a>
+<a class="sourceLine" id="cb395-4" title="4">)</a></code></pre></div>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  generations_per_mrca_change by condition
+## Kruskal-Wallis chi-squared = 171.73, df = 2, p-value &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb397-1" title="1"><span class="kw">pairwise.wilcox.test</span>(</a>
+<a class="sourceLine" id="cb397-2" title="2">  <span class="dt">x=</span>summary_data<span class="op">$</span>generations_per_mrca_change,</a>
+<a class="sourceLine" id="cb397-3" title="3">  <span class="dt">g=</span>summary_data<span class="op">$</span>condition,</a>
+<a class="sourceLine" id="cb397-4" title="4">  <span class="dt">p.adjust.method=</span><span class="st">&quot;bonferroni&quot;</span>,</a>
+<a class="sourceLine" id="cb397-5" title="5">)</a></code></pre></div>
+<pre><code>## 
+##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+## 
+## data:  summary_data$generations_per_mrca_change and summary_data$condition 
+## 
+##         NON-PLASTIC PLASTIC
+## PLASTIC &lt;2e-16      -      
+## STATIC  &lt;2e-16      1      
+## 
+## P value adjustment method: bonferroni</code></pre>
+</div>
+</div>
+<div id="phenotypic-volatility-along-the-dominant-lineage-1" class="section level2">
+<h2><span class="header-section-number">7.8</span> Phenotypic volatility along the dominant lineage</h2>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" title="1"><span class="kw">ggplot</span>(summary_data, <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>dominant_lineage_trait_volatility, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-2" title="2"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
+<a class="sourceLine" id="cb399-3" title="3">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb399-4" title="4">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
+<a class="sourceLine" id="cb399-5" title="5">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(</a>
+<a class="sourceLine" id="cb399-7" title="7">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>condition),</a>
+<a class="sourceLine" id="cb399-8" title="8">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
+<a class="sourceLine" id="cb399-9" title="9">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb399-10" title="10">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb399-11" title="11">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-12" title="12"><span class="st">  </span><span class="kw">geom_boxplot</span>(</a>
+<a class="sourceLine" id="cb399-13" title="13">    <span class="dt">width =</span> <span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb399-14" title="14">    <span class="dt">outlier.shape =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb399-15" title="15">    <span class="dt">alpha =</span> <span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb399-16" title="16">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-17" title="17"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb399-18" title="18">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb399-19" title="19">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb399-20" title="20">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-21" title="21"><span class="st">  </span><span class="kw">scale_y_continuous</span>(</a>
+<a class="sourceLine" id="cb399-22" title="22">    <span class="dt">name=</span><span class="st">&quot;Phenotypic volatility (log scale)&quot;</span>,</a>
+<a class="sourceLine" id="cb399-23" title="23">    <span class="dt">trans=</span><span class="st">&quot;pseudo_log&quot;</span>,</a>
+<a class="sourceLine" id="cb399-24" title="24">    <span class="dt">breaks=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">10000</span>),</a>
+<a class="sourceLine" id="cb399-25" title="25">    <span class="dt">limits=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">10000</span>)</a>
+<a class="sourceLine" id="cb399-26" title="26">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-27" title="27"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb399-28" title="28">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb399-29" title="29">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-30" title="30"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb399-31" title="31">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb399-32" title="32">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-33" title="33"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb399-34" title="34"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb399-35" title="35">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb399-36" title="36">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-125-1.png" width="672" /></p>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb400-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb400-2" title="2">  <span class="st">&quot;PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb400-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)<span class="op">$</span>dominant_lineage_trait_volatility)</a>
+<a class="sourceLine" id="cb400-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;PLASTIC: 2&quot;</code></pre>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb402-2" title="2">  <span class="st">&quot;STATIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb402-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;STATIC&quot;</span>)<span class="op">$</span>dominant_lineage_trait_volatility)</a>
+<a class="sourceLine" id="cb402-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;STATIC: 0&quot;</code></pre>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb404-2" title="2">  <span class="st">&quot;NON-PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb404-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;NON-PLASTIC&quot;</span>)<span class="op">$</span>dominant_lineage_trait_volatility)</a>
+<a class="sourceLine" id="cb404-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;NON-PLASTIC: 1580&quot;</code></pre>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" title="1"><span class="kw">kruskal.test</span>(</a>
+<a class="sourceLine" id="cb406-2" title="2">  <span class="dt">formula=</span>dominant_lineage_trait_volatility<span class="op">~</span>condition,</a>
+<a class="sourceLine" id="cb406-3" title="3">  <span class="dt">data=</span>summary_data</a>
+<a class="sourceLine" id="cb406-4" title="4">)</a></code></pre></div>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  dominant_lineage_trait_volatility by condition
+## Kruskal-Wallis chi-squared = 191.98, df = 2, p-value &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" title="1"><span class="kw">pairwise.wilcox.test</span>(</a>
+<a class="sourceLine" id="cb408-2" title="2">  <span class="dt">x=</span>summary_data<span class="op">$</span>dominant_lineage_trait_volatility,</a>
+<a class="sourceLine" id="cb408-3" title="3">  <span class="dt">g=</span>summary_data<span class="op">$</span>condition,</a>
+<a class="sourceLine" id="cb408-4" title="4">  <span class="dt">p.adjust.method=</span><span class="st">&quot;bonferroni&quot;</span>,</a>
+<a class="sourceLine" id="cb408-5" title="5">)</a></code></pre></div>
+<pre><code>## 
+##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+## 
+## data:  summary_data$dominant_lineage_trait_volatility and summary_data$condition 
+## 
+##         NON-PLASTIC PLASTIC
+## PLASTIC &lt; 2e-16     -      
+## STATIC  &lt; 2e-16     5.2e-08
+## 
+## P value adjustment method: bonferroni</code></pre>
+</div>
+<div id="mutation-accumulation-along-the-dominant-lineage-1" class="section level2">
+<h2><span class="header-section-number">7.9</span> Mutation accumulation along the dominant lineage</h2>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" title="1"><span class="kw">ggplot</span>(summary_data, <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>dominant_lineage_total_mut_cnt, <span class="dt">fill=</span>condition)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-2" title="2"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
+<a class="sourceLine" id="cb410-3" title="3">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb410-4" title="4">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
+<a class="sourceLine" id="cb410-5" title="5">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>(</a>
+<a class="sourceLine" id="cb410-7" title="7">    <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">color=</span>condition),</a>
+<a class="sourceLine" id="cb410-8" title="8">    <span class="dt">position =</span> <span class="kw">position_jitter</span>(<span class="dt">width =</span> <span class="fl">.15</span>),</a>
+<a class="sourceLine" id="cb410-9" title="9">    <span class="dt">size =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb410-10" title="10">    <span class="dt">alpha =</span> <span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb410-11" title="11">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-12" title="12"><span class="st">  </span><span class="kw">geom_boxplot</span>(</a>
+<a class="sourceLine" id="cb410-13" title="13">    <span class="dt">width =</span> <span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb410-14" title="14">    <span class="dt">outlier.shape =</span> <span class="ot">NA</span>,</a>
+<a class="sourceLine" id="cb410-15" title="15">    <span class="dt">alpha =</span> <span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb410-16" title="16">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-17" title="17"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Mutation accumulation&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-18" title="18"><span class="st">  </span><span class="kw">scale_x_discrete</span>(</a>
+<a class="sourceLine" id="cb410-19" title="19">    <span class="dt">name=</span><span class="st">&quot;Condition&quot;</span>,</a>
+<a class="sourceLine" id="cb410-20" title="20">    <span class="dt">limits=</span>condition_order</a>
+<a class="sourceLine" id="cb410-21" title="21">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-22" title="22"><span class="st">  </span><span class="kw">scale_fill_brewer</span>(</a>
+<a class="sourceLine" id="cb410-23" title="23">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb410-24" title="24">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-25" title="25"><span class="st">  </span><span class="kw">scale_color_brewer</span>(</a>
+<a class="sourceLine" id="cb410-26" title="26">    <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
+<a class="sourceLine" id="cb410-27" title="27">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-28" title="28"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb410-29" title="29"><span class="st">  </span><span class="kw">theme</span>(</a>
+<a class="sourceLine" id="cb410-30" title="30">    <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
+<a class="sourceLine" id="cb410-31" title="31">  )</a></code></pre></div>
+<p><img src="supplemental-material_files/figure-html/unnamed-chunk-127-1.png" width="672" /></p>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb411-2" title="2">  <span class="st">&quot;PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb411-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)<span class="op">$</span>dominant_lineage_total_mut_cnt)</a>
+<a class="sourceLine" id="cb411-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;PLASTIC: 1552&quot;</code></pre>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb413-2" title="2">  <span class="st">&quot;STATIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb413-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;STATIC&quot;</span>)<span class="op">$</span>dominant_lineage_total_mut_cnt)</a>
+<a class="sourceLine" id="cb413-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;STATIC: 1724.5&quot;</code></pre>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" title="1"><span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb415-2" title="2">  <span class="st">&quot;NON-PLASTIC: &quot;</span>,</a>
+<a class="sourceLine" id="cb415-3" title="3">  <span class="kw">median</span>(<span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;NON-PLASTIC&quot;</span>)<span class="op">$</span>dominant_lineage_total_mut_cnt)</a>
+<a class="sourceLine" id="cb415-4" title="4">)</a></code></pre></div>
+<pre><code>## [1] &quot;NON-PLASTIC: 12123&quot;</code></pre>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb417-1" title="1"><span class="kw">kruskal.test</span>(</a>
+<a class="sourceLine" id="cb417-2" title="2">  <span class="dt">formula=</span>dominant_lineage_total_mut_cnt<span class="op">~</span>condition,</a>
+<a class="sourceLine" id="cb417-3" title="3">  <span class="dt">data=</span>summary_data</a>
+<a class="sourceLine" id="cb417-4" title="4">)</a></code></pre></div>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  dominant_lineage_total_mut_cnt by condition
+## Kruskal-Wallis chi-squared = 174.38, df = 2, p-value &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb419-1" title="1"><span class="kw">pairwise.wilcox.test</span>(</a>
+<a class="sourceLine" id="cb419-2" title="2">  <span class="dt">x=</span>summary_data<span class="op">$</span>dominant_lineage_total_mut_cnt,</a>
+<a class="sourceLine" id="cb419-3" title="3">  <span class="dt">g=</span>summary_data<span class="op">$</span>condition,</a>
+<a class="sourceLine" id="cb419-4" title="4">  <span class="dt">p.adjust.method=</span><span class="st">&quot;bonferroni&quot;</span>,</a>
+<a class="sourceLine" id="cb419-5" title="5">)</a></code></pre></div>
+<pre><code>## 
+##  Pairwise comparisons using Wilcoxon rank sum test with continuity correction 
+## 
+## data:  summary_data$dominant_lineage_total_mut_cnt and summary_data$condition 
+## 
+##         NON-PLASTIC PLASTIC
+## PLASTIC &lt;2e-16      -      
+## STATIC  &lt;2e-16      0.57   
+## 
+## P value adjustment method: bonferroni</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="regulation-in-avida.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments/2021-01-30-evo-dynamics/analysis/2021-01-30-evo-dynamics.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["supplemental-material.pdf"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

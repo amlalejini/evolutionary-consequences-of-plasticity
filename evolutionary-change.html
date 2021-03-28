@@ -24,7 +24,7 @@
 <meta name="author" content="Alexander Lalejini, Austin J. Ferguson, Nkrumah Grant, and Charles Ofria" />
 
 
-<meta name="date" content="2021-02-27" />
+<meta name="date" content="2021-03-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -220,6 +220,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#setup-4"><i class="fa fa-check"></i><b>6.3</b> Setup</a></li>
 <li class="chapter" data-level="6.4" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#how-many-instructions-do-plastic-genomes-toggle-depending-on-environmental-context"><i class="fa fa-check"></i><b>6.4</b> How many instructions do plastic genomes toggle depending on environmental context?</a></li>
 <li class="chapter" data-level="6.5" data-path="regulation-in-avida.html"><a href="regulation-in-avida.html#what-is-the-distrubution-of-toggled-sequence-sizes"><i class="fa fa-check"></i><b>6.5</b> What is the distrubution of toggled sequence sizes?</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html"><i class="fa fa-check"></i><b>7</b> Evolutionary change (variable length genomes)</a><ul>
+<li class="chapter" data-level="7.1" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#overview-5"><i class="fa fa-check"></i><b>7.1</b> Overview</a></li>
+<li class="chapter" data-level="7.2" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#analysis-dependencies-5"><i class="fa fa-check"></i><b>7.2</b> Analysis dependencies</a></li>
+<li class="chapter" data-level="7.3" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#setup-5"><i class="fa fa-check"></i><b>7.3</b> Setup</a></li>
+<li class="chapter" data-level="7.4" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#evolution-of-phenotypic-plasticity-2"><i class="fa fa-check"></i><b>7.4</b> Evolution of phenotypic plasticity</a></li>
+<li class="chapter" data-level="7.5" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#genome-length"><i class="fa fa-check"></i><b>7.5</b> Genome length</a></li>
+<li class="chapter" data-level="7.6" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#average-generation-1"><i class="fa fa-check"></i><b>7.6</b> Average generation</a></li>
+<li class="chapter" data-level="7.7" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#coalescence-events-1"><i class="fa fa-check"></i><b>7.7</b> Coalescence events</a><ul>
+<li class="chapter" data-level="7.7.1" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#average-number-of-generations-between-selective-sweeps-1"><i class="fa fa-check"></i><b>7.7.1</b> Average number of generations between selective sweeps</a></li>
+</ul></li>
+<li class="chapter" data-level="7.8" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#phenotypic-volatility-along-the-dominant-lineage-1"><i class="fa fa-check"></i><b>7.8</b> Phenotypic volatility along the dominant lineage</a></li>
+<li class="chapter" data-level="7.9" data-path="evolutionary-change-variable-length-genomes.html"><a href="evolutionary-change-variable-length-genomes.html#mutation-accumulation-along-the-dominant-lineage-1"><i class="fa fa-check"></i><b>7.9</b> Mutation accumulation along the dominant lineage</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -1193,8 +1206,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.8247126 -0.0001387931  0.03999341</code></pre>
+##      original       bias    std. error
+## t1* 0.8247126 4.885057e-06  0.04031645</code></pre>
 <div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1245,8 +1258,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.5172414 0.0001383908  0.03963458</code></pre>
+##      original        bias    std. error
+## t1* 0.5172414 -0.0003806897  0.04010971</code></pre>
 <div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb145-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1256,7 +1269,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4402,  0.5966 )  
+## 95%   ( 0.4391,  0.5966 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 </div>
 <div id="beneficial-mutations" class="section level4">
@@ -1285,8 +1298,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.4827586 -0.0001042529  0.03965677</code></pre>
+##      original       bias    std. error
+## t1* 0.4827586 0.0001575862  0.03967708</code></pre>
 <div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
