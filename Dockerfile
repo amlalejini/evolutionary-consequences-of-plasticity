@@ -83,6 +83,10 @@ RUN \
   export EXP_TAG=2021-02-05-hitchhiking \
     && \
   ./download_exp_data.sh
+    && \
+  export EXP_TAG=2021-01-30-evo-dynamics \
+    && \
+  ./download_exp_data.sh
 
 ########################################################
 # install r
