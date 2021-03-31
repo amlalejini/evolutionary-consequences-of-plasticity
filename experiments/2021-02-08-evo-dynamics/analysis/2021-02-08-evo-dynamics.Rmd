@@ -419,7 +419,7 @@ coalescence_events_freq_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="Frequency of coalescence events (generations)",
+    name="Avg. generations between coalescence events",
     limits=c(0, 2000),
     breaks=seq(0, 2000, 500)
   ) +
@@ -1287,24 +1287,24 @@ grid <- plot_grid(
   coalescence_events_fig +
     theme(
       legend.position="none",
-      axis.ticks.x=element_blank(),
-      axis.text.x=element_blank(),
+      # axis.ticks.x=element_blank(),
+      # axis.text.x=element_blank(),
       axis.title.x=element_blank()
     ) +
     ggtitle("Coalescence events count"),
   mutation_count_fig +
     theme(
       legend.position="none",
-      axis.ticks.x=element_blank(),
-      axis.text.x=element_blank(),
+      # axis.ticks.x=element_blank(),
+      # axis.text.x=element_blank(),
       axis.title.x=element_blank()
     ) +
     ggtitle("Mutation count"),
   phenotypic_volatility_fig +
     theme(
       legend.position="none",
-      axis.ticks.x=element_blank(),
-      axis.text.x=element_blank(),
+      # axis.ticks.x=element_blank(),
+      # axis.text.x=element_blank(),
       axis.title.x=element_blank()
     ) +
     ggtitle("Phenotypic volatility"),
@@ -1313,7 +1313,7 @@ grid <- plot_grid(
       legend.position="none",
       axis.title.x=element_blank()
     ) +
-    ggtitle("Frequency of coalescence events"),
+    ggtitle("Generations between coalescence events"),
   genotypic_fidelity_fig +
     theme(
       legend.position="none",

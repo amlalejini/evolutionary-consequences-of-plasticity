@@ -7,6 +7,7 @@ The effect of adaptive phenotypic plasticity on the evolution and maintenance of
 ```{r}
 total_updates <- 200000
 replicates <- 100
+alpha <- 0.05
 
 focal_traits <- c("not","nand","and","ornot","or","andnot")
 traits_set_a <- c("not", "and", "or")
@@ -49,6 +50,9 @@ Load all required R libraries.
 
 ```{r, message=FALSE}
 library(ggplot2)
+library(rstatix)
+library(ggsignif)
+library(scales)
 library(tidyverse)
 library(cowplot)
 library(RColorBrewer)
@@ -123,6 +127,20 @@ condition_order = c(
   "NON-PLASTIC",
   "PLASTIC"
 )
+pairwise_comparisons <- list(
+  c("STATIC", "NON-PLASTIC"),
+  c("STATIC", "PLASTIC"),
+  c("PLASTIC", "NON-PLASTIC")
+)
+
+p_label <- function(p_value) {
+  threshold = 0.0001
+  if (p_value < threshold) {
+    return(paste0("p < ", threshold))
+  } else {
+    return(paste0("p = ", p_value))
+  }
+}
 
 ###### time series #####
 lineage_time_series_data_loc <- paste0(working_directory, "data/lineage_series.csv")
@@ -150,6 +168,8 @@ lineage_time_series_data$condition <- mapply(
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
+# Palette
+cb_palette <- "Paired"
 # Create directory to dump plots
 dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
 # Sample mean function
@@ -174,10 +194,10 @@ ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   ylab("Number of replicates in phase two") +
   facet_wrap(~extra_task_value, labeller=label_both) +
@@ -198,10 +218,10 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   ylim(0, 100) +
   geom_text(aes(label=n, y=n+1)) +
@@ -212,12 +232,25 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   )
 ```
 
-## Novel task performance - final dominant genotype
+## Final novel task count (dominant genotype)
 
 How many novel tasks do final dominant genotypes perform?
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=dominant_extra_tasks, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(dominant_extra_tasks ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition") # ,step.increase=1
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.03)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+final_novel_task_count_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_extra_tasks, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -235,60 +268,83 @@ ggplot(summary_data, aes(x=condition, y=dominant_extra_tasks, fill=condition)) +
   ) +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
   ) +
-  ylab("Novel tasks performed by final dominant") +
+  scale_y_continuous(
+    name="Final novel task count"
+  ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_extra_tasks~condition, data=summary_data)$p.value,digits=4))
+    )
   ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  # coord_flip()
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-extra-tasks.pdf"),
-    width=15,
-    height=10
   )
+
+final_novel_task_count_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_extra_tasks)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_extra_tasks)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_extra_tasks)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
 kruskal.test(
   formula=dominant_extra_tasks~condition,
-  data=dom_task_data
+  data=summary_data
 )
+
 pairwise.wilcox.test(
-  x=dom_task_data$dominant_extra_tasks,
-  g=dom_task_data$condition,
+  x=summary_data$dominant_extra_tasks,
+  g=summary_data$condition,
   p.adjust.method="bonferroni",
   conf.int=TRUE,
   conf.level=0.95
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_extra_tasks)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_extra_tasks)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_extra_tasks)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_extra_tasks~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-## Novel task performance - final population
+## Novel task count (final population)
 
 How many novel tasks are performed across the final population (1% of organisms must perform to count)?
 
@@ -314,54 +370,78 @@ ggplot(summary_data, aes(x=condition, y=final_pop_extra_tasks_0.01, fill=conditi
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
+  # coord_flip() +
   theme(
     legend.position="none"
   )
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$final_pop_extra_tasks_0.01)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$final_pop_extra_tasks_0.01)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$final_pop_extra_tasks_0.01)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
 kruskal.test(
   formula=final_pop_extra_tasks_0.01~condition,
-  data=dom_task_data
+  data=summary_data
 )
+
 pairwise.wilcox.test(
-  x=dom_task_data$final_pop_extra_tasks_0.01,
-  g=dom_task_data$condition,
+  x=summary_data$final_pop_extra_tasks_0.01,
+  g=summary_data$condition,
   p.adjust.method="bonferroni",
   conf.int=TRUE,
   conf.level=0.95
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$final_pop_extra_tasks_0.01)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$final_pop_extra_tasks_0.01)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$final_pop_extra_tasks_0.01)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=final_pop_extra_tasks_0.01~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-## Novel task discovery - population
+## Novel task discovery (lineage)
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=discovered_extra_tasks_0.01, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_extra_traits_discovered ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition") # ,step.increase=1
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.03)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+lineage_novel_task_discovery_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_extra_traits_discovered, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -379,132 +459,189 @@ ggplot(summary_data, aes(x=condition, y=discovered_extra_tasks_0.01, fill=condit
   ) +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Novel task discovery"
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_extra_traits_discovered~condition, data=summary_data)$p.value,digits=4))
+    )
   ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  # coord_flip()
   theme(
     legend.position="none"
   )
+lineage_novel_task_discovery_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$discovered_extra_tasks_0.01)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$discovered_extra_tasks_0.01)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$discovered_extra_tasks_0.01)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
-kruskal.test(
-  formula=discovered_extra_tasks_0.01~condition,
-  data=dom_task_data
-)
-pairwise.wilcox.test(
-  x=dom_task_data$discovered_extra_tasks_0.01,
-  g=dom_task_data$condition,
-  p.adjust.method="bonferroni",
-  conf.int=TRUE,
-  conf.level=0.95
-)
-```
-
-## Novel task discovery - lineage of final dominant genotype
-
-```{r}
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered, fill=condition)) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Extra tasks discovered along dominant lineage") +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-extra-tasks-discovered.pdf"),
-    width=15,
-    height=10
-  )
-```
-
-```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_discovered)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_discovered)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_discovered)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
 kruskal.test(
   formula=dominant_lineage_extra_traits_discovered~condition,
-  data=dom_task_data
+  data=summary_data
 )
+
 pairwise.wilcox.test(
-  x=dom_task_data$dominant_lineage_extra_traits_discovered,
-  g=dom_task_data$condition,
+  x=summary_data$dominant_lineage_extra_traits_discovered,
+  g=summary_data$condition,
   p.adjust.method="bonferroni",
   conf.int=TRUE,
   conf.level=0.95
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_discovered)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_discovered)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_discovered)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_extra_traits_discovered~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-### Per-generation novel task discovery - lineage of final dominant genotype
+## Novel task discovery (population)
+
+```{r}
+ggplot(
+    summary_data,
+    aes(x=condition, y=discovered_extra_tasks_0.01, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  scale_fill_brewer(
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    palette=cb_palette
+  ) +
+  # coord_flip() +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+kruskal.test(
+  formula=discovered_extra_tasks_0.01~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$discovered_extra_tasks_0.01,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+  conf.int=TRUE,
+  conf.level=0.95
+)
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$discovered_extra_tasks_0.01)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$discovered_extra_tasks_0.01)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$discovered_extra_tasks_0.01)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=discovered_extra_tasks_0.01~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
+```
+
+## Novel task discovery frequency (lineage)
 
 ```{r}
 summary_data$dominant_lineage_extra_traits_discovered_per_generation <- summary_data$dominant_lineage_extra_traits_discovered / summary_data$dominant_generation_born
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered_per_generation, fill=condition)) +
+summary_data$dominant_lineage_extra_traits_generations_per_discovery <- summary_data$dominant_generation_born / summary_data$dominant_lineage_extra_traits_discovered
+
+# Compute manual labels for geom_signif
+# stat.test <- filter(summary_data, dominant_lineage_extra_traits_discovered > 0) %>%
+#   wilcox_test(dominant_lineage_extra_traits_generations_per_discovery ~ condition) %>%
+#   adjust_pvalue(method = "bonferroni") %>%
+#   add_significance() %>%
+#   add_xy_position(x="condition") # ,step.increase=1
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_extra_traits_discovered_per_generation ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition", step.increase=0.0001) # ,step.increase=1
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.03)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+lineage_novel_task_discovery_freq_fig <- ggplot(
+    # filter(summary_data, dominant_lineage_extra_traits_discovered > 0),
+    summary_data,
+    aes(x=condition, y=dominant_lineage_extra_traits_discovered_per_generation, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -524,57 +661,84 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_discovered
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Lineage task discovery (per generation)") +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
+  ylab("Novel task discovery frequency") +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_extra_traits_discovered_per_generation~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  # coord_flip() +
   theme(
     legend.position="none"
-  ) +
-  ggsave(paste0(working_directory, "plots/", "discovery-per-generation.png"))
+  )
+lineage_novel_task_discovery_freq_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_discovered_per_generation)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_discovered_per_generation)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_discovered_per_generation)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
 kruskal.test(
   formula=dominant_lineage_extra_traits_discovered_per_generation~condition,
-  data=dom_task_data
+  data=summary_data
 )
+
 pairwise.wilcox.test(
-  x=dom_task_data$dominant_lineage_extra_traits_discovered_per_generation,
-  g=dom_task_data$condition,
+  x=summary_data$dominant_lineage_extra_traits_discovered_per_generation,
+  g=summary_data$condition,
   p.adjust.method="bonferroni",
   conf.int=TRUE,
   conf.level=0.95
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_discovered_per_generation)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_discovered_per_generation)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_discovered_per_generation)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_extra_traits_discovered_per_generation~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
+
 ```
 
-## Novel tasks gained along final dominant lineages
+## Novel tasks gained (lineage)
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fill=condition)) +
+ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_extra_traits_gained, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -594,12 +758,12 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fi
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Extra tasks gained along dominant lineage") +
+  ylab("Novel tasks gains along lineage") +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   coord_flip() +
   facet_wrap(
@@ -616,10 +780,23 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_gained, fi
   )
 ```
 
-## Novel task loss along final dominant lineages
+## Novel task loss (lineage)
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_extra_traits_lost ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition", step.increase=1)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  log10(stat.test$y.position) * c(1.0,1.0,1.03)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+lineage_novel_task_loss_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_extra_traits_lost, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -637,64 +814,111 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost, fill
   ) +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
   ) +
-  ylab("Extra tasks lost along dominant lineage") +
+  scale_y_continuous(
+    name="Novel task loss (log scale)",
+    trans=pseudo_log_trans(sigma=1, base=10),
+    breaks=c(0,10,100,1000),
+    limits=c(-1,5000)
+  ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_extra_traits_lost~condition, data=summary_data)$p.value,digits=4))
+    )
   ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj<=alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  # coord_flip()
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-extra-tasks-lost.pdf"),
-    width=15,
-    height=10
   )
+
+lineage_novel_task_loss_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_lost)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_lost)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_lost)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
 kruskal.test(
   formula=dominant_lineage_extra_traits_lost~condition,
-  data=dom_task_data
+  data=summary_data
 )
+
 pairwise.wilcox.test(
-  x=dom_task_data$dominant_lineage_extra_traits_lost,
-  g=dom_task_data$condition,
+  x=summary_data$dominant_lineage_extra_traits_lost,
+  g=summary_data$condition,
   p.adjust.method="bonferroni",
   conf.int=TRUE,
   conf.level=0.95
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_lost)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_lost)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_lost)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_extra_traits_lost~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-### Per-generation novel task loss along final dominant lineages
+## Frequency of novel task loss (lineage)
 
 ```{r}
 summary_data$dominant_lineage_extra_traits_lost_per_generation <- summary_data$dominant_lineage_extra_traits_lost / summary_data$dominant_generation_born
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost_per_generation, fill=condition)) +
+summary_data$dominant_lineage_extra_traits_generations_per_loss <- summary_data$dominant_generation_born / summary_data$dominant_lineage_extra_traits_lost
+
+# Compute manual labels for geom_signif
+# stat.test <- filter(summary_data, dominant_lineage_extra_traits_lost > 0) %>%
+#   wilcox_test(dominant_lineage_extra_traits_generations_per_loss ~ condition) %>%
+#   adjust_pvalue(method = "bonferroni") %>%
+#   add_significance() %>%
+#   add_xy_position(x="condition", step.increase=1)
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_extra_traits_lost_per_generation ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition", step.increase=.1)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  stat.test$y.position #* c(1.0,1.0,1.03)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+lineage_novel_task_loss_freq_fig <- ggplot(
+    # filter(summary_data, dominant_lineage_extra_traits_lost > 0),
+    summary_data,
+    aes(x=condition, y=dominant_lineage_extra_traits_lost_per_generation, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -714,51 +938,73 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_extra_traits_lost_per_g
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Extra tasks lost along dominant lineage (per generation)") +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
+  ylab("Novel task loss frequency") +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_extra_traits_lost_per_generation~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj<=alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(paste0(working_directory, "plots/", "tasks-lost-per-generation.png"))
+  )
+lineage_novel_task_loss_freq_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_lost_per_generation)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_lost_per_generation)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_lost_per_generation)
-)
-
-reward_level <- 0.1
-dom_task_data <- filter(summary_data, extra_task_value==reward_level)
 kruskal.test(
   formula=dominant_lineage_extra_traits_lost_per_generation~condition,
-  data=dom_task_data
+  data=summary_data
 )
+
 pairwise.wilcox.test(
-  x=dom_task_data$dominant_lineage_extra_traits_lost_per_generation,
-  g=dom_task_data$condition,
+  x=summary_data$dominant_lineage_extra_traits_lost_per_generation,
+  g=summary_data$condition,
   p.adjust.method="bonferroni",
   conf.int=TRUE,
   conf.level=0.95
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_extra_traits_lost_per_generation)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_extra_traits_lost_per_generation)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_extra_traits_lost_per_generation)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_extra_traits_lost_per_generation~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
 ## How many instances of novel trait loss co-occurred with changes in base phenotype?
@@ -768,27 +1014,6 @@ Task loss linked with primary trait changes.
 ```{r}
 lost_traits_summary_data <- filter(summary_data, extra_task_value==0.1 & dominant_lineage_extra_traits_lost>0)
 lost_traits_summary_data$frac_linked_extra_trait_loss <- lost_traits_summary_data$dominant_lineage_extra_traits_lost_linked_to_primary_change / lost_traits_summary_data$dominant_lineage_extra_traits_lost
-
-# ggplot(lost_traits_summary_data, aes(x=frac_linked_extra_trait_loss, fill=condition)) +
-#   geom_density() +
-#   facet_grid(
-#     condition~extra_task_value,
-#     labeller=label_both
-#   ) +
-#   theme(
-#     legend.position="none"
-#   ) +
-#   scale_fill_brewer(
-#     palette="Paired"
-#   ) +
-#   scale_color_brewer(
-#     palette="Paired"
-#   ) +
-#   ggsave(
-#     paste0(working_directory, "plots/dominant-lineage-extra-tasks-lost-linkage.png"),
-#     width=15,
-#     height=10
-#   )
 ```
 
 ```{r}
@@ -813,39 +1038,23 @@ ggplot(lost_traits_summary_data, aes(x=condition, y=frac_linked_extra_trait_loss
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
-  facet_wrap(
-    ~extra_task_value,
-    labeller=label_both
-  ) +
+  # coord_flip() +
   theme(
     legend.position="none"
   )
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(lost_traits_summary_data, condition=="PLASTIC")$frac_linked_extra_trait_loss)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(lost_traits_summary_data, condition=="STATIC")$frac_linked_extra_trait_loss)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(lost_traits_summary_data, condition=="NON-PLASTIC")$frac_linked_extra_trait_loss)
-)
-
 kruskal.test(
   formula=frac_linked_extra_trait_loss~condition,
   data=lost_traits_summary_data
 )
+
 pairwise.wilcox.test(
   x=lost_traits_summary_data$frac_linked_extra_trait_loss,
   g=lost_traits_summary_data$condition,
@@ -853,6 +1062,35 @@ pairwise.wilcox.test(
   conf.int=TRUE,
   conf.level=0.95
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(lost_traits_summary_data, condition=="PLASTIC")$frac_linked_extra_trait_loss)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(lost_traits_summary_data, condition=="STATIC")$frac_linked_extra_trait_loss)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(lost_traits_summary_data, condition=="NON-PLASTIC")$frac_linked_extra_trait_loss)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(lost_traits_summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=frac_linked_extra_trait_loss~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
 ```{r}
@@ -874,231 +1112,40 @@ aggregate_frac_linked_extra_trait_loss_nonplastic
 
 ## Manuscript figures
 
-### Overall task performance
-
-```{r}
-extra_task_reward_value=0.1
-dominant_extra_tasks_fig <- ggplot(
-    filter(summary_data, extra_task_value==extra_task_reward_value),
-    aes(x=condition, y=dominant_extra_tasks, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Final dominant novel traits"
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  theme(
-    legend.position="none"
-  ) +
-  coord_flip()
-dominant_extra_tasks_fig
-```
-
-### Overall task discovery
-
-```{r}
-lineage_extra_tasks_discovered_fig <- ggplot(
-    filter(summary_data, extra_task_value==extra_task_reward_value),
-    aes(x=condition, y=dominant_lineage_extra_traits_discovered, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Novel traits discovered on lineage"
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  theme(
-    legend.position="none"
-  ) +
-  coord_flip()
-lineage_extra_tasks_discovered_fig
-```
-
-### Overall task loss
-
-```{r}
-lineage_extra_tasks_lost_fig <- ggplot(
-    filter(summary_data, extra_task_value==extra_task_reward_value),
-    aes(x=condition, y=dominant_lineage_extra_traits_lost, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Novel traits lost on lineage (log scale)",
-    trans="pseudo_log",
-    breaks=c(0,10,100,1000),
-    limits=c(-1,1000)
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  theme(
-    legend.position="none"
-  ) +
-  coord_flip()
-
-lineage_extra_tasks_lost_fig
-```
-
-
-### Per-generation task discovery
-
-```{r}
-lineage_per_gen_task_discovery <- ggplot(
-    summary_data,
-    aes(x=condition, y=dominant_lineage_extra_traits_discovered_per_generation, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Per-generation task discovery") +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  )
-lineage_per_gen_task_discovery
-```
-
-### Per-generation task loss
-
-```{r}
-lineage_per_gen_task_loss <- ggplot(
-    summary_data,
-    aes(x=condition, y=dominant_lineage_extra_traits_lost_per_generation, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order
-  ) +
-  ylab("Per-generation task loss") +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  )
-lineage_per_gen_task_loss
-```
-
 ## Combined panel
 
 ```{r}
 grid <- plot_grid(
-  dominant_extra_tasks_fig,
-  lineage_extra_tasks_discovered_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
-  lineage_extra_tasks_lost_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+  final_novel_task_count_fig +
+    theme(
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Final novel task count"),
+  lineage_novel_task_discovery_fig +
+    theme(
+      axis.title.x=element_blank(),
+      # axis.text.x=element_blank(),
+      # axis.ticks.x=element_blank()
+    ) +
+    ggtitle("Novel task discovery"),
+  lineage_novel_task_loss_fig +
+    theme(
+      axis.title.x=element_blank(),
+      # axis.text.x=element_blank(),
+      # axis.ticks.x=element_blank()
+    ) +
+    ggtitle("Novel task loss"),
   NULL,
-  lineage_per_gen_task_discovery,
-  lineage_per_gen_task_loss + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+  lineage_novel_task_discovery_freq_fig +
+    theme(
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Novel task discovery frequency"),
+  lineage_novel_task_loss_freq_fig +
+    theme(
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Novel task loss frequency"),
   nrow=2,
   align="v",
   # labels="auto"
@@ -1111,10 +1158,4 @@ save_plot(
    base_asp=3/2
 )
 grid
-# save_plot(
-#    paste0(working_directory, "plots/", "complex-traits-panel.png"),
-#    grid,
-#    base_height=6,
-#    base_asp=2.5
-# )
 ```
