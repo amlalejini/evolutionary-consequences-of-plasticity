@@ -7,6 +7,8 @@ The effect of adaptive phenotypic plasticity on the accumulation of deleterious 
 ```{r}
 total_updates <- 200000
 replicates <- 100
+alpha <- 0.05
+focal_poison_penalty <- 0.1
 
 focal_traits <- c("not","nand","and","ornot","or","andnot")
 traits_set_a <- c("not", "and", "or")
@@ -24,6 +26,9 @@ Load all required R libraries.
 ```{r, message=FALSE}
 library(RColorBrewer)
 library(ggplot2)
+library(rstatix)
+library(ggsignif)
+library(scales)
 library(tidyverse)
 library(cowplot)
 library(Hmisc)
@@ -52,6 +57,11 @@ summary_data$dominant_plastic_odd_even <- as.factor(summary_data$dominant_plasti
 summary_data$sensors <- summary_data$DISABLE_REACTION_SENSORS == "0"
 summary_data$is_plastic <- summary_data$dominant_plastic_odd_even == "True"
 summary_data$POISON_PENALTY <- as.factor(summary_data$POISON_PENALTY)
+
+summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases / summary_data$dominant_generation_born
+summary_data$frac_hitchhiking_linked_trait_change <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
+summary_data$frac_unexpressed_hitchhiker_inc <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
+summary_data$frac_expressed_hitchiker_inc <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_expressed_phenotype / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
 
 env_label_fun <- function(chg_env) {
   if (chg_env) {
@@ -99,6 +109,23 @@ condition_order = c(
   "PLASTIC"
 )
 
+pairwise_comparisons <- list(
+  c("STATIC", "NON-PLASTIC"),
+  c("STATIC", "PLASTIC"),
+  c("PLASTIC", "NON-PLASTIC")
+)
+
+p_label <- function(p_value) {
+  threshold = 0.0001
+  if (p_value < threshold) {
+    return(paste0("p < ", threshold))
+  } else {
+    return(paste0("p = ", p_value))
+  }
+}
+
+poison_penalties <- levels(summary_data$POISON_PENALTY)
+
 ###### time series #####
 lineage_time_series_data_loc <- paste0(working_directory, "data/lineage_series.csv")
 lineage_time_series_data <- read.csv(lineage_time_series_data_loc)
@@ -124,7 +151,9 @@ lineage_time_series_data$condition <- mapply(
 
 ####### misc #######
 # Configure our default graphing theme
+focal_summary_data <- filter(summary_data, POISON_PENALTY==focal_poison_penalty)
 theme_set(theme_cowplot())
+cb_palette <- "Paired"
 dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
 samplemean <- function(x, d) {
   return(mean(x[d]))
@@ -147,10 +176,10 @@ ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   ylab("Number of replicates in phase two") +
   facet_wrap(~POISON_PENALTY, labeller=label_both) +
@@ -172,10 +201,10 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   ) +
   geom_text(aes(label=n, y=n+1)) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   ylab("Number of replicates with a plastic dominant genotype") +
   ylim(0, 100) +
@@ -190,43 +219,41 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
 ### Number of replicates where final dominant genotype executes the poison instruction
 
 ```{r}
-poison_penalty <- 0.1
+for (penalty in poison_penalties) {
+  occurrences <- c(
+    length(filter(summary_data, POISON_PENALTY==penalty & condition=="NON-PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==penalty & condition=="PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==penalty & condition=="STATIC" & dominant_times_poison_executed > 0)$RANDOM_SEED)
+  )
+  trials <- c(
+    length(filter(summary_data, POISON_PENALTY==penalty & condition=="NON-PLASTIC")$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==penalty & condition=="PLASTIC")$RANDOM_SEED),
+    length(filter(summary_data, POISON_PENALTY==penalty & condition=="STATIC" )$RANDOM_SEED)
+  )
+  names(trials) <- c(
+    "NON-PLASTIC",
+    "PLASTIC",
+    "STATIC"
+  )
+  names(occurrences) <- c(
+    "NON-PLASTIC",
+    "PLASTIC",
+    "STATIC"
+  )
+  poison_exec_table <- data.frame(
+    executes.poison=occurrences,
+    replicates=trials
+  )
+  cat(paste0("#### Penalty: ", penalty, "\n"))
+  cat(print(kable(poison_exec_table)))
+  cat("\n")
+  ft <- pairwise.fisher.test(x=occurrences, n=trials, p.adjust.method="bonferroni")
+  print(ft)
+  cat("\n\n")
+}
 ```
 
-```{r}
-occurrences <- c(
-  length(filter(summary_data, POISON_PENALTY==poison_penalty & condition=="NON-PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
-  length(filter(summary_data, POISON_PENALTY==poison_penalty & condition=="PLASTIC" & dominant_times_poison_executed > 0)$RANDOM_SEED),
-  length(filter(summary_data, POISON_PENALTY==poison_penalty & condition=="STATIC" & dominant_times_poison_executed > 0)$RANDOM_SEED)
-)
-trials <- c(
-  length(filter(summary_data, POISON_PENALTY==poison_penalty & condition=="NON-PLASTIC")$RANDOM_SEED),
-  length(filter(summary_data, POISON_PENALTY==poison_penalty & condition=="PLASTIC")$RANDOM_SEED),
-  length(filter(summary_data, POISON_PENALTY==poison_penalty & condition=="STATIC" )$RANDOM_SEED)
-)
-names(trials) <- c(
-  "NON-PLASTIC",
-  "PLASTIC",
-  "STATIC"
-)
-names(occurrences) <- c(
-  "NON-PLASTIC",
-  "PLASTIC",
-  "STATIC"
-)
-
-poison_exec_table <- data.frame(
-  executes.poison=occurrences,
-  replicates=trials
-)
-kable(poison_exec_table)
-```
-
-```{r}
-pairwise.fisher.test(x=occurrences, n=trials, p.adjust.method="bonferroni")
-```
-
-### Poison instruction execution in final population
+### Poison instruction execution (final population)
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=final_population_poison, fill=condition)) +
@@ -251,21 +278,21 @@ ggplot(summary_data, aes(x=condition, y=final_population_poison, fill=condition)
   ) +
   scale_y_continuous(
     name="poison instruction executions (final population)",
-    trans="pseudo_log",
+    trans=pseudo_log_trans(sigma=1,base=10),
     breaks=c(0,100,10000,1000000),
     limits=c(-1,1000000)
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   facet_wrap(
     ~POISON_PENALTY,
     labeller=label_both
   ) +
-  coord_flip() +
+  # coord_flip() +
   theme(
     legend.position="none"
   ) +
@@ -277,8 +304,7 @@ ggplot(summary_data, aes(x=condition, y=final_population_poison, fill=condition)
 ```
 
 ```{r}
-penalties <- levels(summary_data$POISON_PENALTY)
-for (penalty in penalties) {
+for (penalty in poison_penalties) {
   stat_data <- filter(summary_data, POISON_PENALTY==penalty)
   print(
     paste0(
@@ -304,7 +330,7 @@ for (penalty in penalties) {
 }
 ```
 
-### Poison instruction execution along final dominant lineage (cummulative)
+### Cummulative poison instruction execution along final dominant lineages
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, fill=condition)) +
@@ -329,7 +355,7 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, 
   ) +
   scale_y_continuous(
     name="poison instruction executions (dominant lineage)",
-    trans="pseudo_log",
+    trans=pseudo_log_trans(sigma = 1, base = 10),
     breaks=c(10,1000,100000),
     limits=c(-1,100000)
   ) +
@@ -338,12 +364,11 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, 
     labeller=label_both
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
   theme(
     legend.position="none"
   ) +
@@ -355,8 +380,7 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, 
 ```
 
 ```{r}
-penalties <- levels(summary_data$POISON_PENALTY)
-for (penalty in penalties) {
+for (penalty in poison_penalties) {
   stat_data <- filter(summary_data, POISON_PENALTY==penalty)
   print(
     paste0(
@@ -407,31 +431,23 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_ins
     name="Condition",
     limits=condition_order
   ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
   facet_wrap(
     ~POISON_PENALTY,
-    labeller=label_both,
-    scales="free_y"
+    labeller=label_both
+  ) +
+  scale_fill_brewer(
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    palette=cb_palette
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/final-dominant-lineage-poison-increase-num-mutants-log.png"),
-    width=15,
-    height=10
   )
 ```
 
 ```{r}
-penalties <- levels(summary_data$POISON_PENALTY)
-for (penalty in penalties) {
+for (penalty in poison_penalties) {
   stat_data <- filter(summary_data, POISON_PENALTY==penalty)
   print(
     paste0(
@@ -456,20 +472,79 @@ for (penalty in penalties) {
   )
 }
 
-sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
-sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
-sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
-
-# sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_trait_volatility)
-# sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_trait_volatility)
-# sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_trait_volatility)
-
+# sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+# sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+# sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
 ```
 
-### Per-generation increases in poison instruction execution
+Focal figure for the manuscript:
 
 ```{r}
-summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases / summary_data$dominant_generation_born
+# Compute manual labels for geom_signif
+stat.test <- focal_summary_data %>%
+  wilcox_test(dominant_lineage_num_times_hitchhike_inst_exec_increases ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition")
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  stat.test$y.position
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+poison_increases_fig <- ggplot(
+    focal_summary_data,
+    aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Poisonous task acquisition count",
+  ) +
+  scale_fill_brewer(
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    palette=cb_palette
+  ) +
+  # coord_flip()
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_num_times_hitchhike_inst_exec_increases~condition, data=focal_summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  theme(
+    legend.position="none"
+  )
+poison_increases_fig
+```
+
+### Frequency of increases in poison instruction execution (lineage)
+
+```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -491,17 +566,17 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_ins
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   facet_wrap(
     ~POISON_PENALTY,
     labeller=label_both,
     scales="free_y"
   ) +
-  coord_flip() +
+  # coord_flip() +
   theme(
     legend.position="none"
   ) +
@@ -513,8 +588,7 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_ins
 ```
 
 ```{r}
-penalties <- levels(summary_data$POISON_PENALTY)
-for (penalty in penalties) {
+for (penalty in poison_penalties) {
   stat_data <- filter(summary_data, POISON_PENALTY==penalty)
   print(
     paste0(
@@ -540,11 +614,74 @@ for (penalty in penalties) {
 }
 ```
 
+Figure for the manuscript:
+
+```{r}
+# Compute manual labels for geom_signif
+stat.test <- focal_summary_data %>%
+  wilcox_test(dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition", step.increase=0.2)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  stat.test$y.position
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+poison_increases_per_gen_fig <- ggplot(
+    focal_summary_data,
+    aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, fill=condition)
+  ) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Poisonous task acquisition frequency",
+  ) +
+  scale_fill_brewer(
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    palette=cb_palette
+  ) +
+  # coord_flip()
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation~condition, data=focal_summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  theme(
+    legend.position="none"
+  )
+poison_increases_per_gen_fig
+```
+
 ### What fraction of mutations that increase poison instruction execution co-occur with base trait changes?
 
 ```{r}
-summary_data$frac_hitchhiking_linked_trait_change <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
-
 ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0), aes(x=frac_hitchhiking_linked_trait_change, fill=condition)) +
   geom_density() +
   facet_grid(
@@ -553,10 +690,10 @@ ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_incre
     scales="free_y"
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   theme(
     legend.position="none"
@@ -590,25 +727,24 @@ ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_incre
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   facet_wrap(
     ~POISON_PENALTY,
     labeller=label_both,
     scales="free_y"
   ) +
-  coord_flip() +
+  # coord_flip() +
   theme(
     legend.position="none"
   )
 ```
 
 ```{r}
-penalties <- levels(summary_data$POISON_PENALTY)
-for (penalty in penalties) {
+for (penalty in poison_penalties) {
   stat_data <- filter(summary_data, POISON_PENALTY==penalty & dominant_lineage_num_times_hitchhike_inst_exec_increases>0)
   print(
     paste0(
@@ -636,140 +772,32 @@ for (penalty in penalties) {
 
 denom <- sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
 num <- sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change)
-paste0("NON-PLASTIC: ", num/denom, "(", num, "/", denom, ")")
+paste0("NON-PLASTIC (0.1 penalty): ", num/denom, "(", num, "/", denom, ")")
 
 denom <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
 num <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change)
-paste0("PLASTIC: ", num/denom, " (", num, "/", denom, ")")
+paste0("PLASTIC (0.1 penalty): ", num/denom, " (", num, "/", denom, ")")
 
 denom <- sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
 num <- sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_with_primary_trait_change)
-paste0("STATIC: ", num/denom, " (", num, "/", denom, ")")
+paste0("STATIC (0.1 penalty): ", num/denom, " (", num, "/", denom, ")")
 ```
 
-## What fraction of poison execution increases occur in unexpressed phenotype (as cryptic variation)?
+Focal figure for the manuscript:
 
 ```{r}
-summary_data$frac_unexpressed_hitchhiker_inc <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
-summary_data$frac_expressed_hitchiker_inc <- summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_expressed_phenotype / summary_data$dominant_lineage_num_times_hitchhike_inst_exec_increases
+# Compute manual labels for geom_signif
+stat.test <-filter(focal_summary_data,dominant_lineage_num_times_hitchhike_inst_exec_increases>0) %>%
+  wilcox_test(frac_hitchhiking_linked_trait_change ~ condition, comparisons=list(c("PLASTIC", "NON-PLASTIC"), c("STATIC", "NON-PLASTIC"))) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition")
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  stat.test$y.position
+stat.test$label <- mapply(p_label,stat.test$p.adj)
 
-ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0 & condition=="PLASTIC"), aes(x=frac_unexpressed_hitchhiker_inc)) +
-  geom_density() +
-  facet_grid(
-    condition~POISON_PENALTY,
-    labeller=label_both,
-    scales="free_y"
-  ) +
-  theme(
-    legend.position="none"
-  )
-```
-
-```{r}
-denom <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
-num <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype)
-paste0("PLASTIC: ", num/denom, " (", num, "/", denom, ")")
-```
-
-## Manuscript figures
-
-```{r}
-poison_penalty <- 0.1
-```
-
-### Total poison execution increases along lineage.
-
-```{r}
-poison_increases_fig <- ggplot(
-    filter(summary_data, POISON_PENALTY==poison_penalty),
-    aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Increases in poison execution along lineage",
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  theme(
-    legend.position="none"
-  ) +
-  coord_flip()
-
-poison_increases_fig
-```
-
-### Per-generation poison execution increases along lineage
-
-```{r}
-poison_increases_per_gen_fig <- ggplot(
-    filter(summary_data, POISON_PENALTY==poison_penalty),
-    aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Per-generation increase in poison execution along lineage",
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  theme(
-    legend.position="none"
-  ) +
-  coord_flip()
-
-poison_increases_per_gen_fig
-```
-
-### Co-occurrence
-
-```{r}
 linked_trait_change_fig <- ggplot(
-    filter(summary_data, POISON_PENALTY==poison_penalty & dominant_lineage_num_times_hitchhike_inst_exec_increases>0),
+    filter(focal_summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0),
     aes(x=condition, y=frac_hitchhiking_linked_trait_change, fill=condition)
   ) +
   geom_flat_violin(
@@ -793,28 +821,74 @@ linked_trait_change_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="[Fraction of poison instruction increase co-occurrences]",
+    name="Fraction of linked poisonous task acquisition",
+    limits=c(-0.01, 1.2),
+    breaks=c(0, 0.25, 0.50, 0.75, 1.0)
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
+  ) +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=frac_hitchhiking_linked_trait_change~condition, data=focal_summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
   ) +
   theme(
     legend.position="none"
-  ) +
-  coord_flip()
+  )
 linked_trait_change_fig
 ```
 
-### Combined panel
+## What fraction of poison execution increases occur in unexpressed phenotype (as cryptic variation)?
+
+```{r}
+ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0 & condition=="PLASTIC"), aes(x=frac_unexpressed_hitchhiker_inc)) +
+  geom_density() +
+  facet_grid(
+    condition~POISON_PENALTY,
+    labeller=label_both,
+    scales="free_y"
+  ) +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+denom <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
+num <- sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases_in_unexpressed_phenotype)
+paste0("PLASTIC: ", num/denom, " (", num, "/", denom, ")")
+```
+
+## Manuscript figures
 
 ```{r}
 grid <- plot_grid(
-  poison_increases_fig,
-  poison_increases_per_gen_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
-  linked_trait_change_fig + theme(axis.ticks.y=element_blank(),axis.text.y=element_blank(),axis.title.y=element_blank()),
+  poison_increases_fig +
+    theme(
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Poisonous task acquisition count"),
+  poison_increases_per_gen_fig +
+    theme(
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Poisonous task acquisition frequency"),
+  linked_trait_change_fig +
+    theme(
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Linked poisonous task acquisition"),
   nrow=1,
   align="v",
   labels="auto"
