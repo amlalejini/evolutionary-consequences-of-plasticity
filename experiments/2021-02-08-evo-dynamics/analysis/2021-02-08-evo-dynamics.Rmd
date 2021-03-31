@@ -7,6 +7,7 @@ The effect of adaptive phenotypic plasticity on evolutionary change.
 ```{r}
 total_updates <- 200000
 replicates <- 100
+alpha <- 0.05
 
 all_traits <- c("not","nand","and","ornot","or","andnot")
 traits_set_a <- c("not", "and", "or")
@@ -23,6 +24,9 @@ Load all required R libraries.
 
 ```{r, message=FALSE}
 library(ggplot2)
+library(rstatix)
+library(ggsignif)
+library(scales)
 library(tidyverse)
 library(cowplot)
 library(RColorBrewer)
@@ -95,10 +99,26 @@ condition_order = c(
   "NON-PLASTIC",
   "PLASTIC"
 )
+pairwise_comparisons <- list(
+  c("STATIC", "NON-PLASTIC"),
+  c("STATIC", "PLASTIC"),
+  c("PLASTIC", "NON-PLASTIC")
+)
+
+p_label <- function(p_value) {
+  threshold = 0.0001
+  if (p_value < threshold) {
+    return(paste0("p < ", threshold))
+  } else {
+    return(paste0("p = ", p_value))
+  }
+}
 
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
+# Palette
+cb_palette <- "Paired"
 # Create a directory to store plots
 dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
 # Define sample mean function
@@ -123,10 +143,10 @@ ggplot(summary_data_group_counts, aes(x=condition, y=n, fill=condition)) +
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   ylab("Number of replicates transferred to phase two") +
   theme(
@@ -148,10 +168,10 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   geom_text(aes(label=n, y=n+1)) +
   ylab("Number of plastic replicates") +
@@ -185,12 +205,12 @@ ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
   ylab("average generation") +
   theme(
     legend.position="none"
@@ -199,19 +219,6 @@ ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)
 ```
 
 ```{r}
-paste0(
-  "PLASTIC median: ",
-  median(filter(summary_data, condition=="PLASTIC")$time_average_generation)
-)
-paste0(
-  "STATIC median: ",
-  median(filter(summary_data, condition=="STATIC")$time_average_generation)
-)
-paste0(
-  "NON-PLASTIC median: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$time_average_generation)
-)
-
 kruskal.test(
   formula=time_average_generation~condition,
   data=summary_data
@@ -222,14 +229,56 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$time_average_generation)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$time_average_generation)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$time_average_generation)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=time_average_generation~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-## Selective sweeps
+## Coalescence event count
 
 The number of times the most recent common ancestor changes gives us the number of selective sweeps that occur during the experiment.
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=phylo_mrca_changes, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(phylo_mrca_changes ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition",step.increase=1)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-   log10(stat.test$y.position) * c(1.0,1.0,1.03)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+coalescence_events_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=phylo_mrca_changes,fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -245,37 +294,49 @@ ggplot(summary_data, aes(x=condition, y=phylo_mrca_changes, fill=condition)) +
     outlier.shape = NA,
     alpha = 0.5
   ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order,
+    breaks=condition_order
   ) +
-  ylab("Number of selective sweeps") +
+  scale_y_continuous(
+    name="Coalescence event count (log scale)",
+    trans=pseudo_log_trans(sigma = 1, base = 10),
+    breaks=c(0, 10, 100, 1000, 10000),
+    limits=c(-1, 35000)
+  ) +
+  scale_fill_brewer(
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    palette=cb_palette
+  ) +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=phylo_mrca_changes~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  # coord_flip() +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "selective-sweeps.pdf"),
+    width=5,
+    height=5
   )
+coalescence_events_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$phylo_mrca_changes)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$phylo_mrca_changes)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$phylo_mrca_changes)
-)
-
 kruskal.test(
   formula=phylo_mrca_changes~condition,
   data=summary_data
@@ -286,14 +347,57 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$phylo_mrca_changes)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$phylo_mrca_changes)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$phylo_mrca_changes)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=phylo_mrca_changes~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-### Average number of generations between selective sweeps
+### Average number of generations between coalescence events
 
 ```{r}
+# Compute frequency of coalescence events
 summary_data$generations_per_mrca_change <- summary_data$time_average_generation / summary_data$phylo_mrca_changes
 
-ggplot(summary_data, aes(x=condition, y=generations_per_mrca_change, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(generations_per_mrca_change ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition")
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  stat.test$y.position
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+coalescence_events_freq_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=generations_per_mrca_change, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -311,34 +415,45 @@ ggplot(summary_data, aes(x=condition, y=generations_per_mrca_change, fill=condit
   ) +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Frequency of coalescence events (generations)",
+    limits=c(0, 2000),
+    breaks=seq(0, 2000, 500)
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=generations_per_mrca_change~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "generations-between-selective-sweeps.png"),
+    width=5,
+    height=5
   )
+coalescence_events_freq_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$generations_per_mrca_change)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$generations_per_mrca_change)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$generations_per_mrca_change)
-)
-
 kruskal.test(
   formula=generations_per_mrca_change~condition,
   data=summary_data
@@ -349,12 +464,54 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$generations_per_mrca_change)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$generations_per_mrca_change)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$generations_per_mrca_change)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=generations_per_mrca_change~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
 ## Phenotypic volatility along the dominant lineage
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_trait_volatility ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition", step.increase=1)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  log10(stat.test$y.position) * c(1.0,1.0,1.03)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+phenotypic_volatility_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -372,40 +529,46 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility, fill=
   ) +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
   ) +
   scale_y_continuous(
     name="Phenotypic volatility (log scale)",
-    trans="pseudo_log",
+    trans=pseudo_log_trans(sigma = 1, base = 10),
     breaks=c(0, 10, 100, 1000, 10000),
-    limits=c(-1,10000)
+    limits=c(-1, 21000)
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_trait_volatility~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj<=alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
+  # coord_flip() +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "phenotypic-volatility.pdf"),
+    width=5,
+    height=5
   )
+phenotypic_volatility_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility)
-)
-
 kruskal.test(
   formula=dominant_lineage_trait_volatility~condition,
   data=summary_data
@@ -416,6 +579,35 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_trait_volatility~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
 ### Phenotypic volatility normalized by generations elapsed
@@ -444,31 +636,18 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility_per_ge
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
   theme(
     legend.position="none"
   )
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility_per_generation)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility_per_generation)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility_per_generation)
-)
-
 kruskal.test(
   formula=dominant_lineage_trait_volatility_per_generation~condition,
   data=summary_data
@@ -479,16 +658,58 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_volatility_per_generation)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_volatility_per_generation)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_volatility_per_generation)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_trait_volatility_per_generation~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-### Phenotypic fidelity
+## Phenotypic fidelity
 
 Frequency that an offspring's genotype is identical to a parent genotype (along the dominant lineage).
 
 ```{r}
 summary_data$dominant_lineage_trait_fidelity <- (summary_data$dominant_generation_born - summary_data$dominant_lineage_trait_volatility) / summary_data$dominant_generation_born
 
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_fidelity, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_trait_fidelity ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition",step.increase=1.5)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-  stat.test$y.position * c(1.0,1.0,1.0005)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+phenotypic_fidelity_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_trait_fidelity, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -506,34 +727,45 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_fidelity, fill=co
   ) +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Phenotypic fidelity",
+    limits=c(0.94, 1.013),
+    breaks=c(0.94, 0.96, 0.98, 1.0) #seq(0.94, 1.0, 0.01)
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_trait_fidelity~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "phenotypic-fidelity.pdf"),
+    width=5,
+    height=5
   )
+phenotypic_fidelity_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_fidelity)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_fidelity)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_fidelity)
-)
-
 kruskal.test(
   formula=dominant_lineage_trait_fidelity~condition,
   data=summary_data
@@ -544,12 +776,55 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_trait_fidelity)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_trait_fidelity)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_trait_fidelity)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_trait_fidelity~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-## Mutation accumulation along the dominant lineage
+## Mutation count
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)) +
+
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_total_mut_cnt ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition",step.increase=1)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <- log10(stat.test$y.position) *  c(1.0,1.0,1.03) # c(1.0,1.0,1.01)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+mutation_count_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -565,37 +840,48 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=con
     outlier.shape = NA,
     alpha = 0.5
   ) +
-  ylab("Mutation accumulation") +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Mutation count (log scale)",
+    trans=pseudo_log_trans(sigma = 1, base = 10),
+    breaks=c(0, 10, 100, 1000, 10000),
+    limits=c(-1, 35000)
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_total_mut_cnt~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "mutation-accumulation.pdf"),
+    width=5,
+    height=4
   )
+mutation_count_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_total_mut_cnt)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_total_mut_cnt)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_total_mut_cnt)
-)
-
 kruskal.test(
   formula=dominant_lineage_total_mut_cnt~condition,
   data=summary_data
@@ -606,9 +892,38 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_total_mut_cnt)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_total_mut_cnt)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_total_mut_cnt)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_total_mut_cnt~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-### Mutation accumulation normalized by generations elapsed
+### Mutation count normalized by generations elapsed
 
 ```{r}
 summary_data$mutations_per_generation <- summary_data$dominant_lineage_total_mut_cnt / summary_data$dominant_generation_born
@@ -633,33 +948,20 @@ ggplot(summary_data, aes(x=condition, y=mutations_per_generation, fill=condition
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Mutation accumulation / generation") +
+  ylab("Mutation count / generation") +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
   theme(
     legend.position="none"
   )
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$mutations_per_generation)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$mutations_per_generation)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$mutations_per_generation)
-)
-
 kruskal.test(
   formula=mutations_per_generation~condition,
   data=summary_data
@@ -670,16 +972,58 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$mutations_per_generation)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$mutations_per_generation)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$mutations_per_generation)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=mutations_per_generation~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
-### Genotypic fidelity
+## Genotypic fidelity
 
 The frequency that an offspring's genotype is the same as a parent's genotype.
 
 ```{r}
 summary_data$dominant_lineage_genotypic_fidelity <- (summary_data$dominant_generation_born - summary_data$dominant_lineage_num_mut_steps) / summary_data$dominant_generation_born
 
-ggplot(summary_data, aes(x=condition, y=dominant_lineage_genotypic_fidelity, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(dominant_lineage_genotypic_fidelity ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition",step.increase=0.2)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <- stat.test$y.position * c(1.0,1.0,1.0)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+genotypic_fidelity_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=dominant_lineage_genotypic_fidelity, fill=condition)
+  ) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -697,34 +1041,45 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_genotypic_fidelity, fil
   ) +
   scale_x_discrete(
     name="Condition",
-    limits=condition_order
+    limits=condition_order,
+    labels=condition_order
+  ) +
+  scale_y_continuous(
+    name="Genotypic fidelity",
+    limits=c(0.85, 1.01),
+    breaks=c(0.85, 0.90, 0.95, 1.0) #seq(0.85, 1.0, 0.02)
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=dominant_lineage_genotypic_fidelity~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
   theme(
     legend.position="none"
+  ) +
+  ggsave(
+    paste0(working_directory, "plots/", "genotypic-fidelity.pdf"),
+    width=5,
+    height=4
   )
+genotypic_fidelity_fig
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_genotypic_fidelity)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$dominant_lineage_genotypic_fidelity)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_genotypic_fidelity)
-)
-
 kruskal.test(
   formula=dominant_lineage_genotypic_fidelity~condition,
   data=summary_data
@@ -735,6 +1090,35 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$dominant_lineage_genotypic_fidelity)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$dominant_lineage_genotypic_fidelity)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$dominant_lineage_genotypic_fidelity)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=dominant_lineage_genotypic_fidelity~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
 ## Characterizing variation along dominant lineages
@@ -764,12 +1148,12 @@ ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=
     limits=condition_order
   ) +
   scale_fill_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
   scale_color_brewer(
-    palette="Paired"
+    palette=cb_palette
   ) +
-  coord_flip() +
+  # coord_flip() +
   theme(
     legend.position="none"
   ) +
@@ -777,19 +1161,6 @@ ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=
 ```
 
 ```{r}
-paste0(
-  "PLASTIC: ",
-  median(filter(summary_data, condition=="PLASTIC")$frac_phenotype_changing_mut_steps)
-)
-paste0(
-  "STATIC: ",
-  median(filter(summary_data, condition=="STATIC")$frac_phenotype_changing_mut_steps)
-)
-paste0(
-  "NON-PLASTIC: ",
-  median(filter(summary_data, condition=="NON-PLASTIC")$frac_phenotype_changing_mut_steps)
-)
-
 kruskal.test(
   formula=frac_phenotype_changing_mut_steps~condition,
   data=summary_data
@@ -800,6 +1171,35 @@ pairwise.wilcox.test(
   g=summary_data$condition,
   p.adjust.method="bonferroni",
 )
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$frac_phenotype_changing_mut_steps)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$frac_phenotype_changing_mut_steps)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$frac_phenotype_changing_mut_steps)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=frac_phenotype_changing_mut_steps~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
 ```
 
 ### For PLASTIC populations, what fraction of phenotype-altering mutations occurred in the unexpressed phenotype?
@@ -882,433 +1282,61 @@ print(boot.ci(bo, conf=0.95, type="perc"))
 
 Figures styled for the paper.
 
-### Total evolutionary change
-
-Selective sweeps, mutation accumulation, phenotypic volatility.
-
-#### Total mutation accumulation
-
-```{r}
-mutation_count_fig <- ggplot(
-    summary_data,
-    aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Mutations accumulated (log scale)",
-    trans="log10",
-    breaks=c(100, 1000, 10000),
-    limits=c(100, 10000)
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "mutation-accumulation.pdf"),
-    width=5,
-    height=4
-  )
-mutation_count_fig
-```
-
-#### Phenotypic volatility
-
-```{r}
-phenotypic_volatility_fig <- ggplot(
-    summary_data,
-    aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Phenotypic volatility (log scale)",
-    trans="pseudo_log",
-    breaks=c(0, 10, 100, 1000, 10000),
-    limits=c(-1,10000)
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "phenotypic-volatility.pdf"),
-    width=4,
-    height=4
-  )
-
-phenotypic_volatility_fig
-```
-
-#### Coalescence events
-
-```{r}
-selective_sweeps_fig <- ggplot(
-    summary_data,
-    aes(x=condition, y=phylo_mrca_changes, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Coalescence Events (log scale)",
-    trans="log10",
-    breaks=c(10, 100, 1000),
-    limits=c(10, 1000)
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "selective-sweeps.pdf"),
-    width=4,
-    height=4
-  )
-
-selective_sweeps_fig
-```
-
-#### Combined
-
 ```{r}
 grid <- plot_grid(
-  selective_sweeps_fig + theme(
-    legend.position="none"
-  ),
-  mutation_count_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
-  phenotypic_volatility_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
-  nrow=1,
-  align="v",
-  labels="auto"
-)
-grid
-save_plot(
-   paste0(working_directory, "plots/", "evolutionary-dynamics.pdf"),
-   grid,
-   base_height=6,
-   base_asp=2.5
-)
-save_plot(
-   paste0(working_directory, "plots/", "evolutionary-dynamics.png"),
-   grid,
-   base_height=6,
-   base_asp=2.5
-)
-```
-
-### Rate of evolutionary change
-
-#### Genotypic fidelity
-
-```{r}
-genotypic_fidelity_fig <- ggplot(
-    summary_data,
-    aes(x=condition, y=dominant_lineage_genotypic_fidelity, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Genotypic fidelity",
-    limits=c(0.85, 1.01),
-    breaks=c(0.85, 0.90, 0.95, 1.0) #seq(0.85, 1.0, 0.02)
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "genotypic-fidelity.png"),
-    width=5,
-    height=4
-  )
-genotypic_fidelity_fig
-```
-
-#### Phenotypic fidelity
-
-```{r}
-phenotypic_fidelity_fig <- ggplot(
-    summary_data,
-    aes(x=condition, y=dominant_lineage_trait_fidelity, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Phenotypic fidelity",
-    limits=c(0.94, 1.01),
-    breaks=c(0.94, 0.96, 0.98, 1.0) #seq(0.94, 1.0, 0.01)
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "phenotypic-fidelity.png"),
-    width=4,
-    height=4
-  )
-
-phenotypic_fidelity_fig
-```
-
-#### Generations per selective sweep
-
-```{r}
-selective_sweeps_rate_fig <- ggplot(
-    summary_data,
-    aes(x=condition, y=generations_per_mrca_change, fill=condition)
-  ) +
-  geom_flat_violin(
-    position = position_nudge(x = .2, y = 0),
-    alpha = .8
-  ) +
-  geom_point(
-    mapping=aes(color=condition),
-    position = position_jitter(width = .15),
-    size = .5,
-    alpha = 0.8
-  ) +
-  geom_boxplot(
-    width = .1,
-    outlier.shape = NA,
-    alpha = 0.5
-  ) +
-  scale_x_discrete(
-    name="Condition",
-    limits=condition_order,
-    labels=condition_order
-  ) +
-  scale_y_continuous(
-    name="Generations between coalescence events",
-    limits=c(0, 2000),
-    breaks=seq(0, 2000, 500)
-  ) +
-  scale_fill_brewer(
-    palette="Paired"
-  ) +
-  scale_color_brewer(
-    palette="Paired"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "generations-between-selective-sweeps.png"),
-    width=4,
-    height=4
-  )
-
-selective_sweeps_rate_fig
-```
-
-#### Combined
-
-```{r}
-grid <- plot_grid(
-  selective_sweeps_rate_fig + theme(
-    legend.position="none"
-  ),
-  genotypic_fidelity_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
-  phenotypic_fidelity_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
-  nrow=1,
-  align="v",
-  labels="auto"
-)
-grid
-save_plot(
-   paste0(working_directory, "plots/", "rate-evolutionary-dynamics.png"),
-   grid,
-   base_height=6,
-   base_asp=2.5
-)
-```
-
-### Full panel
-
-```{r}
-grid <- plot_grid(
-  selective_sweeps_fig + theme(
-    legend.position="none"
-  ),
-  mutation_count_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
-  phenotypic_volatility_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
-  selective_sweeps_rate_fig + theme(
-    legend.position="none"
-  ),
-  genotypic_fidelity_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
-  phenotypic_fidelity_fig + theme(
-    legend.position="none",
-    axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.y=element_blank()
-  ),
+  coalescence_events_fig +
+    theme(
+      legend.position="none",
+      axis.ticks.x=element_blank(),
+      axis.text.x=element_blank(),
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Coalescence events count"),
+  mutation_count_fig +
+    theme(
+      legend.position="none",
+      axis.ticks.x=element_blank(),
+      axis.text.x=element_blank(),
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Mutation count"),
+  phenotypic_volatility_fig +
+    theme(
+      legend.position="none",
+      axis.ticks.x=element_blank(),
+      axis.text.x=element_blank(),
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Phenotypic volatility"),
+  coalescence_events_freq_fig +
+    theme(
+      legend.position="none",
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Frequency of coalescence events"),
+  genotypic_fidelity_fig +
+    theme(
+      legend.position="none",
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Genotypic fidelity"),
+  phenotypic_fidelity_fig +
+    theme(
+      legend.position="none",
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Phenotypic fidelity"),
   nrow=2,
   ncol=3,
   align="v",
   labels="auto"
 )
-grid
 save_plot(
-   paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),
-   grid,
-   base_height=12,
-   base_asp=3/2
+  paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),
+  grid,
+  #  base_height=12,
+  #  base_asp=3/2
+  base_height=12,
+  base_asp=3/2
 )
 ```
