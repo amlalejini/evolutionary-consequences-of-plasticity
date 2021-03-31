@@ -130,6 +130,12 @@ RUN \
     && \
   R -e "install.packages('fmsb', dependencies=NA, repos='http://cran.rstudio.com/')" \
     && \
+  R -e "install.packages('rstatix', dependencies=NA, repos='http://cran.rstudio.com/')" \
+    && \
+  R -e "install.packages('ggsignif', dependencies=NA, repos='http://cran.rstudio.com/')" \
+    && \
+  R -e "install.packages('scales', dependencies=NA, repos='http://cran.rstudio.com/')" \
+    && \
   echo "installed r and configured r environment"
 
 
