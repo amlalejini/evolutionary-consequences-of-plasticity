@@ -260,6 +260,12 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
+```{r}
+summary_data %>%
+  group_by(condition) %>%
+  summarise(mean=mean(time_average_generation),sd=sd(time_average_generation))
+```
+
 ## Coalescence event count
 
 The number of times the most recent common ancestor changes gives us the number of selective sweeps that occur during the experiment.
@@ -1123,10 +1129,12 @@ for (pair in pairwise_comparisons) {
 
 ## Characterizing variation along dominant lineages
 
-### What fraction of mutations along the lineage result in phenotypic changes?
+### Mutational instability
 
 ```{r}
 summary_data$frac_phenotype_changing_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype / summary_data$dominant_lineage_num_mut_steps
+summary_data$frac_phenotype_stable_mut_steps <- 1 - summary_data$frac_phenotype_changing_mut_steps
+
 ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -1147,6 +1155,7 @@ ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=
     name="Condition",
     limits=condition_order
   ) +
+  ylab("Mutational instability") +
   scale_fill_brewer(
     palette=cb_palette
   ) +
@@ -1194,6 +1203,84 @@ for (pair in pairwise_comparisons) {
   pair_data$condition <- as.factor(pair_data$condition)
   wt <- wilcox.test(
     formula=frac_phenotype_changing_mut_steps~condition,
+    data=pair_data,
+    exact=FALSE,
+    paired=FALSE
+  )
+  print(paste0(pair[1], "<-->", pair[2], ": W=",wt$statistic))
+}
+```
+
+### Mutational stability
+
+```{r}
+ggplot(summary_data, aes(x=condition, y=frac_phenotype_stable_mut_steps, fill=condition)) +
+  geom_flat_violin(
+    position = position_nudge(x = .2, y = 0),
+    alpha = .8
+  ) +
+  geom_point(
+    mapping=aes(color=condition),
+    position = position_jitter(width = .15),
+    size = .5,
+    alpha = 0.8
+  ) +
+  geom_boxplot(
+    width = .1,
+    outlier.shape = NA,
+    alpha = 0.5
+  ) +
+  scale_x_discrete(
+    name="Condition",
+    limits=condition_order
+  ) +
+  ylab("Mutational stability") +
+  scale_fill_brewer(
+    palette=cb_palette
+  ) +
+  scale_color_brewer(
+    palette=cb_palette
+  ) +
+  # coord_flip() +
+  theme(
+    legend.position="none"
+  )
+```
+
+```{r}
+kruskal.test(
+  formula=frac_phenotype_stable_mut_steps~condition,
+  data=summary_data
+)
+
+pairwise.wilcox.test(
+  x=summary_data$frac_phenotype_stable_mut_steps,
+  g=summary_data$condition,
+  p.adjust.method="bonferroni",
+)
+
+paste(
+  sep="; ",
+  paste0(
+    "PLASTIC median: ",
+    median(filter(summary_data, condition=="PLASTIC")$frac_phenotype_stable_mut_steps)
+  ),
+  paste0(
+    "STATIC median: ",
+    median(filter(summary_data, condition=="STATIC")$frac_phenotype_stable_mut_steps)
+  ),
+  paste0(
+    "NON-PLASTIC median: ",
+    median(filter(summary_data, condition=="NON-PLASTIC")$frac_phenotype_stable_mut_steps)
+  )
+)
+
+print("Wilcox rank sum test statistics:")
+for (pair in pairwise_comparisons) {
+  pair_data <- filter(summary_data, condition %in% pair)
+  pair_data$condition <- as.factor(pair_data$condition)
+  wt <- wilcox.test(
+    formula=frac_phenotype_stable_mut_steps~condition,
     data=pair_data,
     exact=FALSE,
     paired=FALSE
