@@ -114,6 +114,15 @@ p_label <- function(p_value) {
   }
 }
 
+# *really* inefficient way to identify outliers
+is_outlier <- function(value, cond, data, column) {
+  cond_data <- filter(data, condition==cond)
+  q1 <- summary(cond_data[,column])[["1st Qu."]]
+  q3 <- summary(cond_data[,column])[["3rd Qu."]]
+  H <- 1.5 * IQR(cond_data[,column])
+  return( (value < (q1-H)) || (value > (q3+H)) )
+}
+
 ####### misc #######
 # Configure our default graphing theme
 theme_set(theme_cowplot())
@@ -281,11 +290,20 @@ stat.test <- summary_data %>%
 stat.test$manual_position <-   log10(stat.test$y.position) * c(1.0,1.0,1.03)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$phylo_mrca_changes,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="phylo_mrca_changes")
+)
+
 coalescence_events_fig <- ggplot(
     summary_data,
     aes(x=condition, y=phylo_mrca_changes,fill=condition)
   ) +
   geom_flat_violin(
+    data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -400,11 +418,20 @@ stat.test <- summary_data %>%
 stat.test$manual_position <-  stat.test$y.position
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$generations_per_mrca_change,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="generations_per_mrca_change")
+)
+
 coalescence_events_freq_fig <- ggplot(
     summary_data,
     aes(x=condition, y=generations_per_mrca_change, fill=condition)
   ) +
   geom_flat_violin(
+    data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -514,11 +541,20 @@ stat.test <- summary_data %>%
 stat.test$manual_position <-  log10(stat.test$y.position) * c(1.0,1.0,1.03)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_trait_volatility,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_trait_volatility")
+)
+
 phenotypic_volatility_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)
   ) +
   geom_flat_violin(
+    data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -542,7 +578,7 @@ phenotypic_volatility_fig <- ggplot(
     name="Phenotypic volatility (log scale)",
     trans=pseudo_log_trans(sigma = 1, base = 10),
     breaks=c(0, 10, 100, 1000, 10000),
-    limits=c(-1, 21000)
+    limits=c(-1, 35000)
   ) +
   scale_fill_brewer(
     palette=cb_palette
@@ -712,11 +748,22 @@ stat.test <- summary_data %>%
 stat.test$manual_position <-  stat.test$y.position * c(1.0,1.0,1.0005)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_trait_fidelity,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_trait_fidelity")
+)
+
+
 phenotypic_fidelity_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_lineage_trait_fidelity, fill=condition)
   ) +
   geom_flat_violin(
+    data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -827,11 +874,20 @@ stat.test <- summary_data %>%
 stat.test$manual_position <- log10(stat.test$y.position) *  c(1.0,1.0,1.03) # c(1.0,1.0,1.01)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_total_mut_cnt,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_total_mut_cnt")
+)
+
 mutation_count_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)
   ) +
   geom_flat_violin(
+    data=filter(summary_data, !is_outlier),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -1135,6 +1191,16 @@ for (pair in pairwise_comparisons) {
 summary_data$frac_phenotype_changing_mut_steps <- summary_data$dominant_lineage_num_mut_steps_that_change_aggregate_phenotype / summary_data$dominant_lineage_num_mut_steps
 summary_data$frac_phenotype_stable_mut_steps <- 1 - summary_data$frac_phenotype_changing_mut_steps
 
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(frac_phenotype_changing_mut_steps ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition",step.increase=0.2)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.0)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
 ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=condition)) +
   geom_flat_violin(
     position = position_nudge(x = .2, y = 0),
@@ -1163,6 +1229,18 @@ ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=
     palette=cb_palette
   ) +
   # coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=frac_phenotype_changing_mut_steps~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
   theme(
     legend.position="none"
   ) +
@@ -1214,8 +1292,30 @@ for (pair in pairwise_comparisons) {
 ### Mutational stability
 
 ```{r}
-ggplot(summary_data, aes(x=condition, y=frac_phenotype_stable_mut_steps, fill=condition)) +
+# Compute manual labels for geom_signif
+stat.test <- summary_data %>%
+  wilcox_test(frac_phenotype_stable_mut_steps ~ condition) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="condition",step.increase=0.75)
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.0)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_trait_volatility,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_trait_volatility")
+)
+
+mutational_stability_fig <- ggplot(
+    summary_data,
+    aes(x=condition, y=frac_phenotype_stable_mut_steps, fill=condition)
+  ) +
   geom_flat_violin(
+    data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -1234,17 +1334,33 @@ ggplot(summary_data, aes(x=condition, y=frac_phenotype_stable_mut_steps, fill=co
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Mutational stability") +
+  scale_y_continuous(
+    name="Mutational stability",
+    limits=c(0.5, 1.15),
+    breaks=c(0.5, 0.75, 1.0)
+  ) +
   scale_fill_brewer(
     palette=cb_palette
   ) +
   scale_color_brewer(
     palette=cb_palette
   ) +
-  # coord_flip() +
+  labs(
+    subtitle=paste0(
+      "Kruskal-Wallis, ",
+      p_label(signif(kruskal.test(formula=frac_phenotype_stable_mut_steps~condition, data=summary_data)$p.value,digits=4))
+    )
+  ) +
+  ggsignif::geom_signif(
+    data=filter(stat.test, p.adj <= alpha),
+    aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),
+    manual=TRUE,
+    inherit.aes=FALSE
+  ) +
   theme(
     legend.position="none"
   )
+mutational_stability_fig
 ```
 
 ```{r}
@@ -1370,60 +1486,71 @@ print(boot.ci(bo, conf=0.95, type="perc"))
 Figures styled for the paper.
 
 ```{r}
-grid <- plot_grid(
+magnitude_grid <- plot_grid(
   coalescence_events_fig +
     theme(
       legend.position="none",
-      # axis.ticks.x=element_blank(),
-      # axis.text.x=element_blank(),
       axis.title.x=element_blank()
     ) +
     ggtitle("Coalescence events count"),
   mutation_count_fig +
     theme(
       legend.position="none",
-      # axis.ticks.x=element_blank(),
-      # axis.text.x=element_blank(),
       axis.title.x=element_blank()
     ) +
     ggtitle("Mutation count"),
   phenotypic_volatility_fig +
     theme(
       legend.position="none",
-      # axis.ticks.x=element_blank(),
-      # axis.text.x=element_blank(),
       axis.title.x=element_blank()
     ) +
     ggtitle("Phenotypic volatility"),
+  nrow=1,
+  ncol=3,
+  align="v",
+  labels="auto"
+)
+magnitude_grid
+
+pace_grid <- plot_grid(
   coalescence_events_freq_fig +
     theme(
       legend.position="none",
       axis.title.x=element_blank()
     ) +
     ggtitle("Generations between coalescence events"),
-  genotypic_fidelity_fig +
+  mutational_stability_fig +
     theme(
       legend.position="none",
       axis.title.x=element_blank()
     ) +
-    ggtitle("Genotypic fidelity"),
-  phenotypic_fidelity_fig +
-    theme(
-      legend.position="none",
-      axis.title.x=element_blank()
-    ) +
-    ggtitle("Phenotypic fidelity"),
-  nrow=2,
-  ncol=3,
+    ggtitle("Mutational stability"),
+  nrow=1,
+  ncol=2,
   align="v",
   labels="auto"
 )
+pace_grid
+
+
 save_plot(
-  paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),
-  grid,
-  #  base_height=12,
-  #  base_asp=3/2
-  base_height=12,
-  base_asp=3/2
+  paste0(working_directory, "plots/", "evolutionary-change-magnitude-panel.pdf"),
+  magnitude_grid,
+  base_height=6,
+  base_asp=3/1
 )
+
+save_plot(
+  paste0(working_directory, "plots/", "evolutionary-change-pace-panel.pdf"),
+  pace_grid,
+  base_height=6,
+  base_asp=2/1
+)
+
+# save_plot(
+#   paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),
+#   grid,
+#   base_height=12,
+#   base_asp=3/2
+# )
 ```
