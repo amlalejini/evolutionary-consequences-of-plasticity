@@ -556,7 +556,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb29-20" title="20">    <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>phylo_mrca_changes,<span class="dt">fill=</span>condition)</a>
 <a class="sourceLine" id="cb29-21" title="21">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb29-22" title="22"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
-<a class="sourceLine" id="cb29-23" title="23">    <span class="dt">data=</span><span class="kw">filter</span>(summary_data,is_outlier<span class="op">==</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb29-23" title="23">    <span class="co"># data=filter(summary_data,is_outlier==FALSE),</span></a>
 <a class="sourceLine" id="cb29-24" title="24">    <span class="dt">scale=</span><span class="st">&quot;width&quot;</span>,</a>
 <a class="sourceLine" id="cb29-25" title="25">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
 <a class="sourceLine" id="cb29-26" title="26">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
@@ -697,7 +697,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb42-23" title="23">    <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>generations_per_mrca_change, <span class="dt">fill=</span>condition)</a>
 <a class="sourceLine" id="cb42-24" title="24">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb42-25" title="25"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
-<a class="sourceLine" id="cb42-26" title="26">    <span class="dt">data=</span><span class="kw">filter</span>(summary_data,is_outlier<span class="op">==</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb42-26" title="26">    <span class="co"># data=filter(summary_data,is_outlier==FALSE),</span></a>
 <a class="sourceLine" id="cb42-27" title="27">    <span class="dt">scale=</span><span class="st">&quot;width&quot;</span>,</a>
 <a class="sourceLine" id="cb42-28" title="28">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
 <a class="sourceLine" id="cb42-29" title="29">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
@@ -835,7 +835,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb55-20" title="20">    <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>dominant_lineage_trait_volatility, <span class="dt">fill=</span>condition)</a>
 <a class="sourceLine" id="cb55-21" title="21">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb55-22" title="22"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
-<a class="sourceLine" id="cb55-23" title="23">    <span class="dt">data=</span><span class="kw">filter</span>(summary_data,is_outlier<span class="op">==</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb55-23" title="23">    <span class="co"># data=filter(summary_data,is_outlier==FALSE),</span></a>
 <a class="sourceLine" id="cb55-24" title="24">    <span class="dt">scale=</span><span class="st">&quot;width&quot;</span>,</a>
 <a class="sourceLine" id="cb55-25" title="25">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
 <a class="sourceLine" id="cb55-26" title="26">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
@@ -1207,7 +1207,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb92-20" title="20">    <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>dominant_lineage_total_mut_cnt, <span class="dt">fill=</span>condition)</a>
 <a class="sourceLine" id="cb92-21" title="21">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb92-22" title="22"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
-<a class="sourceLine" id="cb92-23" title="23">    <span class="dt">data=</span><span class="kw">filter</span>(summary_data, <span class="op">!</span>is_outlier),</a>
+<a class="sourceLine" id="cb92-23" title="23">    <span class="co"># data=filter(summary_data, !is_outlier),</span></a>
 <a class="sourceLine" id="cb92-24" title="24">    <span class="dt">scale=</span><span class="st">&quot;width&quot;</span>,</a>
 <a class="sourceLine" id="cb92-25" title="25">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
 <a class="sourceLine" id="cb92-26" title="26">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
@@ -1690,7 +1690,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb142-20" title="20">    <span class="kw">aes</span>(<span class="dt">x=</span>condition, <span class="dt">y=</span>frac_phenotype_stable_mut_steps, <span class="dt">fill=</span>condition)</a>
 <a class="sourceLine" id="cb142-21" title="21">  ) <span class="op">+</span></a>
 <a class="sourceLine" id="cb142-22" title="22"><span class="st">  </span><span class="kw">geom_flat_violin</span>(</a>
-<a class="sourceLine" id="cb142-23" title="23">    <span class="dt">data=</span><span class="kw">filter</span>(summary_data,is_outlier<span class="op">==</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb142-23" title="23">    <span class="co"># data=filter(summary_data,is_outlier==FALSE),</span></a>
 <a class="sourceLine" id="cb142-24" title="24">    <span class="dt">scale=</span><span class="st">&quot;width&quot;</span>,</a>
 <a class="sourceLine" id="cb142-25" title="25">    <span class="dt">position =</span> <span class="kw">position_nudge</span>(<span class="dt">x =</span> <span class="fl">.2</span>, <span class="dt">y =</span> <span class="dv">0</span>),</a>
 <a class="sourceLine" id="cb142-26" title="26">    <span class="dt">alpha =</span> <span class="fl">.8</span></a>
@@ -1827,7 +1827,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.8247126 -8.87931e-05  0.04023019</code></pre>
+## t1* 0.8247126 0.0005640805  0.03966629</code></pre>
 <div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1837,7 +1837,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.9023 )  
+## 95%   ( 0.7443,  0.8994 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 <div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" title="1">plastic_summary_data &lt;-<span class="st"> </span><span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)</a>
 <a class="sourceLine" id="cb163-2" title="2">aggregate_frac_mut_steps_that_change_unexpressed_phenotype &lt;-<span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)</a>
@@ -1878,8 +1878,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.5172414 0.0006490805  0.03933232</code></pre>
+##      original        bias    std. error
+## t1* 0.5172414 -7.057471e-05  0.03918686</code></pre>
 <div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb173-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1889,7 +1889,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4425,  0.5977 )  
+## 95%   ( 0.4414,  0.5943 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 </div>
 <div id="beneficial-mutations" class="section level4">
@@ -1919,7 +1919,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.4827586 5.034483e-05  0.03931732</code></pre>
+## t1* 0.4827586 0.0001510345  0.03964854</code></pre>
 <div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb178-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1929,7 +1929,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4057,  0.5586 )  
+## 95%   ( 0.4046,  0.5609 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 </div>
 </div>

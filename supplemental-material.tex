@@ -784,7 +784,7 @@ The number of times the most recent common ancestor changes gives us the number 
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{phylo_mrca_changes,}\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(summary_data,is_outlier}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{),}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
     \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
@@ -980,7 +980,7 @@ The number of times the most recent common ancestor changes gives us the number 
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{generations_per_mrca_change, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(summary_data,is_outlier}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{),}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
     \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
@@ -1171,7 +1171,7 @@ The number of times the most recent common ancestor changes gives us the number 
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_trait_volatility, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(summary_data,is_outlier}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{),}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
     \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
@@ -1698,7 +1698,7 @@ Frequency that an offspring's genotype is identical to a parent genotype (along 
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_total_mut_cnt, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(summary_data, }\OperatorTok{!}\NormalTok{is_outlier),}
+    \CommentTok{# data=filter(summary_data, !is_outlier),}
     \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
@@ -2389,7 +2389,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{frac_phenotype_stable_mut_steps, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
-    \DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(summary_data,is_outlier}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{),}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
     \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
@@ -2600,8 +2600,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.8247126 -0.0001867816  0.04000895
+##      original       bias    std. error
+## t1* 0.8247126 0.0002844828  0.04034365
 \end{verbatim}
 
 \begin{Shaded}
@@ -2619,7 +2619,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.8994 )  
+## 95%   ( 0.7443,  0.9023 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2706,7 +2706,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -0.0002450575  0.03949521
+## t1* 0.5172414 -0.0005895402  0.03987024
 \end{verbatim}
 
 \begin{Shaded}
@@ -2724,7 +2724,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4402,  0.5943 )  
+## 95%   ( 0.4391,  0.5954 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2768,7 +2768,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.4827586 -0.0002364368  0.03949825
+## t1* 0.4827586 -0.0008157471  0.03977862
 \end{verbatim}
 
 \begin{Shaded}
@@ -2786,7 +2786,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4034,  0.5597 )  
+## 95%   ( 0.4023,  0.5598 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -3051,6 +3051,15 @@ These analyses were conducted/knitted with the following computing environment:
 \NormalTok{  \}}
 \NormalTok{\}}
 
+\CommentTok{# *really* inefficient way to identify outliers}
+\NormalTok{is_outlier <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(value, cond, data, column) \{}
+\NormalTok{  cond_data <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(data, condition}\OperatorTok{==}\NormalTok{cond)}
+\NormalTok{  q1 <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(cond_data[,column])[[}\StringTok{"1st Qu."}\NormalTok{]]}
+\NormalTok{  q3 <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(cond_data[,column])[[}\StringTok{"3rd Qu."}\NormalTok{]]}
+\NormalTok{  H <-}\StringTok{ }\FloatTok{1.5} \OperatorTok{*}\StringTok{ }\KeywordTok{IQR}\NormalTok{(cond_data[,column])}
+  \KeywordTok{return}\NormalTok{( (value }\OperatorTok{<}\StringTok{ }\NormalTok{(q1}\OperatorTok{-}\NormalTok{H)) }\OperatorTok{||}\StringTok{ }\NormalTok{(value }\OperatorTok{>}\StringTok{ }\NormalTok{(q3}\OperatorTok{+}\NormalTok{H)) )}
+\NormalTok{\}}
+
 \CommentTok{###### time series #####}
 \NormalTok{lineage_time_series_data_loc <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"data/lineage_series.csv"}\NormalTok{)}
 \NormalTok{lineage_time_series_data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(lineage_time_series_data_loc)}
@@ -3168,11 +3177,20 @@ How many novel tasks do final dominant genotypes perform?
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{manual_position <-}\StringTok{ }\NormalTok{stat.test}\OperatorTok{$}\NormalTok{y.position }\CommentTok{#* c(1.0,1.0,1.03)}
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(p_label,stat.test}\OperatorTok{$}\NormalTok{p.adj)}
 
+\NormalTok{summary_data}\OperatorTok{$}\NormalTok{is_outlier <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  is_outlier,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{dominant_extra_tasks,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{condition,}
+  \DataTypeTok{MoreArgs=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{data=}\NormalTok{summary_data, }\DataTypeTok{column=}\StringTok{"dominant_extra_tasks"}\NormalTok{)}
+\NormalTok{)}
+
 \NormalTok{final_novel_task_count_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
 \NormalTok{    summary_data,}
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_extra_tasks, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
@@ -3485,11 +3503,20 @@ How many novel tasks are performed across the final population (1\% of organisms
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{manual_position <-}\StringTok{ }\NormalTok{stat.test}\OperatorTok{$}\NormalTok{y.position }\CommentTok{#* c(1.0,1.0,1.03)}
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(p_label,stat.test}\OperatorTok{$}\NormalTok{p.adj)}
 
+\NormalTok{summary_data}\OperatorTok{$}\NormalTok{is_outlier <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  is_outlier,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{condition,}
+  \DataTypeTok{MoreArgs=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{data=}\NormalTok{summary_data, }\DataTypeTok{column=}\StringTok{"dominant_lineage_extra_traits_discovered"}\NormalTok{)}
+\NormalTok{)}
+
 \NormalTok{lineage_novel_task_discovery_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
 \NormalTok{    summary_data,}
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_discovered, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
@@ -3811,12 +3838,21 @@ How many novel tasks are performed across the final population (1\% of organisms
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{manual_position <-}\StringTok{ }\NormalTok{stat.test}\OperatorTok{$}\NormalTok{y.position }\CommentTok{#* c(1.0,1.0,1.03)}
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(p_label,stat.test}\OperatorTok{$}\NormalTok{p.adj)}
 
+\NormalTok{summary_data}\OperatorTok{$}\NormalTok{is_outlier <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  is_outlier,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_discovered_per_generation,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{condition,}
+  \DataTypeTok{MoreArgs=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{data=}\NormalTok{summary_data, }\DataTypeTok{column=}\StringTok{"dominant_lineage_extra_traits_discovered_per_generation"}\NormalTok{)}
+\NormalTok{)}
+
 \NormalTok{lineage_novel_task_discovery_freq_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
     \CommentTok{# filter(summary_data, dominant_lineage_extra_traits_discovered > 0),}
 \NormalTok{    summary_data,}
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_discovered_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4039,11 +4075,20 @@ How many novel tasks are performed across the final population (1\% of organisms
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{manual_position <-}\StringTok{  }\KeywordTok{log10}\NormalTok{(stat.test}\OperatorTok{$}\NormalTok{y.position) }\OperatorTok{*}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{1.0}\NormalTok{,}\FloatTok{1.0}\NormalTok{,}\FloatTok{1.03}\NormalTok{)}
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(p_label,stat.test}\OperatorTok{$}\NormalTok{p.adj)}
 
+\NormalTok{summary_data}\OperatorTok{$}\NormalTok{is_outlier <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  is_outlier,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{condition,}
+  \DataTypeTok{MoreArgs=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{data=}\NormalTok{summary_data, }\DataTypeTok{column=}\StringTok{"dominant_lineage_extra_traits_lost"}\NormalTok{)}
+\NormalTok{)}
+
 \NormalTok{lineage_novel_task_loss_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
 \NormalTok{    summary_data,}
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_lost, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4227,12 +4272,22 @@ How many novel tasks are performed across the final population (1\% of organisms
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{manual_position <-}\StringTok{  }\NormalTok{stat.test}\OperatorTok{$}\NormalTok{y.position }\CommentTok{#* c(1.0,1.0,1.03)}
 \NormalTok{stat.test}\OperatorTok{$}\NormalTok{label <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(p_label,stat.test}\OperatorTok{$}\NormalTok{p.adj)}
 
+\NormalTok{summary_data}\OperatorTok{$}\NormalTok{is_outlier <-}\StringTok{ }\KeywordTok{mapply}\NormalTok{(}
+\NormalTok{  is_outlier,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost_per_generation,}
+\NormalTok{  summary_data}\OperatorTok{$}\NormalTok{condition,}
+  \DataTypeTok{MoreArgs=}\KeywordTok{list}\NormalTok{(}\DataTypeTok{data=}\NormalTok{summary_data, }\DataTypeTok{column=}\StringTok{"dominant_lineage_extra_traits_lost_per_generation"}\NormalTok{)}
+\NormalTok{)}
+
+
 \NormalTok{lineage_novel_task_loss_freq_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}
     \CommentTok{# filter(summary_data, dominant_lineage_extra_traits_lost > 0),}
 \NormalTok{    summary_data,}
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_extra_traits_lost_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \CommentTok{# data=filter(summary_data,is_outlier==FALSE),}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4634,7 +4689,40 @@ Task loss linked with primary trait changes.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
+\CommentTok{# grid <- plot_grid(}
+\CommentTok{#   final_novel_task_count_fig +}
+\CommentTok{#     theme(}
+\CommentTok{#       axis.title.x=element_blank()}
+\CommentTok{#     ) +}
+\CommentTok{#     ggtitle("Final novel task count"),}
+\CommentTok{#   lineage_novel_task_discovery_fig +}
+\CommentTok{#     theme(}
+\CommentTok{#       axis.title.x=element_blank()}
+\CommentTok{#     ) +}
+\CommentTok{#     ggtitle("Novel task discovery"),}
+\CommentTok{#   lineage_novel_task_loss_fig +}
+\CommentTok{#     theme(}
+\CommentTok{#       axis.title.x=element_blank()}
+\CommentTok{#     ) +}
+\CommentTok{#     ggtitle("Novel task loss"),}
+\CommentTok{#   NULL,}
+\CommentTok{#   lineage_novel_task_discovery_freq_fig +}
+\CommentTok{#     theme(}
+\CommentTok{#       axis.title.x=element_blank()}
+\CommentTok{#     ) +}
+\CommentTok{#     ggtitle("Novel task discovery frequency"),}
+\CommentTok{#   lineage_novel_task_loss_freq_fig +}
+\CommentTok{#     theme(}
+\CommentTok{#       axis.title.x=element_blank()}
+\CommentTok{#     ) +}
+\CommentTok{#     ggtitle("Novel task loss frequency"),}
+\CommentTok{#   nrow=2,}
+\CommentTok{#   align="v",}
+\CommentTok{#   # labels="auto"}
+\CommentTok{#   labels=c("a", "b","c","", "d","e")}
+\CommentTok{# )}
+
+\NormalTok{magnitude_grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  final_novel_task_count_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
@@ -4642,19 +4730,27 @@ Task loss linked with primary trait changes.
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final novel task count"}\NormalTok{),}
 \NormalTok{  lineage_novel_task_discovery_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{(),}
-      \CommentTok{# axis.text.x=element_blank(),}
-      \CommentTok{# axis.ticks.x=element_blank()}
+      \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel task discovery"}\NormalTok{),}
 \NormalTok{  lineage_novel_task_loss_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
-      \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{(),}
-      \CommentTok{# axis.text.x=element_blank(),}
-      \CommentTok{# axis.ticks.x=element_blank()}
+      \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel task loss"}\NormalTok{),}
-  \OtherTok{NULL}\NormalTok{,}
+  \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
+  \DataTypeTok{labels=}\StringTok{"auto"}
+\NormalTok{)}
+\NormalTok{magnitude_grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-67-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pace_grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  lineage_novel_task_discovery_freq_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
@@ -4665,22 +4761,84 @@ Task loss linked with primary trait changes.
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel task loss frequency"}\NormalTok{),}
-  \DataTypeTok{nrow=}\DecValTok{2}\NormalTok{,}
+  \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
   \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
-  \CommentTok{# labels="auto"}
-  \DataTypeTok{labels=}\KeywordTok{c}\NormalTok{(}\StringTok{"a"}\NormalTok{, }\StringTok{"b"}\NormalTok{,}\StringTok{"c"}\NormalTok{,}\StringTok{""}\NormalTok{, }\StringTok{"d"}\NormalTok{,}\StringTok{"e"}\NormalTok{)}
+  \DataTypeTok{labels=}\StringTok{"auto"}
 \NormalTok{)}
+\NormalTok{pace_grid}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-67-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{save_plot}\NormalTok{(}
-   \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"complex-traits-panel.pdf"}\NormalTok{),}
-\NormalTok{   grid,}
-   \DataTypeTok{base_height=}\DecValTok{12}\NormalTok{,}
-   \DataTypeTok{base_asp=}\DecValTok{3}\OperatorTok{/}\DecValTok{2}
+   \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"complex-traits-magnitude-panel.pdf"}\NormalTok{),}
+\NormalTok{   magnitude_grid,}
+   \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
+   \DataTypeTok{base_asp=}\DecValTok{3}\OperatorTok{/}\DecValTok{1}
 \NormalTok{)}
+
+\KeywordTok{save_plot}\NormalTok{(}
+   \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"complex-traits-pace-panel.pdf"}\NormalTok{),}
+\NormalTok{   pace_grid,}
+   \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
+   \DataTypeTok{base_asp=}\DecValTok{2}\OperatorTok{/}\DecValTok{1}
+\NormalTok{)}
+
+\CommentTok{# save_plot(}
+\CommentTok{#    paste0(working_directory, "plots/", "complex-traits-panel.pdf"),}
+\CommentTok{#    grid,}
+\CommentTok{#    base_height=12,}
+\CommentTok{#    base_asp=3/2}
+\CommentTok{# )}
 \NormalTok{grid}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-67-1.pdf}
+\begin{verbatim}
+## function (nx = NULL, ny = nx, col = "lightgray", lty = "dotted", 
+##     lwd = par("lwd"), equilogs = TRUE) 
+## {
+##     if (is.null(nx) || (!is.na(nx) && nx >= 1)) {
+##         log <- par("xlog")
+##         if (is.null(nx)) {
+##             ax <- par("xaxp")
+##             if (log && equilogs && ax[3L] > 0) 
+##                 ax[3L] <- 1
+##             at <- axTicks(1, axp = ax, log = log)
+##         }
+##         else {
+##             U <- par("usr")
+##             at <- seq.int(U[1L], U[2L], length.out = nx + 1)
+##             at <- (if (log) 
+##                 10^at
+##             else at)[-c(1, nx + 1)]
+##         }
+##         abline(v = at, col = col, lty = lty, lwd = lwd)
+##     }
+##     if (is.null(ny) || (!is.na(ny) && ny >= 1)) {
+##         log <- par("ylog")
+##         if (is.null(ny)) {
+##             ax <- par("yaxp")
+##             if (log && equilogs && ax[3L] > 0) 
+##                 ax[3L] <- 1
+##             at <- axTicks(2, axp = ax, log = log)
+##         }
+##         else {
+##             U <- par("usr")
+##             at <- seq.int(U[3L], U[4L], length.out = ny + 1)
+##             at <- (if (log) 
+##                 10^at
+##             else at)[-c(1, ny + 1)]
+##         }
+##         abline(h = at, col = col, lty = lty, lwd = lwd)
+##     }
+## }
+## <bytecode: 0x557286b9fbf8>
+## <environment: namespace:graphics>
+\end{verbatim}
 
 \hypertarget{accumulation-of-deleterious-instructions}{%
 \chapter{Accumulation of deleterious instructions}\label{accumulation-of-deleterious-instructions}}
