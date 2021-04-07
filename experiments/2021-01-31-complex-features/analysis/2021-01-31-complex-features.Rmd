@@ -142,6 +142,15 @@ p_label <- function(p_value) {
   }
 }
 
+# *really* inefficient way to identify outliers
+is_outlier <- function(value, cond, data, column) {
+  cond_data <- filter(data, condition==cond)
+  q1 <- summary(cond_data[,column])[["1st Qu."]]
+  q3 <- summary(cond_data[,column])[["3rd Qu."]]
+  H <- 1.5 * IQR(cond_data[,column])
+  return( (value < (q1-H)) || (value > (q3+H)) )
+}
+
 ###### time series #####
 lineage_time_series_data_loc <- paste0(working_directory, "data/lineage_series.csv")
 lineage_time_series_data <- read.csv(lineage_time_series_data_loc)
@@ -247,11 +256,20 @@ stat.test <- summary_data %>%
 stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.03)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_extra_tasks,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_extra_tasks")
+)
+
 final_novel_task_count_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_extra_tasks, fill=condition)
   ) +
   geom_flat_violin(
+    # data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -438,11 +456,20 @@ stat.test <- summary_data %>%
 stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.03)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_extra_traits_discovered,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_extra_traits_discovered")
+)
+
 lineage_novel_task_discovery_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_lineage_extra_traits_discovered, fill=condition)
   ) +
   geom_flat_violin(
+    # data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -637,12 +664,21 @@ stat.test <- summary_data %>%
 stat.test$manual_position <- stat.test$y.position #* c(1.0,1.0,1.03)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_extra_traits_discovered_per_generation,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_extra_traits_discovered_per_generation")
+)
+
 lineage_novel_task_discovery_freq_fig <- ggplot(
     # filter(summary_data, dominant_lineage_extra_traits_discovered > 0),
     summary_data,
     aes(x=condition, y=dominant_lineage_extra_traits_discovered_per_generation, fill=condition)
   ) +
   geom_flat_violin(
+    # data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -793,11 +829,20 @@ stat.test <- summary_data %>%
 stat.test$manual_position <-  log10(stat.test$y.position) * c(1.0,1.0,1.03)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_extra_traits_lost,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_extra_traits_lost")
+)
+
 lineage_novel_task_loss_fig <- ggplot(
     summary_data,
     aes(x=condition, y=dominant_lineage_extra_traits_lost, fill=condition)
   ) +
   geom_flat_violin(
+    # data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -914,12 +959,22 @@ stat.test <- summary_data %>%
 stat.test$manual_position <-  stat.test$y.position #* c(1.0,1.0,1.03)
 stat.test$label <- mapply(p_label,stat.test$p.adj)
 
+summary_data$is_outlier <- mapply(
+  is_outlier,
+  summary_data$dominant_lineage_extra_traits_lost_per_generation,
+  summary_data$condition,
+  MoreArgs=list(data=summary_data, column="dominant_lineage_extra_traits_lost_per_generation")
+)
+
+
 lineage_novel_task_loss_freq_fig <- ggplot(
     # filter(summary_data, dominant_lineage_extra_traits_lost > 0),
     summary_data,
     aes(x=condition, y=dominant_lineage_extra_traits_lost_per_generation, fill=condition)
   ) +
   geom_flat_violin(
+    # data=filter(summary_data,is_outlier==FALSE),
+    scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
   ) +
@@ -1115,7 +1170,40 @@ aggregate_frac_linked_extra_trait_loss_nonplastic
 ## Combined panel
 
 ```{r}
-grid <- plot_grid(
+# grid <- plot_grid(
+#   final_novel_task_count_fig +
+#     theme(
+#       axis.title.x=element_blank()
+#     ) +
+#     ggtitle("Final novel task count"),
+#   lineage_novel_task_discovery_fig +
+#     theme(
+#       axis.title.x=element_blank()
+#     ) +
+#     ggtitle("Novel task discovery"),
+#   lineage_novel_task_loss_fig +
+#     theme(
+#       axis.title.x=element_blank()
+#     ) +
+#     ggtitle("Novel task loss"),
+#   NULL,
+#   lineage_novel_task_discovery_freq_fig +
+#     theme(
+#       axis.title.x=element_blank()
+#     ) +
+#     ggtitle("Novel task discovery frequency"),
+#   lineage_novel_task_loss_freq_fig +
+#     theme(
+#       axis.title.x=element_blank()
+#     ) +
+#     ggtitle("Novel task loss frequency"),
+#   nrow=2,
+#   align="v",
+#   # labels="auto"
+#   labels=c("a", "b","c","", "d","e")
+# )
+
+magnitude_grid <- plot_grid(
   final_novel_task_count_fig +
     theme(
       axis.title.x=element_blank()
@@ -1123,19 +1211,21 @@ grid <- plot_grid(
     ggtitle("Final novel task count"),
   lineage_novel_task_discovery_fig +
     theme(
-      axis.title.x=element_blank(),
-      # axis.text.x=element_blank(),
-      # axis.ticks.x=element_blank()
+      axis.title.x=element_blank()
     ) +
     ggtitle("Novel task discovery"),
   lineage_novel_task_loss_fig +
     theme(
-      axis.title.x=element_blank(),
-      # axis.text.x=element_blank(),
-      # axis.ticks.x=element_blank()
+      axis.title.x=element_blank()
     ) +
     ggtitle("Novel task loss"),
-  NULL,
+  nrow=1,
+  align="v",
+  labels="auto"
+)
+magnitude_grid
+
+pace_grid <- plot_grid(
   lineage_novel_task_discovery_freq_fig +
     theme(
       axis.title.x=element_blank()
@@ -1146,16 +1236,34 @@ grid <- plot_grid(
       axis.title.x=element_blank()
     ) +
     ggtitle("Novel task loss frequency"),
-  nrow=2,
+  nrow=1,
   align="v",
-  # labels="auto"
-  labels=c("a", "b","c","", "d","e")
+  labels="auto"
 )
+pace_grid
+
+
+
+
 save_plot(
-   paste0(working_directory, "plots/", "complex-traits-panel.pdf"),
-   grid,
-   base_height=12,
-   base_asp=3/2
+   paste0(working_directory, "plots/", "complex-traits-magnitude-panel.pdf"),
+   magnitude_grid,
+   base_height=6,
+   base_asp=3/1
 )
+
+save_plot(
+   paste0(working_directory, "plots/", "complex-traits-pace-panel.pdf"),
+   pace_grid,
+   base_height=6,
+   base_asp=2/1
+)
+
+# save_plot(
+#    paste0(working_directory, "plots/", "complex-traits-panel.pdf"),
+#    grid,
+#    base_height=12,
+#    base_asp=3/2
+# )
 grid
 ```
