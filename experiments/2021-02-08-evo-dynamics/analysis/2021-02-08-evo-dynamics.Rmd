@@ -302,7 +302,7 @@ coalescence_events_fig <- ggplot(
     aes(x=condition, y=phylo_mrca_changes,fill=condition)
   ) +
   geom_flat_violin(
-    data=filter(summary_data,is_outlier==FALSE),
+    # data=filter(summary_data,is_outlier==FALSE),
     scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -430,7 +430,7 @@ coalescence_events_freq_fig <- ggplot(
     aes(x=condition, y=generations_per_mrca_change, fill=condition)
   ) +
   geom_flat_violin(
-    data=filter(summary_data,is_outlier==FALSE),
+    # data=filter(summary_data,is_outlier==FALSE),
     scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -553,7 +553,7 @@ phenotypic_volatility_fig <- ggplot(
     aes(x=condition, y=dominant_lineage_trait_volatility, fill=condition)
   ) +
   geom_flat_violin(
-    data=filter(summary_data,is_outlier==FALSE),
+    # data=filter(summary_data,is_outlier==FALSE),
     scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -886,7 +886,7 @@ mutation_count_fig <- ggplot(
     aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)
   ) +
   geom_flat_violin(
-    data=filter(summary_data, !is_outlier),
+    # data=filter(summary_data, !is_outlier),
     scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
@@ -1314,7 +1314,7 @@ mutational_stability_fig <- ggplot(
     aes(x=condition, y=frac_phenotype_stable_mut_steps, fill=condition)
   ) +
   geom_flat_violin(
-    data=filter(summary_data,is_outlier==FALSE),
+    # data=filter(summary_data,is_outlier==FALSE),
     scale="width",
     position = position_nudge(x = .2, y = 0),
     alpha = .8
