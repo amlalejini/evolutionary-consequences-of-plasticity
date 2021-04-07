@@ -2601,7 +2601,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.8247126 0.0002844828  0.04034365
+## t1* 0.8247126 0.0003278736  0.04004957
 \end{verbatim}
 
 \begin{Shaded}
@@ -2706,7 +2706,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -0.0005895402  0.03987024
+## t1* 0.5172414 -0.0003409195  0.03986586
 \end{verbatim}
 
 \begin{Shaded}
@@ -2724,7 +2724,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4391,  0.5954 )  
+## 95%   ( 0.4368,  0.5954 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2768,7 +2768,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.4827586 -0.0008157471  0.03977862
+## t1* 0.4827586 -0.0001750575  0.03951344
 \end{verbatim}
 
 \begin{Shaded}
@@ -2786,7 +2786,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4023,  0.5598 )  
+## 95%   ( 0.4034,  0.5598 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -4836,7 +4836,7 @@ Task loss linked with primary trait changes.
 ##         abline(h = at, col = col, lty = lty, lwd = lwd)
 ##     }
 ## }
-## <bytecode: 0x557286b9fbf8>
+## <bytecode: 0x55ad4a801b30>
 ## <environment: namespace:graphics>
 \end{verbatim}
 
@@ -5723,6 +5723,7 @@ Focal figure for the manuscript:
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
@@ -5951,6 +5952,7 @@ Figure for the manuscript:
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
@@ -6239,6 +6241,7 @@ Focal figure for the manuscript:
     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{condition, }\DataTypeTok{y=}\NormalTok{frac_hitchhiking_linked_trait_change, }\DataTypeTok{fill=}\NormalTok{condition)}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{(}
+    \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{,}
     \DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{),}
     \DataTypeTok{alpha =} \FloatTok{.8}
 \NormalTok{  ) }\OperatorTok{+}
