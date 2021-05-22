@@ -29,7 +29,7 @@ Our supplemental material includes the following:
 - Guide for running our experiments (Section \@ref(compile-and-run-experiments-locally))
 - Avida instruction set (Section \@ref(avida-instruction-set))
 - Experiment analyses (including source code):
-  - Validating the evolution of phenotypic plasticity (Section TODO)
+  - Validating the evolution of phenotypic plasticity (Section \@ref(validation-experiment))
   - Effect of adaptive phenotypic plasticity on evolutionary change (Section TODO)
     - Results with variable-length genomes (Section TODO)
   - Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section TODO)
