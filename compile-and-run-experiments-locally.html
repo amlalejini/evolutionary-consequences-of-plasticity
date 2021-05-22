@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 8 Regulation in Avida | Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments</title>
+  <title>Chapter 3 Compile and run experiments locally | Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments</title>
   <meta name="description" content="Supplemental material" />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 8 Regulation in Avida | Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments" />
+  <meta property="og:title" content="Chapter 3 Compile and run experiments locally | Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="amlalejini/evolutionary-consequences-of-plasticity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 8 Regulation in Avida | Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments" />
+  <meta name="twitter:title" content="Chapter 3 Compile and run experiments locally | Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments" />
   
   <meta name="twitter:description" content="Supplemental material" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="accumulation-of-deleterious-instructions.html"/>
-<link rel="next" href="evolutionary-change-variable-length-genomes.html"/>
+<link rel="prev" href="data-availability.html"/>
+<link rel="next" href="validation-experiment.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -253,164 +253,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="regulation-in-avida" class="section level1">
-<h1><span class="header-section-number">Chapter 8</span> Regulation in Avida</h1>
-<div id="overview-4" class="section level2">
-<h2><span class="header-section-number">8.1</span> Overview</h2>
-<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb362-1" title="1">total_updates &lt;-<span class="st"> </span><span class="dv">200000</span></a>
-<a class="sourceLine" id="cb362-2" title="2">replicates &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb362-3" title="3"></a>
-<a class="sourceLine" id="cb362-4" title="4">all_traits &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;not&quot;</span>,<span class="st">&quot;nand&quot;</span>,<span class="st">&quot;and&quot;</span>,<span class="st">&quot;ornot&quot;</span>,<span class="st">&quot;or&quot;</span>,<span class="st">&quot;andnot&quot;</span>)</a>
-<a class="sourceLine" id="cb362-5" title="5">traits_set_a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;not&quot;</span>, <span class="st">&quot;and&quot;</span>, <span class="st">&quot;or&quot;</span>)</a>
-<a class="sourceLine" id="cb362-6" title="6">traits_set_b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;nand&quot;</span>, <span class="st">&quot;ornot&quot;</span>, <span class="st">&quot;andnot&quot;</span>)</a>
-<a class="sourceLine" id="cb362-7" title="7"></a>
-<a class="sourceLine" id="cb362-8" title="8"><span class="co"># Relative location of data.</span></a>
-<a class="sourceLine" id="cb362-9" title="9">working_directory &lt;-<span class="st"> &quot;experiments/2021-02-08-evo-dynamics/analysis/&quot;</span> <span class="co"># &lt;&lt; For bookdown</span></a>
-<a class="sourceLine" id="cb362-10" title="10"><span class="co"># working_directory &lt;- &quot;./&quot;                                              # &lt;&lt; For local analysis</span></a></code></pre></div>
-</div>
-<div id="analysis-dependencies-4" class="section level2">
-<h2><span class="header-section-number">8.2</span> Analysis dependencies</h2>
-<p>Load all required R libraries.</p>
-<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb363-1" title="1"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb363-2" title="2"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb363-3" title="3"><span class="kw">library</span>(cowplot)</a>
-<a class="sourceLine" id="cb363-4" title="4"><span class="kw">library</span>(RColorBrewer)</a>
-<a class="sourceLine" id="cb363-5" title="5"><span class="kw">library</span>(Hmisc)</a>
-<a class="sourceLine" id="cb363-6" title="6"><span class="kw">library</span>(boot)</a>
-<a class="sourceLine" id="cb363-7" title="7"><span class="kw">source</span>(<span class="st">&quot;https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R&quot;</span>)</a></code></pre></div>
-<p>These analyses were conducted/knitted with the following computing environment:</p>
-<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb364-1" title="1"><span class="kw">print</span>(version)</a></code></pre></div>
-<pre><code>##                _                           
-## platform       x86_64-pc-linux-gnu         
-## arch           x86_64                      
-## os             linux-gnu                   
-## system         x86_64, linux-gnu           
-## status                                     
-## major          4                           
-## minor          1.0                         
-## year           2021                        
-## month          05                          
-## day            18                          
-## svn rev        80317                       
-## language       R                           
-## version.string R version 4.1.0 (2021-05-18)
-## nickname       Camp Pontanezen</code></pre>
-</div>
-<div id="setup-4" class="section level2">
-<h2><span class="header-section-number">8.3</span> Setup</h2>
-<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb366-1" title="1">trace_summary_data_loc &lt;-<span class="st"> </span><span class="kw">paste0</span>(working_directory, <span class="st">&quot;data/trace_summary.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb366-2" title="2">trace_summary_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(trace_summary_data_loc, <span class="dt">na.strings=</span><span class="st">&quot;NONE&quot;</span>)</a>
-<a class="sourceLine" id="cb366-3" title="3"></a>
-<a class="sourceLine" id="cb366-4" title="4">trace_summary_data<span class="op">$</span>DISABLE_REACTION_SENSORS &lt;-<span class="st"> </span><span class="kw">as.factor</span>(trace_summary_data<span class="op">$</span>DISABLE_REACTION_SENSORS)</a>
-<a class="sourceLine" id="cb366-5" title="5">trace_summary_data<span class="op">$</span>chg_env &lt;-<span class="st"> </span>trace_summary_data<span class="op">$</span>chg_env <span class="op">==</span><span class="st"> &quot;True&quot;</span></a>
-<a class="sourceLine" id="cb366-6" title="6">trace_summary_data<span class="op">$</span>sensors &lt;-<span class="st"> </span>trace_summary_data<span class="op">$</span>DISABLE_REACTION_SENSORS <span class="op">==</span><span class="st"> &quot;0&quot;</span></a>
-<a class="sourceLine" id="cb366-7" title="7"></a>
-<a class="sourceLine" id="cb366-8" title="8"></a>
-<a class="sourceLine" id="cb366-9" title="9">env_label_fun &lt;-<span class="st"> </span><span class="cf">function</span>(chg_env) {</a>
-<a class="sourceLine" id="cb366-10" title="10">  <span class="cf">if</span> (chg_env) {</a>
-<a class="sourceLine" id="cb366-11" title="11">    <span class="kw">return</span>(<span class="st">&quot;Fluctuating&quot;</span>)</a>
-<a class="sourceLine" id="cb366-12" title="12">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb366-13" title="13">    <span class="kw">return</span>(<span class="st">&quot;Constant&quot;</span>)</a>
-<a class="sourceLine" id="cb366-14" title="14">  }</a>
-<a class="sourceLine" id="cb366-15" title="15">}</a>
-<a class="sourceLine" id="cb366-16" title="16"></a>
-<a class="sourceLine" id="cb366-17" title="17">sensors_label_fun &lt;-<span class="st"> </span><span class="cf">function</span>(has_sensors) {</a>
-<a class="sourceLine" id="cb366-18" title="18">  <span class="cf">if</span> (has_sensors) {</a>
-<a class="sourceLine" id="cb366-19" title="19">    <span class="kw">return</span>(<span class="st">&quot;Sensors&quot;</span>)</a>
-<a class="sourceLine" id="cb366-20" title="20">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb366-21" title="21">    <span class="kw">return</span>(<span class="st">&quot;No sensors&quot;</span>)</a>
-<a class="sourceLine" id="cb366-22" title="22">  }</a>
-<a class="sourceLine" id="cb366-23" title="23">}</a>
-<a class="sourceLine" id="cb366-24" title="24"></a>
-<a class="sourceLine" id="cb366-25" title="25"><span class="co"># note that this labeler makes assumptions about how we set up our experiment</span></a>
-<a class="sourceLine" id="cb366-26" title="26">condition_label_fun &lt;-<span class="st"> </span><span class="cf">function</span>(has_sensors, env_chg) {</a>
-<a class="sourceLine" id="cb366-27" title="27">  <span class="cf">if</span> (has_sensors <span class="op">&amp;&amp;</span><span class="st"> </span>env_chg) {</a>
-<a class="sourceLine" id="cb366-28" title="28">    <span class="kw">return</span>(<span class="st">&quot;PLASTIC&quot;</span>)</a>
-<a class="sourceLine" id="cb366-29" title="29">  } <span class="cf">else</span> <span class="cf">if</span> (env_chg) {</a>
-<a class="sourceLine" id="cb366-30" title="30">    <span class="kw">return</span>(<span class="st">&quot;NON-PLASTIC&quot;</span>)</a>
-<a class="sourceLine" id="cb366-31" title="31">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb366-32" title="32">    <span class="kw">return</span>(<span class="st">&quot;STATIC&quot;</span>)</a>
-<a class="sourceLine" id="cb366-33" title="33">  }</a>
-<a class="sourceLine" id="cb366-34" title="34">}</a>
-<a class="sourceLine" id="cb366-35" title="35"></a>
-<a class="sourceLine" id="cb366-36" title="36">trace_summary_data<span class="op">$</span>env_label &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
-<a class="sourceLine" id="cb366-37" title="37">  env_label_fun,</a>
-<a class="sourceLine" id="cb366-38" title="38">  trace_summary_data<span class="op">$</span>chg_env</a>
-<a class="sourceLine" id="cb366-39" title="39">)</a>
-<a class="sourceLine" id="cb366-40" title="40">trace_summary_data<span class="op">$</span>sensors_label &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
-<a class="sourceLine" id="cb366-41" title="41">  sensors_label_fun,</a>
-<a class="sourceLine" id="cb366-42" title="42">  trace_summary_data<span class="op">$</span>sensors</a>
-<a class="sourceLine" id="cb366-43" title="43">)</a>
-<a class="sourceLine" id="cb366-44" title="44">trace_summary_data<span class="op">$</span>condition &lt;-<span class="st"> </span><span class="kw">mapply</span>(</a>
-<a class="sourceLine" id="cb366-45" title="45">  condition_label_fun,</a>
-<a class="sourceLine" id="cb366-46" title="46">  trace_summary_data<span class="op">$</span>sensors,</a>
-<a class="sourceLine" id="cb366-47" title="47">  trace_summary_data<span class="op">$</span>chg_env</a>
-<a class="sourceLine" id="cb366-48" title="48">)</a>
-<a class="sourceLine" id="cb366-49" title="49"></a>
-<a class="sourceLine" id="cb366-50" title="50"><span class="co">####### misc #######</span></a>
-<a class="sourceLine" id="cb366-51" title="51"><span class="co"># Configure our default graphing theme</span></a>
-<a class="sourceLine" id="cb366-52" title="52"><span class="kw">theme_set</span>(<span class="kw">theme_cowplot</span>())</a>
-<a class="sourceLine" id="cb366-53" title="53"><span class="kw">dir.create</span>(<span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots&quot;</span>), <span class="dt">showWarnings=</span><span class="ot">FALSE</span>)</a></code></pre></div>
-</div>
-<div id="how-many-instructions-do-plastic-genomes-toggle-depending-on-environmental-context" class="section level2">
-<h2><span class="header-section-number">8.4</span> How many instructions do plastic genomes toggle depending on environmental context?</h2>
-<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb367-1" title="1"><span class="kw">ggplot</span>(trace_summary_data, <span class="kw">aes</span>(<span class="dt">x=</span>dominant_num_toggled_sites)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb367-2" title="2"><span class="st">    </span><span class="kw">geom_histogram</span>(</a>
-<a class="sourceLine" id="cb367-3" title="3">      <span class="dt">binwidth=</span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb367-4" title="4">      <span class="dt">color=</span><span class="st">&quot;black&quot;</span></a>
-<a class="sourceLine" id="cb367-5" title="5">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb367-6" title="6"><span class="st">    </span><span class="kw">scale_fill_brewer</span>(</a>
-<a class="sourceLine" id="cb367-7" title="7">      <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
-<a class="sourceLine" id="cb367-8" title="8">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb367-9" title="9"><span class="st">    </span><span class="kw">scale_color_brewer</span>(</a>
-<a class="sourceLine" id="cb367-10" title="10">      <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
-<a class="sourceLine" id="cb367-11" title="11">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb367-12" title="12"><span class="st">    </span><span class="kw">scale_x_continuous</span>(</a>
-<a class="sourceLine" id="cb367-13" title="13">      <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="kw">max</span>(trace_summary_data<span class="op">$</span>dominant_num_toggled_sites)<span class="op">+</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb367-14" title="14">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb367-15" title="15"><span class="st">    </span><span class="kw">theme</span>(</a>
-<a class="sourceLine" id="cb367-16" title="16">      <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
-<a class="sourceLine" id="cb367-17" title="17">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb367-18" title="18"><span class="st">    </span><span class="kw">ggsave</span>(<span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots/&quot;</span>, <span class="st">&quot;toggled-sites.png&quot;</span>))</a></code></pre></div>
-<pre><code>## Saving 7 x 5 in image</code></pre>
-<p><img src="supplemental-material_files/figure-html/unnamed-chunk-96-1.png" width="672" /></p>
-</div>
-<div id="what-is-the-distrubution-of-toggled-sequence-sizes" class="section level2">
-<h2><span class="header-section-number">8.5</span> What is the distrubution of toggled sequence sizes?</h2>
-<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb369-1" title="1">chunk_sizes &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
-<a class="sourceLine" id="cb369-2" title="2">  <span class="dt">size=</span><span class="kw">integer</span>()</a>
-<a class="sourceLine" id="cb369-3" title="3">)</a>
-<a class="sourceLine" id="cb369-4" title="4"><span class="cf">for</span> (sizes <span class="cf">in</span> trace_summary_data<span class="op">$</span>dominant_toggled_chunk_sizes) {</a>
-<a class="sourceLine" id="cb369-5" title="5">  <span class="cf">if</span> (sizes <span class="op">==</span><span class="st"> &quot;&quot;</span>) { <span class="cf">next</span> }</a>
-<a class="sourceLine" id="cb369-6" title="6">  sizes &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="kw">str_split</span>(sizes, <span class="st">&#39;;&#39;</span>), as.integer))</a>
-<a class="sourceLine" id="cb369-7" title="7">  chunk_sizes &lt;-<span class="st"> </span><span class="kw">rbind</span>(chunk_sizes, <span class="kw">data.frame</span>(<span class="dt">size=</span><span class="kw">c</span>(sizes)))</a>
-<a class="sourceLine" id="cb369-8" title="8">}</a>
-<a class="sourceLine" id="cb369-9" title="9"></a>
-<a class="sourceLine" id="cb369-10" title="10"><span class="kw">ggplot</span>(chunk_sizes, <span class="kw">aes</span>(<span class="dt">x=</span>size)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb369-11" title="11"><span class="st">    </span><span class="kw">geom_histogram</span>(</a>
-<a class="sourceLine" id="cb369-12" title="12">      <span class="dt">binwidth=</span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb369-13" title="13">      <span class="dt">color=</span><span class="st">&quot;black&quot;</span></a>
-<a class="sourceLine" id="cb369-14" title="14">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb369-15" title="15"><span class="st">    </span><span class="kw">scale_fill_brewer</span>(</a>
-<a class="sourceLine" id="cb369-16" title="16">      <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
-<a class="sourceLine" id="cb369-17" title="17">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb369-18" title="18"><span class="st">    </span><span class="kw">scale_color_brewer</span>(</a>
-<a class="sourceLine" id="cb369-19" title="19">      <span class="dt">palette=</span><span class="st">&quot;Paired&quot;</span></a>
-<a class="sourceLine" id="cb369-20" title="20">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb369-21" title="21"><span class="st">    </span><span class="kw">scale_x_continuous</span>(</a>
-<a class="sourceLine" id="cb369-22" title="22">      <span class="dt">name=</span><span class="st">&quot;toggled sequence size&quot;</span>,</a>
-<a class="sourceLine" id="cb369-23" title="23">      <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>),</a>
-<a class="sourceLine" id="cb369-24" title="24">      <span class="dt">limits=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb369-25" title="25">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb369-26" title="26"><span class="st">    </span><span class="kw">theme</span>(</a>
-<a class="sourceLine" id="cb369-27" title="27">      <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span></a>
-<a class="sourceLine" id="cb369-28" title="28">    ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb369-29" title="29"><span class="st">    </span><span class="kw">ggsave</span>(<span class="kw">paste0</span>(working_directory, <span class="st">&quot;plots/&quot;</span>, <span class="st">&quot;toggled-chunk-sizes.png&quot;</span>))</a></code></pre></div>
-<pre><code>## Saving 7 x 5 in image</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values (geom_bar).
-
-## Warning: Removed 2 rows containing missing values (geom_bar).</code></pre>
-<p><img src="supplemental-material_files/figure-html/unnamed-chunk-97-1.png" width="672" /></p>
+<div id="compile-and-run-experiments-locally" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Compile and run experiments locally</h1>
+<p>Here, we provide a brief guide to compiling and running our experiments using our Docker image.</p>
+<p>Please file an <a href="https://github.com/amlalejini/evolutionary-consequences-of-plasticity">issue on GitHub</a> if something is unclear or does not work.</p>
+<div id="docker" class="section level2">
+<h2><span class="header-section-number">3.1</span> Docker</h2>
+<p>You can use the Dockerfile in our <a href="https://github.com/amlalejini/evolutionary-consequences-of-plasticity">repository</a> to build a docker image locally, or you can pull the <a href="https://hub.docker.com/r/amlalejini/evolutionary-consequences-of-plasticity">latest docker image from DockerHub</a> using</p>
+<pre><code>docker pull amlalejini/evolutionary-consequences-of-plasticity</code></pre>
+<p>This will pull down a docker image with:</p>
+<ul>
+<li>all of the requisite dependencies installed/downloaded</li>
+<li>all experiment source code</li>
+<li>the minimal set of raw data needed to compile the supplemental material</li>
+<li>a build of our supplemental material (which will also run all of our analyses)</li>
+</ul>
+<p>To run the container interactively:</p>
+<pre><code>docker run -it --entrypoint bash amlalejini/evolutionary-consequences-of-plasticity</code></pre>
+<p>You can exit the container at any point with <code>ctrl-d</code>.</p>
+<p>Inside the container, you should be able to navigate to <code>/opt/evolutionary-consequences-of-plasticity</code>:</p>
+<pre><code>cd /opt/evolutionary-consequences-of-plasticity</code></pre>
+<p>To run Avida, you’ll need to <code>cd</code> into the <code>avida</code> directory and run <code>./build_avida</code>.</p>
+<p>All of the Avida configuration files necessary for re-running our experiments can be found here: <a href="https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments" class="uri">https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments</a>.</p>
+<p>For example, the configuration files for our evolutionary change experiment are here: <a href="https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments/2021-02-08-evo-dynamics/hpcc/config" class="uri">https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments/2021-02-08-evo-dynamics/hpcc/config</a>.</p>
 
 </div>
 </div>
@@ -419,8 +284,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="accumulation-of-deleterious-instructions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="evolutionary-change-variable-length-genomes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="data-availability.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="validation-experiment.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -452,7 +317,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments/2021-02-08-evo-dynamics/analysis/2021-02-08-plastic-traces.Rmd",
+"link": "https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/docs/running-experiments.md",
 "text": "Edit"
 },
 "history": {

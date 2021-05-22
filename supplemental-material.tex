@@ -123,6 +123,7 @@
 \chapter{Introduction}\label{introduction}}
 
 This is the supplemental material for our work entitled, \emph{Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments}.
+Preprint forthcoming.
 
 \hypertarget{about-our-supplemental-material}{%
 \section{About our supplemental material}\label{about-our-supplemental-material}}
@@ -137,6 +138,8 @@ Our supplemental material includes the following:
 \tightlist
 \item
   Data availability (Section \ref{data-availability})
+\item
+  Guide for running our experiments (Section \ref{compile-and-run-experiments-locally})
 \item
   Experiment analyses (including source code):
 
@@ -207,6 +210,56 @@ The source code for this work is publicly accessible on GitHub: \url{https://git
 \section{Experimental results}\label{experimental-results}}
 
 The data from our experiments are available online in our OSF repository \citep{osf_data} at \url{https://osf.io/sav2c/}.
+
+\hypertarget{compile-and-run-experiments-locally}{%
+\chapter{Compile and run experiments locally}\label{compile-and-run-experiments-locally}}
+
+Here, we provide a brief guide to compiling and running our experiments using our Docker image.
+
+Please file an \href{https://github.com/amlalejini/evolutionary-consequences-of-plasticity}{issue on GitHub} if something is unclear or does not work.
+
+\hypertarget{docker}{%
+\section{Docker}\label{docker}}
+
+You can use the Dockerfile in our \href{https://github.com/amlalejini/evolutionary-consequences-of-plasticity}{repository} to build a docker image locally, or you can pull the \href{https://hub.docker.com/r/amlalejini/evolutionary-consequences-of-plasticity}{latest docker image from DockerHub} using
+
+\begin{verbatim}
+docker pull amlalejini/evolutionary-consequences-of-plasticity
+\end{verbatim}
+
+This will pull down a docker image with:
+
+\begin{itemize}
+\tightlist
+\item
+  all of the requisite dependencies installed/downloaded
+\item
+  all experiment source code
+\item
+  the minimal set of raw data needed to compile the supplemental material
+\item
+  a build of our supplemental material (which will also run all of our analyses)
+\end{itemize}
+
+To run the container interactively:
+
+\begin{verbatim}
+docker run -it --entrypoint bash amlalejini/evolutionary-consequences-of-plasticity
+\end{verbatim}
+
+You can exit the container at any point with \texttt{ctrl-d}.
+
+Inside the container, you should be able to navigate to \texttt{/opt/evolutionary-consequences-of-plasticity}:
+
+\begin{verbatim}
+cd /opt/evolutionary-consequences-of-plasticity
+\end{verbatim}
+
+To run Avida, you'll need to \texttt{cd} into the \texttt{avida} directory and run \texttt{./build\_avida}.
+
+All of the Avida configuration files necessary for re-running our experiments can be found here: \url{https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments}.
+
+For example, the configuration files for our evolutionary change experiment are here: \url{https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments/2021-02-08-evo-dynamics/hpcc/config}.
 
 \hypertarget{validation-experiment}{%
 \chapter{Validation experiment}\label{validation-experiment}}
@@ -2668,8 +2721,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.8247126 -0.0002402299  0.04012926
+##      original       bias    std. error
+## t1* 0.8247126 -0.000387931  0.04027409
 \end{verbatim}
 
 \begin{Shaded}
@@ -2687,7 +2740,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.9023 )  
+## 95%   ( 0.7443,  0.8994 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2774,7 +2827,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.5172414 0.0002777011  0.03984551
+## t1* 0.5172414 0.0002813793  0.03907746
 \end{verbatim}
 
 \begin{Shaded}
@@ -2792,7 +2845,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4391,  0.5977 )  
+## 95%   ( 0.4402,  0.5954 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2835,8 +2888,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.4827586 0.0005103448   0.0396614
+##      original        bias    std. error
+## t1* 0.4827586 -0.0002189655  0.03951968
 \end{verbatim}
 
 \begin{Shaded}
@@ -4904,7 +4957,7 @@ Task loss linked with primary trait changes.
 ##         abline(h = at, col = col, lty = lty, lwd = lwd)
 ##     }
 ## }
-## <bytecode: 0x5645f524c3f8>
+## <bytecode: 0x561e01e29ec8>
 ## <environment: namespace:graphics>
 \end{verbatim}
 
