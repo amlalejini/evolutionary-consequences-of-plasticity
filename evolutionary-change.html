@@ -1833,8 +1833,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.8247126 -6.12069e-05  0.04053072</code></pre>
+##      original        bias    std. error
+## t1* 0.8247126 -0.0002304598  0.04027092</code></pre>
 <div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1844,7 +1844,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.9023 )  
+## 95%   ( 0.7443,  0.8994 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 <div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" title="1">plastic_summary_data &lt;-<span class="st"> </span><span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)</a>
 <a class="sourceLine" id="cb163-2" title="2">aggregate_frac_mut_steps_that_change_unexpressed_phenotype &lt;-<span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)</a>
@@ -1886,7 +1886,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.5172414 0.0004251724  0.03992061</code></pre>
+## t1* 0.5172414 0.0003090805  0.03946701</code></pre>
 <div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb173-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1925,8 +1925,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.4827586 -0.0001145977  0.03956512</code></pre>
+##      original       bias    std. error
+## t1* 0.4827586 0.0002013793  0.03968112</code></pre>
 <div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb178-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
