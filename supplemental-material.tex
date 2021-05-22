@@ -141,6 +141,8 @@ Our supplemental material includes the following:
 \item
   Guide for running our experiments (Section \ref{compile-and-run-experiments-locally})
 \item
+  Avida instruction set (Section \ref{avida-instruction-set})
+\item
   Experiment analyses (including source code):
 
   \begin{itemize}
@@ -260,6 +262,121 @@ To run Avida, you'll need to \texttt{cd} into the \texttt{avida} directory and r
 All of the Avida configuration files necessary for re-running our experiments can be found here: \url{https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments}.
 
 For example, the configuration files for our evolutionary change experiment are here: \url{https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments/2021-02-08-evo-dynamics/hpcc/config}.
+
+\hypertarget{avida-instruction-set}{%
+\chapter{Avida instruction set}\label{avida-instruction-set}}
+
+\hypertarget{default-instructions}{%
+\section{Default instructions}\label{default-instructions}}
+
+We used the following default instructions in all of our experiments:
+
+\begin{verbatim}
+# No-ops
+INST nop-A
+INST nop-B
+INST nop-C
+
+# Flow control operations
+INST if-n-equ
+INST if-less
+INST if-label
+INST mov-head
+INST jmp-head
+INST get-head
+INST set-flow
+
+# Single Argument Math
+INST shift-r
+INST shift-l
+INST inc
+INST dec
+INST push
+INST pop
+INST swap-stk
+INST swap
+
+# Double Argument Math
+INST add
+INST sub
+INST nand
+
+# Biological Operations
+INST h-copy
+INST h-alloc
+INST h-divide
+
+# I/O and Sensory
+INST IO
+INST h-search
+\end{verbatim}
+
+Each of these instructions is described in the \href{https://github.com/devosoft/avida/wiki/Instruction-Set}{Avida documentation}.
+
+\hypertarget{custom-instructions}{%
+\section{Custom instructions}\label{custom-instructions}}
+
+We implemented several custom instructions for this work:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{INST\ sense-react-NAND}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provides sensory feedback on whether the NAND Boolean logic task is currently rewarded or punished by pushing a 1 to the organism's active stack if it is rewarded, a -1 if it is punished, and a 0 if it is neither rewarded nor punished.
+  \end{itemize}
+\item
+  \texttt{INST\ sense-react-NOT}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provides sensory feedback on whether the NOT Boolean logic task is currently rewarded or punished by pushing a 1 to the organism's active stack if it is rewarded, a -1 if it is punished, and a 0 if it is neither rewarded nor punished.
+  \end{itemize}
+\item
+  \texttt{INST\ sense-react-AND}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provides sensory feedback on whether the AND Boolean logic task is currently rewarded or punished by pushing a 1 to the organism's active stack if it is rewarded, a -1 if it is punished, and a 0 if it is neither rewarded nor punished.
+  \end{itemize}
+\item
+  \texttt{INST\ sense-react-ORN}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provides sensory feedback on whether the ORN Boolean logic task is currently rewarded or punished by pushing a 1 to the organism's active stack if it is rewarded, a -1 if it is punished, and a 0 if it is neither rewarded nor punished.
+  \end{itemize}
+\item
+  \texttt{INST\ sense-react-OR}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provides sensory feedback on whether the OR Boolean logic task is currently rewarded or punished by pushing a 1 to the organism's active stack if it is rewarded, a -1 if it is punished, and a 0 if it is neither rewarded nor punished.
+  \end{itemize}
+\item
+  \texttt{INST\ sense-react-ANDN}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Provides sensory feedback on whether the ANDN Boolean logic task is currently rewarded or punished by pushing a 1 to the organism's active stack if it is rewarded, a -1 if it is punished, and a 0 if it is neither rewarded nor punished.
+  \end{itemize}
+\item
+  \texttt{INST\ poison}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Each time \texttt{poison} is executed, the organism reduces the metabolic rate of the organism by a fixed rate (specified by \texttt{POISON\_PENALTY} in \texttt{avida.cfg}).
+  \end{itemize}
+\end{itemize}
 
 \hypertarget{validation-experiment}{%
 \chapter{Validation experiment}\label{validation-experiment}}
@@ -2721,8 +2838,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.8247126 -0.000387931  0.04027409
+##      original    bias    std. error
+## t1* 0.8247126 -0.000325  0.04019229
 \end{verbatim}
 
 \begin{Shaded}
@@ -2826,8 +2943,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.5172414 0.0002813793  0.03907746
+##      original        bias    std. error
+## t1* 0.5172414 -0.0003517241  0.03953323
 \end{verbatim}
 
 \begin{Shaded}
@@ -2888,8 +3005,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.4827586 -0.0002189655  0.03951968
+##      original       bias    std. error
+## t1* 0.4827586 1.356322e-05  0.03970906
 \end{verbatim}
 
 \begin{Shaded}
@@ -2907,7 +3024,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4046,  0.5598 )  
+## 95%   ( 0.4046,  0.5609 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -4957,7 +5074,7 @@ Task loss linked with primary trait changes.
 ##         abline(h = at, col = col, lty = lty, lwd = lwd)
 ##     }
 ## }
-## <bytecode: 0x561e01e29ec8>
+## <bytecode: 0x5606f93ec7b8>
 ## <environment: namespace:graphics>
 \end{verbatim}
 
