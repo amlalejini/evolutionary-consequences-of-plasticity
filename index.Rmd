@@ -15,6 +15,7 @@ description: "Supplemental material"
 # Introduction
 
 This is the supplemental material for our work entitled, _Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments_.
+Preprint forthcoming.
 
 ## About our supplemental material
 
@@ -25,6 +26,7 @@ We compiled our data analyses and supplemental documentation into this nifty web
 Our supplemental material includes the following:
 
 - Data availability (Section \@ref(data-availability))
+- Guide for running our experiments (Section \@ref(compile-and-run-experiments-locally))
 - Experiment analyses (including source code):
   - Validating the evolution of phenotypic plasticity (Section TODO)
   - Effect of adaptive phenotypic plasticity on evolutionary change (Section TODO)
