@@ -1170,39 +1170,6 @@ aggregate_frac_linked_extra_trait_loss_nonplastic
 ## Combined panel
 
 ```{r}
-# grid <- plot_grid(
-#   final_novel_task_count_fig +
-#     theme(
-#       axis.title.x=element_blank()
-#     ) +
-#     ggtitle("Final novel task count"),
-#   lineage_novel_task_discovery_fig +
-#     theme(
-#       axis.title.x=element_blank()
-#     ) +
-#     ggtitle("Novel task discovery"),
-#   lineage_novel_task_loss_fig +
-#     theme(
-#       axis.title.x=element_blank()
-#     ) +
-#     ggtitle("Novel task loss"),
-#   NULL,
-#   lineage_novel_task_discovery_freq_fig +
-#     theme(
-#       axis.title.x=element_blank()
-#     ) +
-#     ggtitle("Novel task discovery frequency"),
-#   lineage_novel_task_loss_freq_fig +
-#     theme(
-#       axis.title.x=element_blank()
-#     ) +
-#     ggtitle("Novel task loss frequency"),
-#   nrow=2,
-#   align="v",
-#   # labels="auto"
-#   labels=c("a", "b","c","", "d","e")
-# )
-
 magnitude_grid <- plot_grid(
   final_novel_task_count_fig +
     theme(
@@ -1242,9 +1209,6 @@ pace_grid <- plot_grid(
 )
 pace_grid
 
-
-
-
 save_plot(
    paste0(working_directory, "plots/", "complex-traits-magnitude-panel.pdf"),
    magnitude_grid,
@@ -1258,12 +1222,4 @@ save_plot(
    base_height=6,
    base_asp=2/1
 )
-
-# save_plot(
-#    paste0(working_directory, "plots/", "complex-traits-panel.pdf"),
-#    grid,
-#    base_height=12,
-#    base_asp=3/2
-# )
-grid
 ```
