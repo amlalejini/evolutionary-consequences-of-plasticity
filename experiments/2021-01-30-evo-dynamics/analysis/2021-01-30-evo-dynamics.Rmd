@@ -102,7 +102,7 @@ dir.create(paste0(working_directory, "plots"), showWarnings=FALSE)
 
 ## Evolution of phenotypic plasticity
 
-For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.
+For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase two.
 
 ```{r}
 summary_data_grouped = dplyr::group_by(summary_data, sensors, env_label, condition)
@@ -205,7 +205,6 @@ median(filter(summary_data, condition=="STATIC")$phylo_mrca_changes)
 median(filter(summary_data, condition=="NON-PLASTIC")$phylo_mrca_changes)
 ```
 
-
 ## Average generation
 
 ```{r}
@@ -253,7 +252,7 @@ kruskal.test(
 )
 ```
 
-## Coalescence events
+## Coalescence event count
 
 The number of times the most recent common ancestor changes gives us the number of selective sweeps that occur during the experiment.
 
@@ -317,7 +316,7 @@ pairwise.wilcox.test(
 )
 ```
 
-### Average number of generations between selective sweeps
+### Average number of generations between coalescence events
 
 ```{r}
 summary_data$generations_per_mrca_change <- summary_data$time_average_generation / summary_data$phylo_mrca_changes
@@ -447,7 +446,7 @@ pairwise.wilcox.test(
 )
 ```
 
-## Mutation accumulation along the dominant lineage
+## Mutation count (along dominant lineage)
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=condition)) +
