@@ -6,3 +6,10 @@
 [![OSF](https://img.shields.io/badge/data%20%40%20OSF-10.17605%2FOSF.IO%2FSAV2C-blue)](https://osf.io/sav2c/)
 [![DOI](https://zenodo.org/badge/286621009.svg)](https://zenodo.org/badge/latestdoi/286621009)
 
+Hit the supplemental material badge at the top of this readme to navigate to our supplement!
+
+Repository guide:
+
+- [avida/](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/avida) contains the version of the Avida software used for this work.
+- [experiments/](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments) contains the configuration files, hpcc submission scripts, and analysis scripts for our preliminary and final experiments.
+- [media/](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/media) contains any media used by our supplemental material.
