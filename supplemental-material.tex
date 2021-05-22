@@ -29,8 +29,8 @@
 }
 \usepackage{hyperref}
 \hypersetup{
-            pdftitle={Supplemental Material},
-            pdfauthor={Alexander Lalejini, Austin J. Ferguson, Nkrumah Grant, and Charles Ofria},
+            pdftitle={Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments},
+            pdfauthor={Alexander Lalejini, Austin J. Ferguson, Nkrumah A. Grant, and Charles Ofria},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -108,9 +108,9 @@
 \usepackage[]{natbib}
 \bibliographystyle{apalike}
 
-\title{Supplemental Material}
-\author{Alexander Lalejini, Austin J. Ferguson, Nkrumah Grant, and Charles Ofria}
-\date{2021-04-07}
+\title{Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments}
+\author{Alexander Lalejini, Austin J. Ferguson, Nkrumah A. Grant, and Charles Ofria}
+\date{2021-05-22}
 
 \begin{document}
 \maketitle
@@ -122,23 +122,78 @@
 \hypertarget{introduction}{%
 \chapter{Introduction}\label{introduction}}
 
-\begin{figure}
-\centering
-\includegraphics{media/experimental-design-overview.png}
-\caption{Experimental design overview}
-\end{figure}
+This is the supplemental material for our work entitled, \emph{Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments}.
 
-\begin{figure}
-\centering
-\includegraphics{media/fluctuating-environment.jpg}
-\caption{Fluctuating environment}
-\end{figure}
+\hypertarget{about-our-supplemental-material}{%
+\section{About our supplemental material}\label{about-our-supplemental-material}}
 
-\begin{figure}
-\centering
-\includegraphics{media/static-environment.jpg}
-\caption{Static environment}
-\end{figure}
+This supplemental material is hosted on \href{https://github.com/}{GitHub} using GitHub pages.
+The source code and configuration files used to generate this supplemental material can be found in \href{https://github.com/amlalejini/evolutionary-consequences-of-plasticity}{this GitHub repository}.
+We compiled our data analyses and supplemental documentation into this nifty web-accessible book using \href{https://bookdown.org/}{bookdown}.
+
+Our supplemental material includes the following:
+
+\begin{itemize}
+\tightlist
+\item
+  Data availability (Section \ref{data-availability})
+\item
+  Experiment analyses (including source code):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Validating the evolution of phenotypic plasticity (Section TODO)
+  \item
+    Effect of adaptive phenotypic plasticity on evolutionary change (Section TODO)
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Results with variable-length genomes (Section TODO)
+    \end{itemize}
+  \item
+    Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section TODO)
+  \item
+    Effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions (Section TODO)
+  \item
+    Exploring how regulation is encoded in genomes in Avida (Section TODO)
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{contributing-authors}{%
+\section{Contributing authors}\label{contributing-authors}}
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://lalejini.com/}{Alexander Lalejini}
+\item
+  \href{http://austinjferguson.com/}{Austin J. Ferguson}
+\item
+  Nkrumah A. Grant
+\item
+  \href{https://ofria.com/}{Charles Ofria}
+\end{itemize}
+
+\hypertarget{research-overview}{%
+\section{Research overview}\label{research-overview}}
+
+Abstract:
+\textgreater{} Fluctuating environmental conditions are ubiquitous in natural systems, and populations have evolved various strategies to cope with such fluctuations.
+The particular mechanisms that evolve profoundly influence subsequent evolutionary dynamics.
+One such mechanism is phenotypic plasticity, which is the ability of a single genotype to produce alternate phenotypes in an environmentally dependent context.
+Here, we use digital organisms (self-replicating computer programs) to investigate how adaptive phenotypic plasticity alters evolutionary dynamics and influences evolutionary outcomes in cyclically changing environments.
+Specifically, we examined the evolutionary histories of both plastic populations and non-plastic populations to ask:
+(1) Does adaptive plasticity promote or constrain evolutionary change?
+(2) Are plastic populations better able to evolve and then maintain novel traits?
+And (3), how does adaptive plasticity affect the potential for maladaptive traits to accumulate in evolving genomes?
+We find that populations with adaptive phenotypic plasticity undergo less evolutionary change than non-plastic populations, which must rely on genetic variation from de novo mutations to continuously readapt to environmental fluctuations.
+Indeed, the non-plastic populations undergo more frequent selective sweeps and accumulate many more genetic changes.
+We find that the repeated selected sweeps in non-plastic populations drive the loss of beneficial traits via deleterious hitchhiking, whereas phenotypic plasticity can stabilize populations against environmental fluctuations.
+This stabilization allows plastic populations to more easily retain novel adaptive traits than their non-plastic counterparts.
+In general, the evolution of adaptive phenotypic plasticity shifted evolutionary dynamics to be more similar to that of populations evolving in a static environment than to non-plastic populations evolving in an identical fluctuating environment.
+All natural environments subject populations to some form of change; our findings suggest that the stabilizing effect of phenotypic plasticity plays an important role in subsequent adaptive evolution.
 
 \hypertarget{validation-experiment}{%
 \chapter{Validation experiment}\label{validation-experiment}}
@@ -219,14 +274,14 @@ These analyses were conducted/knitted with the following computing environment:
 ## system         x86_64, linux-gnu           
 ## status                                     
 ## major          4                           
-## minor          0.5                         
+## minor          1.0                         
 ## year           2021                        
-## month          03                          
-## day            31                          
-## svn rev        80133                       
+## month          05                          
+## day            18                          
+## svn rev        80317                       
 ## language       R                           
-## version.string R version 4.0.5 (2021-03-31)
-## nickname       Shake and Throw
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
 \end{verbatim}
 
 \hypertarget{setup}{%
@@ -425,14 +480,14 @@ These analyses were conducted/knitted with the following computing environment:
 ## system         x86_64, linux-gnu           
 ## status                                     
 ## major          4                           
-## minor          0.5                         
+## minor          1.0                         
 ## year           2021                        
-## month          03                          
-## day            31                          
-## svn rev        80133                       
+## month          05                          
+## day            18                          
+## svn rev        80317                       
 ## language       R                           
-## version.string R version 4.0.5 (2021-03-31)
-## nickname       Shake and Throw
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
 \end{verbatim}
 
 \hypertarget{setup-1}{%
@@ -2601,7 +2656,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.8247126 0.0003278736  0.04004957
+## t1* 0.8247126 0.0001729885  0.03987614
 \end{verbatim}
 
 \begin{Shaded}
@@ -2619,7 +2674,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.9023 )  
+## 95%   ( 0.7443,  0.8994 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2705,8 +2760,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.5172414 -0.0003409195  0.03986586
+##      original       bias    std. error
+## t1* 0.5172414 0.0008681609  0.03932792
 \end{verbatim}
 
 \begin{Shaded}
@@ -2724,7 +2779,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4368,  0.5954 )  
+## 95%   ( 0.4402,  0.5977 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2768,7 +2823,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.4827586 -0.0001750575  0.03951344
+## t1* 0.4827586 -0.0006672414  0.03903952
 \end{verbatim}
 
 \begin{Shaded}
@@ -2786,7 +2841,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4034,  0.5598 )  
+## 95%   ( 0.4057,  0.5586 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2964,14 +3019,14 @@ These analyses were conducted/knitted with the following computing environment:
 ## system         x86_64, linux-gnu           
 ## status                                     
 ## major          4                           
-## minor          0.5                         
+## minor          1.0                         
 ## year           2021                        
-## month          03                          
-## day            31                          
-## svn rev        80133                       
+## month          05                          
+## day            18                          
+## svn rev        80317                       
 ## language       R                           
-## version.string R version 4.0.5 (2021-03-31)
-## nickname       Shake and Throw
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
 \end{verbatim}
 
 \hypertarget{setup-2}{%
@@ -4836,7 +4891,7 @@ Task loss linked with primary trait changes.
 ##         abline(h = at, col = col, lty = lty, lwd = lwd)
 ##     }
 ## }
-## <bytecode: 0x55ad4a801b30>
+## <bytecode: 0x557141160220>
 ## <environment: namespace:graphics>
 \end{verbatim}
 
@@ -4903,14 +4958,14 @@ These analyses were conducted/knitted with the following computing environment:
 ## system         x86_64, linux-gnu           
 ## status                                     
 ## major          4                           
-## minor          0.5                         
+## minor          1.0                         
 ## year           2021                        
-## month          03                          
-## day            31                          
-## svn rev        80133                       
+## month          05                          
+## day            18                          
+## svn rev        80317                       
 ## language       R                           
-## version.string R version 4.0.5 (2021-03-31)
-## nickname       Shake and Throw
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
 \end{verbatim}
 
 \hypertarget{setup-3}{%
@@ -6425,14 +6480,14 @@ These analyses were conducted/knitted with the following computing environment:
 ## system         x86_64, linux-gnu           
 ## status                                     
 ## major          4                           
-## minor          0.5                         
+## minor          1.0                         
 ## year           2021                        
-## month          03                          
-## day            31                          
-## svn rev        80133                       
+## month          05                          
+## day            18                          
+## svn rev        80317                       
 ## language       R                           
-## version.string R version 4.0.5 (2021-03-31)
-## nickname       Shake and Throw
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
 \end{verbatim}
 
 \hypertarget{setup-4}{%
@@ -6631,14 +6686,14 @@ These analyses were conducted/knitted with the following computing environment:
 ## system         x86_64, linux-gnu           
 ## status                                     
 ## major          4                           
-## minor          0.5                         
+## minor          1.0                         
 ## year           2021                        
-## month          03                          
-## day            31                          
-## svn rev        80133                       
+## month          05                          
+## day            18                          
+## svn rev        80317                       
 ## language       R                           
-## version.string R version 4.0.5 (2021-03-31)
-## nickname       Shake and Throw
+## version.string R version 4.1.0 (2021-05-18)
+## nickname       Camp Pontanezen
 \end{verbatim}
 
 \hypertarget{setup-5}{%
