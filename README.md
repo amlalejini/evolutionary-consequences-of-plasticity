@@ -1,4 +1,4 @@
-# Evolutionary Consequences of Phenotypic Plasticity
+# Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments
 
 [![supplemental](https://img.shields.io/badge/go%20to-supplemental%20material-ff69b4)](https://lalejini.com/evolutionary-consequences-of-plasticity/)
 [![DockerHub link](https://img.shields.io/badge/DockerHub-Hosted-blue)](https://hub.docker.com/r/amlalejini/evolutionary-consequences-of-plasticity)
