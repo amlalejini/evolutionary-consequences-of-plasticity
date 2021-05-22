@@ -27,6 +27,7 @@ Our supplemental material includes the following:
 
 - Data availability (Section \@ref(data-availability))
 - Guide for running our experiments (Section \@ref(compile-and-run-experiments-locally))
+- Avida instruction set (Section \@ref(avida-instruction-set))
 - Experiment analyses (including source code):
   - Validating the evolution of phenotypic plasticity (Section TODO)
   - Effect of adaptive phenotypic plasticity on evolutionary change (Section TODO)
