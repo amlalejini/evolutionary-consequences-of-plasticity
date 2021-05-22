@@ -192,6 +192,8 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
 
 ## Average generation
 
+How many generations elapsed in each of of our treatments?
+
 ```{r}
 ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)) +
   geom_flat_violin(
@@ -1289,7 +1291,7 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
-### Mutational stability
+### Mutational stability (realized mutational robustness)
 
 ```{r}
 # Compute manual labels for geom_signif
@@ -1335,7 +1337,7 @@ mutational_stability_fig <- ggplot(
     limits=condition_order
   ) +
   scale_y_continuous(
-    name="Mutational stability",
+    name="Realized mutational robustness",
     limits=c(0.5, 1.15),
     breaks=c(0.5, 0.75, 1.0)
   ) +
@@ -1524,7 +1526,7 @@ pace_grid <- plot_grid(
       legend.position="none",
       axis.title.x=element_blank()
     ) +
-    ggtitle("Mutational stability"),
+    ggtitle("Realized mutational robustness"),
   nrow=1,
   ncol=2,
   align="v",
@@ -1546,11 +1548,4 @@ save_plot(
   base_height=6,
   base_asp=2/1
 )
-
-# save_plot(
-#   paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),
-#   grid,
-#   base_height=12,
-#   base_asp=3/2
-# )
 ```
