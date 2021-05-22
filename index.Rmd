@@ -34,7 +34,7 @@ Our supplemental material includes the following:
     - Results with variable-length genomes (Section TODO)
   - Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section TODO)
   - Effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions (Section TODO)
-  - Exploring how regulation is encoded in genomes in Avida (Section TODO)
+  - Exploring how regulation is encoded in genomes in Avida (Section \@ref(regulation-in-avida))
 
 ## Contributing authors
 
