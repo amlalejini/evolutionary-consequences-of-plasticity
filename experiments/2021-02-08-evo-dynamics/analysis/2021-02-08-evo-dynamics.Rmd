@@ -1481,6 +1481,68 @@ print(bo)
 print(boot.ci(bo, conf=0.95, type="perc"))
 ```
 
+## Mutational robustness
+
+Mutational robustness measures the fraction of one-step mutations on a focal genotype that result in a phenotypic change. 
+Here, we calculate the mutational robustness of the representative genotype from each replicate (the most abundant genotype in the final population).
+
+This data is located in a separate .tar.gz file on OSF, so we need to load it and wrangle the data.
+```{r}
+# Load the data
+df_mut = read.csv('./mutational_robustness/local/aggregated_mutant_data.csv')
+# Extract the treatment for each line
+df_mut$treatment = 'STATIC'
+df_mut[df_mut$environment == 'chg-u100',]$treatment = 'PLASTIC'
+df_mut[df_mut$environment == 'chg-u100' & df_mut$sensors == F,]$treatment = 'NON-PLASTIC'
+df_mut$treatment_factor = factor(df_mut$treatment, levels = c('STATIC', 'NON-PLASTIC', 'PLASTIC'))
+# For compatibility with is_outlier above
+df_mut$condition = df_mut$treatment_factor
+# Calculate robustness (originally calculated as volatility) 
+df_mut$mutational_robustness = 1 - df_mut$one_step_diff_pheno_frac
+```
+
+Now we can plot mutational robustness: 
+
+```{r}
+# Compute manual labels for geom_signif
+stat.test <- df_mut %>%
+  wilcox_test(mutational_robustness ~ treatment_factor) %>%
+  adjust_pvalue(method = "bonferroni") %>%
+  add_significance() %>%
+  add_xy_position(x="treatment_factor")
+# Tweak y.position manually to account for scaled axis (edge case that triggers bad behavior in geom_signif)
+stat.test$manual_position <-   stat.test$y.position * c(1.05,1.1,1.15)
+stat.test$label <- mapply(p_label,stat.test$p.adj)
+df_mut$is_outlier <- mapply(
+  is_outlier,
+  df_mut$mutational_robustness,
+  df_mut$treatment_factor,
+  MoreArgs=list(data=df_mut, column="mutational_robustness")
+)
+
+# Remap colors so that colors map
+color_map = c(
+  'STATIC' = brewer.pal(3, cb_palette)[3],
+  'PLASTIC' = brewer.pal(3, cb_palette)[2],
+  'NON-PLASTIC' = brewer.pal(3, cb_palette)[1]
+)
+
+# Plot!
+mut_robustness_fig <- ggplot(df_mut, aes(x=treatment_factor, y=mutational_robustness, fill=treatment_factor)) +
+  geom_flat_violin( data=filter(df_mut,is_outlier==FALSE), 
+    scale="width", position = position_nudge(x = .2, y = 0), alpha = .8) +
+  geom_point(mapping=aes(color=treatment_factor), position = position_jitter(width = .15), size = .5, alpha = 0.8) +
+  geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.5) +
+  scale_x_discrete( name="Condition") +
+  scale_y_continuous( name='Mutational robustness', limits=c(0, 1)) +
+  scale_fill_manual( values = color_map ) +
+  scale_color_manual( values = color_map ) +
+  labs( subtitle=paste0( "Kruskal-Wallis, ", p_label(signif(kruskal.test(formula=mutational_robustness~treatment_factor, data=df_mut)$p.value,digits=5)) ) ) +
+  ggsignif::geom_signif( data=filter(stat.test, p.adj <= alpha),  aes(xmin=group1,xmax=group2,annotations=label,y_position=manual_position),  manual=TRUE, inherit.aes=FALSE ) +
+  theme( legend.position="none" )
+mut_robustness_fig
+```
+
 ## Manuscript figures
 
 Figures styled for the paper.
@@ -1532,6 +1594,20 @@ pace_grid <- plot_grid(
 )
 pace_grid
 
+# Even though mutational robustness is shown by itself, this ensures it is plotted identically to the other multi-figure panels
+mut_robustness_grid = plot_grid(
+  mut_robustness_fig +
+    theme(
+      legend.position="none",
+      axis.title.x=element_blank()
+    ) +
+    ggtitle("Mutational robustness"),
+  nrow=1,
+  ncol=1,
+  align="v",
+  labels=""
+) 
+mut_robustness_grid
 
 save_plot(
   paste0(working_directory, "plots/", "evolutionary-change-magnitude-panel.pdf"),
@@ -1545,6 +1621,13 @@ save_plot(
   pace_grid,
   base_height=6,
   base_asp=2/1
+)
+
+save_plot(
+  paste0(working_directory, "plots/", "mutational-robustness.pdf"),
+  mut_robustness_grid,
+  base_height=6,
+  base_asp=1
 )
 
 # save_plot(
