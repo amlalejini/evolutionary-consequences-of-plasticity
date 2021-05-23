@@ -148,21 +148,21 @@ Our supplemental material includes the following:
   \begin{itemize}
   \tightlist
   \item
-    Validating the evolution of phenotypic plasticity (Section TODO)
+    Validating the evolution of phenotypic plasticity (Section \ref{validation-experiment})
   \item
-    Effect of adaptive phenotypic plasticity on evolutionary change (Section TODO)
+    Effect of adaptive phenotypic plasticity on evolutionary change (Section \ref{evolutionary-change})
 
     \begin{itemize}
     \tightlist
     \item
-      Results with variable-length genomes (Section TODO)
+      Results with variable-length genomes (Section \ref{evolutionary-change-variable-length-genomes})
     \end{itemize}
   \item
-    Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section TODO)
+    Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section \ref{evolution-and-maintenance-of-novel-traits})
   \item
-    Effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions (Section TODO)
+    Effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions (Section \ref{accumulation-of-deleterious-instructions})
   \item
-    Exploring how regulation is encoded in genomes in Avida (Section TODO)
+    Exploring how regulation is encoded in genomes in Avida (Section \ref{regulation-in-avida})
   \end{itemize}
 \end{itemize}
 
@@ -836,6 +836,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 
 \hypertarget{average-generation}{%
 \section{Average generation}\label{average-generation}}
+
+How many generations elapsed in each of of our treatments?
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2600,8 +2602,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## [1] "PLASTIC<-->NON-PLASTIC: W=4200"
 \end{verbatim}
 
-\hypertarget{mutational-stability}{%
-\subsection{Mutational stability}\label{mutational-stability}}
+\hypertarget{mutational-stability-realized-mutational-robustness}{%
+\subsection{Mutational stability (realized mutational robustness)}\label{mutational-stability-realized-mutational-robustness}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2648,7 +2650,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Mutational stability"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Realized mutational robustness"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{1.15}\NormalTok{),}
     \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
@@ -2838,8 +2840,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original    bias    std. error
-## t1* 0.8247126 -0.000325  0.04019229
+##      original       bias    std. error
+## t1* 0.8247126 0.0005635057  0.04033094
 \end{verbatim}
 
 \begin{Shaded}
@@ -2857,7 +2859,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.8994 )  
+## 95%   ( 0.7443,  0.9023 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2944,7 +2946,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -0.0003517241  0.03953323
+## t1* 0.5172414 -0.0008282759  0.03953987
 \end{verbatim}
 
 \begin{Shaded}
@@ -2962,7 +2964,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4402,  0.5954 )  
+## 95%   ( 0.4391,  0.5954 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -3006,7 +3008,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.4827586 1.356322e-05  0.03970906
+## t1* 0.4827586 0.0003902299  0.03969909
 \end{verbatim}
 
 \begin{Shaded}
@@ -3079,7 +3081,7 @@ Figures styled for the paper.
       \DataTypeTok{legend.position=}\StringTok{"none"}\NormalTok{,}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Mutational stability"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Realized mutational robustness"}\NormalTok{),}
   \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
   \DataTypeTok{ncol=}\DecValTok{2}\NormalTok{,}
   \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
@@ -3106,13 +3108,6 @@ Figures styled for the paper.
   \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
   \DataTypeTok{base_asp=}\DecValTok{2}\OperatorTok{/}\DecValTok{1}
 \NormalTok{)}
-
-\CommentTok{# save_plot(}
-\CommentTok{#   paste0(working_directory, "plots/", "evolutionary-change-full-panel.pdf"),}
-\CommentTok{#   grid,}
-\CommentTok{#   base_height=12,}
-\CommentTok{#   base_asp=3/2}
-\CommentTok{# )}
 \end{Highlighting}
 \end{Shaded}
 
@@ -4927,39 +4922,6 @@ Task loss linked with primary trait changes.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{# grid <- plot_grid(}
-\CommentTok{#   final_novel_task_count_fig +}
-\CommentTok{#     theme(}
-\CommentTok{#       axis.title.x=element_blank()}
-\CommentTok{#     ) +}
-\CommentTok{#     ggtitle("Final novel task count"),}
-\CommentTok{#   lineage_novel_task_discovery_fig +}
-\CommentTok{#     theme(}
-\CommentTok{#       axis.title.x=element_blank()}
-\CommentTok{#     ) +}
-\CommentTok{#     ggtitle("Novel task discovery"),}
-\CommentTok{#   lineage_novel_task_loss_fig +}
-\CommentTok{#     theme(}
-\CommentTok{#       axis.title.x=element_blank()}
-\CommentTok{#     ) +}
-\CommentTok{#     ggtitle("Novel task loss"),}
-\CommentTok{#   NULL,}
-\CommentTok{#   lineage_novel_task_discovery_freq_fig +}
-\CommentTok{#     theme(}
-\CommentTok{#       axis.title.x=element_blank()}
-\CommentTok{#     ) +}
-\CommentTok{#     ggtitle("Novel task discovery frequency"),}
-\CommentTok{#   lineage_novel_task_loss_freq_fig +}
-\CommentTok{#     theme(}
-\CommentTok{#       axis.title.x=element_blank()}
-\CommentTok{#     ) +}
-\CommentTok{#     ggtitle("Novel task loss frequency"),}
-\CommentTok{#   nrow=2,}
-\CommentTok{#   align="v",}
-\CommentTok{#   # labels="auto"}
-\CommentTok{#   labels=c("a", "b","c","", "d","e")}
-\CommentTok{# )}
-
 \NormalTok{magnitude_grid <-}\StringTok{ }\KeywordTok{plot_grid}\NormalTok{(}
 \NormalTok{  final_novel_task_count_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
@@ -5024,59 +4986,8 @@ Task loss linked with primary trait changes.
    \DataTypeTok{base_height=}\DecValTok{6}\NormalTok{,}
    \DataTypeTok{base_asp=}\DecValTok{2}\OperatorTok{/}\DecValTok{1}
 \NormalTok{)}
-
-\CommentTok{# save_plot(}
-\CommentTok{#    paste0(working_directory, "plots/", "complex-traits-panel.pdf"),}
-\CommentTok{#    grid,}
-\CommentTok{#    base_height=12,}
-\CommentTok{#    base_asp=3/2}
-\CommentTok{# )}
-\NormalTok{grid}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-## function (nx = NULL, ny = nx, col = "lightgray", lty = "dotted", 
-##     lwd = par("lwd"), equilogs = TRUE) 
-## {
-##     if (is.null(nx) || (!is.na(nx) && nx >= 1)) {
-##         log <- par("xlog")
-##         if (is.null(nx)) {
-##             ax <- par("xaxp")
-##             if (log && equilogs && ax[3L] > 0) 
-##                 ax[3L] <- 1
-##             at <- axTicks(1, axp = ax, log = log)
-##         }
-##         else {
-##             U <- par("usr")
-##             at <- seq.int(U[1L], U[2L], length.out = nx + 1)
-##             at <- (if (log) 
-##                 10^at
-##             else at)[-c(1, nx + 1)]
-##         }
-##         abline(v = at, col = col, lty = lty, lwd = lwd)
-##     }
-##     if (is.null(ny) || (!is.na(ny) && ny >= 1)) {
-##         log <- par("ylog")
-##         if (is.null(ny)) {
-##             ax <- par("yaxp")
-##             if (log && equilogs && ax[3L] > 0) 
-##                 ax[3L] <- 1
-##             at <- axTicks(2, axp = ax, log = log)
-##         }
-##         else {
-##             U <- par("usr")
-##             at <- seq.int(U[3L], U[4L], length.out = ny + 1)
-##             at <- (if (log) 
-##                 10^at
-##             else at)[-c(1, ny + 1)]
-##         }
-##         abline(h = at, col = col, lty = lty, lwd = lwd)
-##     }
-## }
-## <bytecode: 0x5606f93ec7b8>
-## <environment: namespace:graphics>
-\end{verbatim}
 
 \hypertarget{accumulation-of-deleterious-instructions}{%
 \chapter{Accumulation of deleterious instructions}\label{accumulation-of-deleterious-instructions}}
@@ -6950,7 +6861,7 @@ These analyses were conducted/knitted with the following computing environment:
 \hypertarget{evolution-of-phenotypic-plasticity-2}{%
 \section{Evolution of phenotypic plasticity}\label{evolution-of-phenotypic-plasticity-2}}
 
-For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase-two.
+For sensor-enabled populations in fluctuating environments, we only transfered populations containing an optimally plastic genotype to phase two.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7216,8 +7127,8 @@ Single-instruction insertions and deletions were possible for this experiment, s
 ## Kruskal-Wallis chi-squared = 1.3804, df = 2, p-value = 0.5015
 \end{verbatim}
 
-\hypertarget{coalescence-events}{%
-\section{Coalescence events}\label{coalescence-events}}
+\hypertarget{coalescence-event-count-1}{%
+\section{Coalescence event count}\label{coalescence-event-count-1}}
 
 The number of times the most recent common ancestor changes gives us the number of selective sweeps that occur during the experiment.
 
@@ -7338,8 +7249,8 @@ The number of times the most recent common ancestor changes gives us the number 
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{average-number-of-generations-between-selective-sweeps}{%
-\subsection{Average number of generations between selective sweeps}\label{average-number-of-generations-between-selective-sweeps}}
+\hypertarget{average-number-of-generations-between-coalescence-events-1}{%
+\subsection{Average number of generations between coalescence events}\label{average-number-of-generations-between-coalescence-events-1}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7584,8 +7495,8 @@ The number of times the most recent common ancestor changes gives us the number 
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{mutation-accumulation-along-the-dominant-lineage}{%
-\section{Mutation accumulation along the dominant lineage}\label{mutation-accumulation-along-the-dominant-lineage}}
+\hypertarget{mutation-count-along-dominant-lineage}{%
+\section{Mutation count (along dominant lineage)}\label{mutation-count-along-dominant-lineage}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
