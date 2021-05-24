@@ -88,13 +88,13 @@ RUN \
     && \
   export EXP_TAG=2021-01-30-evo-dynamics \
     && \
-  ./download_exp_data.sh
+  ./download_exp_data.sh \
     && \
   export EXP_TAG=2021-02-08-evo-dynamics-mutational-robustness \
     && \
   mkdir ${PROJECT_PATH}/experiments/${EXP_TAG}/analysis -p \
     && \
-  ./download_exp_data.sh
+  ./download_exp_data.sh \
     && \
   mkdir ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p \
     && \
