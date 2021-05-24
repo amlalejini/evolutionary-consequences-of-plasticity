@@ -60,6 +60,8 @@ RUN \
 ########################################################
 # download experiment data using python osfclient
 # move data into expected directories
+# Note: the evoulationary dynamics mutational robustness data is a special case 
+#     and thus uses a workaround. Future work should be able to return to normal
 ########################################################
 RUN \
   export OSF_PROJECT=sav2c \
@@ -87,6 +89,19 @@ RUN \
   export EXP_TAG=2021-01-30-evo-dynamics \
     && \
   ./download_exp_data.sh
+    && \
+  export EXP_TAG=2021-02-08-evo-dynamics-mutational-robustness \
+    && \
+  mkdir ${PROJECT_PATH}/experiments/${EXP_TAG}/analysis -p \
+    && \
+  ./download_exp_data.sh
+    && \
+  mkdir ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p \
+    && \
+  cp ${PROJECT_PATH}/experiments/${EXP_TAG}/analysis/data/*.tar \
+    ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p \
+
+  
 
 ########################################################
 # install r
