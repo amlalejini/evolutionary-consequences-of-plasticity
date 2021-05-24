@@ -1491,7 +1491,7 @@ Here, we calculate the mutational robustness of the representative genotype from
 This data is located in a separate .tar.gz file on OSF, so we need to load it and wrangle the data.
 ```{r}
 # Load the data
-df_mut = read.csv('./mutational_robustness/data/aggregated_mutant_data.csv')
+df_mut = read.csv(paste0(working_directory, 'mutational_robustness/data/aggregated_mutant_data.csv'))
 # Extract the treatment for each line
 df_mut$treatment = 'STATIC'
 df_mut[df_mut$environment == 'chg-u100',]$treatment = 'PLASTIC'
