@@ -98,7 +98,7 @@ RUN \
     && \
   mkdir ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p \
     && \
-  cp ${PROJECT_PATH}/experiments/${EXP_TAG}/analysis/data/*.tar \
+  cp ${PROJECT_PATH}/experiments/${EXP_TAG}/analysis/data/*.csv \
     ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p 
 
   
