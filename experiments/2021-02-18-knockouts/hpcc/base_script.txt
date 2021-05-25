@@ -1,0 +1,93 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+
+#SBATCH --time=<<TIME_REQUEST>>          # limit of wall clock time - how long the job will run (same as -t)
+#SBATCH --array=<<ARRAY_ID_RANGE>>
+#SBATCH --mem=<<MEMORY_REQUEST>>        # memory required per node - amount of memory (in bytes)
+#SBATCH --job-name <<JOB_NAME>>         # you can give your job a name for easier identification (same as -J)
+#SBATCH --account=devolab
+
+########## Command Lines to Run ##########
+
+module load GCCcore/9.1.0
+
+JOB_SEED_OFFSET=<<JOB_SEED_OFFSET>>
+SEED=$((JOB_SEED_OFFSET + SLURM_ARRAY_TASK_ID - 1))
+
+EXEC=<<EXEC>>
+CONFIG_DIR=<<CONFIG_DIR>>
+ANALYSIS_DIR=<<ANALYSIS_DIR>>
+
+# Setup all directories at the beginning
+OLD_DIR=<<OLD_DIR>>
+NEW_DIR=<<NEW_DIR>>
+
+# Create directory for this run
+mkdir -p ${NEW_DIR}
+cd ${NEW_DIR}
+# Copy over file with run info
+cp ${OLD_DIR}/cmd.log ${NEW_DIR}
+
+# Copy all the scripts and data used for this analysis
+cp ${CONFIG_DIR}/*.cfg .
+cp ${CONFIG_DIR}/*.py .
+cp ${CONFIG_DIR}/${EXEC} .
+cp ${ANALYSIS_DIR}/*.py .
+cp ${ANALYSIS_DIR}/*.R .
+cp ${ANALYSIS_DIR}/*.txt .
+cp ${ANALYSIS_DIR}/*.cfg .
+
+# Run parameters for avida (set in gen_sub_multi.py)
+RUN_PARAMS="<<RUN_PARAMS>>"
+
+# Generate lineage knockouts
+mkdir -p ./data
+mkdir -p ./data/lineage_knockouts/
+python3 generate_lineage_knockouts.py --input_file ${OLD_DIR}/data/detail-200000.spop --output_dir ./data/lineage_knockouts/ --inst_set_file ./instset-heads_knockouts.cfg --columns id,length,update_born,depth,hw_type,inst_set,sequence
+# Analyze lineage knockouts
+mkdir -p ./data/lineage_knockout_data/
+mkdir -p ./data/lineage_knockout_data/env_odd
+mkdir -p ./data/lineage_knockout_data/env_even
+python3 generate_lineage_analysis.py --knockout_dir ./data/lineage_knockouts/ --data_dir ./data/lineage_knockout_data/ --output_dir ./
+cp instset-heads_knockouts.cfg instset-heads.cfg
+./${EXEC} ${RUN_PARAMS} -set ANALYZE_FILE ./analyze_lineage_knockouts.cfg -a
+
+# Remove raw knockouts 
+rm ${NEW_DIR}/data/lineage_knockouts -r
+
+# Load R package + dependencies
+module purge
+module load GCC/8.3.0
+module load OpenMPI/3.1.4
+module load R 
+
+# Run R analyses
+echo " "
+echo "Scraping knockout data"
+Rscript ${ANALYSIS_DIR}/seed_scrape_knockouts.R ${NEW_DIR} ${NEW_DIR}
+echo " "
+rm ${NEW_DIR}/data/lineage_knockout_data -r
+echo "Performing knockout analysis"
+Rscript ${ANALYSIS_DIR}/seed_analyze_lineage_knockouts.R ${NEW_DIR}/knockout_data.csv ${NEW_DIR}
+echo " "
+echo "Scraping overlap analysis"
+Rscript ${ANALYSIS_DIR}/seed_scrape_overlap.R ${NEW_DIR}
+echo " "
+echo "Summarizing architecture data"
+Rscript ${ANALYSIS_DIR}/seed_scrape_architecture_summary.R ${NEW_DIR}
+echo " "
+echo "Summarizing final loci slice"
+Rscript ${ANALYSIS_DIR}/seed_plot_locus_slices.R ${NEW_DIR}
+echo " "
+echo "Calculating change data"
+Rscript ${ANALYSIS_DIR}/seed_scrape_change.R
+echo "Summarizing functionality data"
+Rscript ${ANALYSIS_DIR}/seed_scrape_site_functionality.R
+
+# Cleanup all unnecessary data
+rm ${NEW_DIR}/data/lineage_knockouts -r
+rm ${NEW_DIR}/data/lineage_knockout_data -r
+rm ${NEW_DIR}/*.cfg
+rm ${NEW_DIR}/*.py
+rm ${NEW_DIR}/*.txt
+rm ${NEW_DIR}/${EXEC}

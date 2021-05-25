@@ -1,0 +1,76 @@
+#!/bin/bash
+########## Define Resources Needed with SBATCH Lines ##########
+
+#SBATCH --time=<<TIME_REQUEST>>          # limit of wall clock time - how long the job will run (same as -t)
+#SBATCH --array=<<ARRAY_ID_RANGE>>
+#SBATCH --mem=<<MEMORY_REQUEST>>        # memory required per node - amount of memory (in bytes)
+#SBATCH --job-name <<JOB_NAME>>         # you can give your job a name for easier identification (same as -J)
+#SBATCH --account=devolab
+
+########## Command Lines to Run ##########
+
+module load GCCcore/9.1.0
+
+JOB_SEED_OFFSET=<<JOB_SEED_OFFSET>>
+SEED=$((JOB_SEED_OFFSET + SLURM_ARRAY_TASK_ID - 1))
+
+EXEC=<<EXEC>>
+CONFIG_DIR=<<CONFIG_DIR>>
+ANALYSIS_DIR=<<ANALYSIS_DIR>>
+
+# Setup all directories at the beginning
+OLD_DIR=<<OLD_DIR>>
+KNOCKOUT_DIR=<<KNOCKOUT_DIR>>
+NEW_DIR=<<NEW_DIR>>
+
+# Create directory where all replicate anlayses will be conducted and stored
+mkdir -p ${NEW_DIR}
+cd ${NEW_DIR}
+# Copy over the original avida output file which contains info on the run
+cp ${OLD_DIR}/cmd.log ${NEW_DIR}
+# Copy over cleaned data from knockouts (used for looking at changes in site function)
+cp ${KNOCKOUT_DIR}/cleaned_data.csv ${NEW_DIR}
+
+# Copy all scripts we may need
+cp ${CONFIG_DIR}/*.cfg .
+cp ${CONFIG_DIR}/*.py .
+cp ${CONFIG_DIR}/${EXEC} .
+cp ${ANALYSIS_DIR}/*.py .
+cp ${ANALYSIS_DIR}/*.R .
+cp ${ANALYSIS_DIR}/*.txt .
+cp ${ANALYSIS_DIR}/*.cfg .
+
+
+RUN_PARAMS="<<RUN_PARAMS>>"
+
+# Generate all two-step mutants 
+mkdir -p ./data
+mkdir -p ./data/mutants
+mkdir -p ./data/mutant_data
+mkdir -p ./data/mutant_data/env_even
+mkdir -p ./data/mutant_data/env_odd
+python3 generate_dominant_org_mutants.py --input_file ${OLD_DIR}/data/detail-200000.spop --output_dir ./data/mutants/ --inst_set_file ./instset-heads_knockouts.cfg --columns id,length,update_born,depth,hw_type,inst_set,sequence
+
+# Analyze two-step mutants
+./${EXEC} ${RUN_PARAMS} -set ANALYZE_FILE ./analyze_all_mutants.cfg -a
+
+# Switch from c++ modules to R
+module purge
+module load GCC/8.3.0
+module load OpenMPI/3.1.4
+module load R 
+
+# Run analyses on replicate data
+echo " "
+echo "Scraping mutant data"
+Rscript ./seed_scrape_mutant_data.R
+echo "Summarizing mutant data"
+Rscript ./seed_analyze_mutants.R
+
+### Cleanup unnecessary files
+rm ${NEW_DIR}/data/mutants -r
+rm ${NEW_DIR}/*.cfg
+rm ${NEW_DIR}/*.py
+rm ${NEW_DIR}/*.txt
+rm ${NEW_DIR}/*.R
+rm ${NEW_DIR}/${EXEC}
