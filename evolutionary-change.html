@@ -24,7 +24,7 @@
 <meta name="author" content="Alexander Lalejini, Austin J. Ferguson, Nkrumah A. Grant, and Charles Ofria" />
 
 
-<meta name="date" content="2021-05-24" />
+<meta name="date" content="2021-05-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1846,8 +1846,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original        bias    std. error
-## t1* 0.8247126 -0.0001479885  0.04011757</code></pre>
+##      original       bias    std. error
+## t1* 0.8247126 0.0007853448  0.03944412</code></pre>
 <div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb165-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1857,7 +1857,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7443,  0.8994 )  
+## 95%   ( 0.7471,  0.8994 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb167-1" title="1">plastic_summary_data &lt;-<span class="st"> </span><span class="kw">filter</span>(summary_data, condition<span class="op">==</span><span class="st">&quot;PLASTIC&quot;</span>)</a>
 <a class="sourceLine" id="cb167-2" title="2">aggregate_frac_mut_steps_that_change_unexpressed_phenotype &lt;-<span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_unexpressed_phenotype) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(plastic_summary_data<span class="op">$</span>dominant_lineage_num_mut_steps_that_change_aggregate_phenotype)</a>
@@ -1899,7 +1899,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -0.0002925287  0.03962962</code></pre>
+## t1* 0.5172414 -0.0004378161  0.03930082</code></pre>
 <div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb177-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
@@ -1909,7 +1909,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4391,  0.5965 )  
+## 95%   ( 0.4391,  0.5942 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 </div>
 <div id="beneficial-mutations" class="section level4">
@@ -1939,7 +1939,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Bootstrap Statistics :
 ##      original       bias    std. error
-## t1* 0.4827586 0.0004644828  0.03966337</code></pre>
+## t1* 0.4827586 0.0004443678  0.03966401</code></pre>
 <div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb182-1" title="1"><span class="kw">print</span>(<span class="kw">boot.ci</span>(bo, <span class="dt">conf=</span><span class="fl">0.95</span>, <span class="dt">type=</span><span class="st">&quot;perc&quot;</span>))</a></code></pre></div>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
 ## Based on 10000 bootstrap replicates
