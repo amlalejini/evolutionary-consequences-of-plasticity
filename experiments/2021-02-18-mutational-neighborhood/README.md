@@ -13,19 +13,20 @@ The files within are split into two directories: `hpcc` and `local`.
 
 - `hpcc` contains all the files necessary to generate and collate the data on a computing cluster (here we MSU's HPCC).
   - Some files in this folder are well documented, others are not. 
-  - Instructions on how to use these scripts is identical to the knockout experiment, and we refer you there. 
+  - Instructions on how to use these scripts are identical to the knockout experiment, and we refer you there. 
 - `local` contains files used to analyze and plot the data once it's been pulled off the cluster
   - These files are much more consistently commented 
   - A summary is included at the top of each analysis file to briefly describe what that particular file does
+  - The layout and usage of these files is again identical to the knockout experiment
 
 ## Mutational neighborhood
 
-In Avida, we can simulate a mutation on a given genotype simply by substituting the one instruction for another. 
+In Avida, we can simulate a mutation on a given genotype simply by substituting one instruction for another. 
 While it is possible to perform any possible mutation, here we systematically create and test the one- and two-step mutants on a given genotype. 
 To do this, we first create one-step mutants by systematically substituting each instruction in the genotype with _every_ other possible instruction. 
-Once a one-step mutant is created, we repeat the process, only keeping the first mutation constant, to create two-step mutants. 
-Since our genomes are locked at 100 instructions, and we have 32 instructions, a single genotype has 3,100 one-step mutants and millions of two-stem mutants. 
-It should be noted that we technically use 33 instructions, because we included the inert knockout instruction (NopX), but it is excluded in most analyses. 
+Once a one-step mutant is created, to create two-step mutants we simply repeat the process while keeping the first mutation constant.
+Since our genomes are locked at 100 instructions, and we have 32 instructions in the set, a single genotype has 3,100 one-step mutants and millions of two-stem mutants. 
+It should be noted that we technically use 33 instructions, because we included the inert knockout instruction (NopX, represented by the character 'G'), but it is excluded in most analyses. 
 
 Once these mutants have been generated, we can test them in the environments the original genotype may have experienced. 
 Thus, we can see how the mutations affect the performance of the genotype (e.g., does the mutation change which logic tasks are executed?).
