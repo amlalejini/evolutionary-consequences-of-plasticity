@@ -11,6 +11,6 @@ Hit the supplemental material badge at the top of this readme to navigate to our
 Repository guide:
 
 - [avida/](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/avida) contains the version of the Avida software used for this work.
-- [docs](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/docs) contains miscellaneous documentation associated with this work.
+- [docs/](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/docs) contains miscellaneous documentation associated with this work.
 - [experiments/](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/experiments) contains the configuration files, hpcc submission scripts, and analysis scripts for our preliminary and final experiments.
 - [media/](https://github.com/amlalejini/evolutionary-consequences-of-plasticity/tree/master/media) contains any media used by our supplemental material.
