@@ -9,7 +9,7 @@ seed_offset = 300000
 default_num_replicates = 30
 job_time_request = "96:00:00"
 job_memory_request = "4G"
-job_name = "avida"
+job_name = "evo-dyn"
 executable = "avida"
 base_script_filename = './base_script.txt'
 
