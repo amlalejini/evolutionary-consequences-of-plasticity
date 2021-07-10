@@ -34,7 +34,7 @@ combos.add_val(
 
 combos.add_val(
     'EXTRA_TASK_REWARD',
-    ["00", "10"]
+    ["10"]
 )
 
 combos.add_exception(

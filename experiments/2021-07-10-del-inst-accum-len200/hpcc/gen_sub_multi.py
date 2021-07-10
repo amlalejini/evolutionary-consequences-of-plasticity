@@ -29,7 +29,7 @@ combos.add_val(
 combos.add_val(
     "POISON_VALUE",
     [
-        0.1,
+        0.1
     ]
 )
 
