@@ -25,7 +25,7 @@ RUN \
   apt-get install -y -qq --no-install-recommends \
     software-properties-common \
     curl \
-    g++-10=10.2.0-5ubuntu1~20.04 \
+    g++-10 \
     make=4.2.1-1.2 \
     cmake=3.16.3-1ubuntu1  \
     python3=3.8.2-0ubuntu2 \
@@ -60,7 +60,7 @@ RUN \
 ########################################################
 # download experiment data using python osfclient
 # move data into expected directories
-# Note: the evoulationary dynamics mutational robustness data is a special case 
+# Note: the evoulationary dynamics mutational robustness data is a special case
 #     and thus uses a workaround. Future work should be able to return to normal
 ########################################################
 RUN \
@@ -99,9 +99,9 @@ RUN \
   mkdir ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p \
     && \
   cp ${PROJECT_PATH}/experiments/${EXP_TAG}/analysis/data/*.csv \
-    ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p 
+    ${PROJECT_PATH}/experiments/2021-02-08-evo-dynamics/analysis/mutational_robustness/data -p
 
-  
+
 
 ########################################################
 # install r
