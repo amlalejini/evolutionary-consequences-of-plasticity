@@ -182,7 +182,6 @@ ggplot(summary_data, aes(x=condition, y=dominant_genome_length, fill=condition))
   scale_color_brewer(
     palette="Paired"
   ) +
-  coord_flip() +
   ylab("Genome length") +
   theme(
     legend.position="none"
@@ -234,7 +233,6 @@ ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)
   scale_color_brewer(
     palette="Paired"
   ) +
-  coord_flip() +
   ylab("average generation") +
   theme(
     legend.position="none"
@@ -279,12 +277,11 @@ ggplot(summary_data, aes(x=condition, y=phylo_mrca_changes, fill=condition)) +
   scale_color_brewer(
     palette="Paired"
   ) +
-  coord_flip() +
   scale_x_discrete(
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Number of selective sweeps") +
+  ylab("Coalescence event count") +
   theme(
     legend.position="none"
   )
@@ -347,7 +344,6 @@ ggplot(summary_data, aes(x=condition, y=generations_per_mrca_change, fill=condit
   scale_color_brewer(
     palette="Paired"
   ) +
-  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -414,7 +410,6 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility, fill=
   scale_color_brewer(
     palette="Paired"
   ) +
-  coord_flip() +
   theme(
     legend.position="none"
   )
@@ -476,7 +471,6 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_total_mut_cnt, fill=con
   scale_color_brewer(
     palette="Paired"
   ) +
-  coord_flip() +
   theme(
     legend.position="none"
   )
