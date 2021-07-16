@@ -32,7 +32,7 @@ Our supplemental material includes the following:
   - Validating the evolution of phenotypic plasticity (Section \@ref(validation-experiment))
   - Effect of adaptive phenotypic plasticity on evolutionary change (Section \@ref(evolutionary-change))
     - Results with variable-length genomes (Section \@ref(evolutionary-change-variable-length-genomes))
-  - Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section \@ref(evolution-and-maintenance-of-novel-traits))
+  - Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section \@ref(evolution-and-maintenance-of-novel-function))
   - Effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions (Section \@ref(accumulation-of-deleterious-instructions))
   - Exploring how regulation is encoded in genomes in Avida (Section \@ref(regulation-in-avida))
 
