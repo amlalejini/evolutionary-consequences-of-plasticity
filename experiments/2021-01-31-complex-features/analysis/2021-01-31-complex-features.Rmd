@@ -1,6 +1,6 @@
-# Evolution and maintenance of novel traits
+# Evolution and maintenance of novel functions
 
-The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel tasks.
+The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel functions.
 
 ## Overview
 
@@ -241,9 +241,9 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   )
 ```
 
-## Final novel task count (dominant genotype)
+## Final novel function count (dominant genotype)
 
-How many novel tasks do final dominant genotypes perform?
+How many novel functions do final dominant genotypes perform?
 
 ```{r}
 # Compute manual labels for geom_signif
@@ -290,7 +290,7 @@ final_novel_task_count_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="Final novel task count"
+    name="Final novel function count"
   ) +
   scale_fill_brewer(
     palette=cb_palette
@@ -362,9 +362,9 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
-## Novel task count (final population)
+## Novel function count (final population)
 
-How many novel tasks are performed across the final population (1% of organisms must perform to count)?
+How many novel functions are performed across the final population (1% of organisms must perform to count)?
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=final_pop_extra_tasks_0.01, fill=condition)) +
@@ -443,7 +443,7 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
-## Novel task discovery (lineage)
+## Novel function discovery (lineage)
 
 ```{r}
 # Compute manual labels for geom_signif
@@ -490,7 +490,7 @@ lineage_novel_task_discovery_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="Novel task discovery"
+    name="Novel function discovery"
   ) +
   scale_fill_brewer(
     palette=cb_palette
@@ -561,7 +561,7 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
-## Novel task discovery (population)
+## Novel function discovery (population)
 
 ```{r}
 ggplot(
@@ -643,7 +643,7 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
-## Novel task discovery frequency (lineage)
+## Novel function discovery frequency (lineage)
 
 ```{r}
 summary_data$dominant_lineage_extra_traits_discovered_per_generation <- summary_data$dominant_lineage_extra_traits_discovered / summary_data$dominant_generation_born
@@ -697,7 +697,7 @@ lineage_novel_task_discovery_freq_fig <- ggplot(
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Novel task discovery frequency") +
+  ylab("Novel function discovery frequency") +
   scale_fill_brewer(
     palette=cb_palette
   ) +
@@ -768,7 +768,7 @@ for (pair in pairwise_comparisons) {
 
 ```
 
-## Novel tasks gained (lineage)
+## Novel functions gained (lineage)
 
 ```{r}
 ggplot(
@@ -794,7 +794,7 @@ ggplot(
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Novel tasks gains along lineage") +
+  ylab("Novel function gains along lineage") +
   scale_fill_brewer(
     palette=cb_palette
   ) +
@@ -808,15 +808,15 @@ ggplot(
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-extra-tasks-gained.pdf"),
-    width=15,
-    height=10
   )
+ggsave(
+  paste0(working_directory, "plots/dominant-lineage-extra-tasks-gained.pdf"),
+  width=15,
+  height=10
+)
 ```
 
-## Novel task loss (lineage)
+## Novel function loss (lineage)
 
 ```{r}
 # Compute manual labels for geom_signif
@@ -863,7 +863,7 @@ lineage_novel_task_loss_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="Novel task loss (log scale)",
+    name="Novel function loss (log scale)",
     trans=pseudo_log_trans(sigma=1, base=10),
     breaks=c(0,10,100,1000),
     limits=c(-1,5000)
@@ -938,18 +938,13 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
-## Frequency of novel task loss (lineage)
+## Frequency of novel function loss (lineage)
 
 ```{r}
 summary_data$dominant_lineage_extra_traits_lost_per_generation <- summary_data$dominant_lineage_extra_traits_lost / summary_data$dominant_generation_born
 summary_data$dominant_lineage_extra_traits_generations_per_loss <- summary_data$dominant_generation_born / summary_data$dominant_lineage_extra_traits_lost
 
 # Compute manual labels for geom_signif
-# stat.test <- filter(summary_data, dominant_lineage_extra_traits_lost > 0) %>%
-#   wilcox_test(dominant_lineage_extra_traits_generations_per_loss ~ condition) %>%
-#   adjust_pvalue(method = "bonferroni") %>%
-#   add_significance() %>%
-#   add_xy_position(x="condition", step.increase=1)
 stat.test <- summary_data %>%
   wilcox_test(dominant_lineage_extra_traits_lost_per_generation ~ condition) %>%
   adjust_pvalue(method = "bonferroni") %>%
@@ -993,7 +988,7 @@ lineage_novel_task_loss_freq_fig <- ggplot(
     name="Condition",
     limits=condition_order
   ) +
-  ylab("Novel task loss frequency") +
+  ylab("Novel function loss frequency") +
   scale_fill_brewer(
     palette=cb_palette
   ) +
@@ -1062,9 +1057,9 @@ for (pair in pairwise_comparisons) {
 }
 ```
 
-## How many instances of novel trait loss co-occurred with changes in base phenotype?
+## How many instances of novel function loss co-occurred with changes in base phenotype?
 
-Task loss linked with primary trait changes.
+Function loss linked with base function changes.
 
 ```{r}
 lost_traits_summary_data <- filter(summary_data, extra_task_value==0.1 & dominant_lineage_extra_traits_lost>0)
@@ -1098,7 +1093,6 @@ ggplot(lost_traits_summary_data, aes(x=condition, y=frac_linked_extra_trait_loss
   scale_color_brewer(
     palette=cb_palette
   ) +
-  # coord_flip() +
   theme(
     legend.position="none"
   )
@@ -1175,17 +1169,17 @@ magnitude_grid <- plot_grid(
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Final novel task count"),
+    ggtitle("Final novel function count"),
   lineage_novel_task_discovery_fig +
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Novel task discovery"),
+    ggtitle("Novel function discovery"),
   lineage_novel_task_loss_fig +
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Novel task loss"),
+    ggtitle("Novel function loss"),
   nrow=1,
   align="v",
   labels="auto"
@@ -1197,12 +1191,12 @@ pace_grid <- plot_grid(
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Novel task discovery frequency"),
+    ggtitle("Novel function discovery frequency"),
   lineage_novel_task_loss_freq_fig +
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Novel task loss frequency"),
+    ggtitle("Novel function loss frequency"),
   nrow=1,
   align="v",
   labels="auto"
