@@ -112,13 +112,13 @@ ggplot(trace_summary_data, aes(x=dominant_num_toggled_sites)) +
     ) +
     theme(
       legend.position="none"
-    ) +
-    ggsave(paste0(working_directory, "plots/", "toggled-sites.png"))
+    )
+ggsave(paste0(working_directory, "plots/", "toggled-sites.png"))
 ```
 
 ## What is the distrubution of toggled sequence sizes?
 
-```{r}
+```{r, warning=FALSE}
 chunk_sizes <- data.frame(
   size=integer()
 )
@@ -146,6 +146,6 @@ ggplot(chunk_sizes, aes(x=size)) +
     ) +
     theme(
       legend.position="none"
-    ) +
-    ggsave(paste0(working_directory, "plots/", "toggled-chunk-sizes.png"))
+    )
+ggsave(paste0(working_directory, "plots/", "toggled-chunk-sizes.png"))
 ```
