@@ -6,3 +6,12 @@ Expectations
 
 - Plasticity evolves in conditions with fluctuating environment and sensory instructions.
 - Plasticity does not evolve in condition with a constant environment or without sensory instructions.
+
+Conditions
+
+- Constant environment
+  - sensors, no sensors
+- Changing environment
+  - sensors, no sensors
+
+We only expect adaptive plasticity to evolve in the changing environment with sensors. In all other conditions, we do not expect to observe the evolution of adaptive plasticity.
