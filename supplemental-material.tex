@@ -110,7 +110,7 @@
 
 \title{Supplemental Material for Adaptive phenotypic plasticity stabilizes evolution in fluctuating environments}
 \author{Alexander Lalejini, Austin J. Ferguson, Nkrumah A. Grant, and Charles Ofria}
-\date{2021-05-25}
+\date{2021-07-16}
 
 \begin{document}
 \maketitle
@@ -158,7 +158,7 @@ Our supplemental material includes the following:
       Results with variable-length genomes (Section \ref{evolutionary-change-variable-length-genomes})
     \end{itemize}
   \item
-    Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section \ref{evolution-and-maintenance-of-novel-traits})
+    Effect of adaptive phenotypic plasticity on the evolution and maintenance of novel traits (Section \ref{evolution-and-maintenance-of-novel-function})
   \item
     Effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions (Section \ref{accumulation-of-deleterious-instructions})
   \item
@@ -185,7 +185,9 @@ Our supplemental material includes the following:
 \section{Research overview}\label{research-overview}}
 
 Abstract:
-\textgreater{} Fluctuating environmental conditions are ubiquitous in natural systems, and populations have evolved various strategies to cope with such fluctuations.
+
+\begin{quote}
+Fluctuating environmental conditions are ubiquitous in natural systems, and populations have evolved various strategies to cope with such fluctuations.
 The particular mechanisms that evolve profoundly influence subsequent evolutionary dynamics.
 One such mechanism is phenotypic plasticity, which is the ability of a single genotype to produce alternate phenotypes in an environmentally dependent context.
 Here, we use digital organisms (self-replicating computer programs) to investigate how adaptive phenotypic plasticity alters evolutionary dynamics and influences evolutionary outcomes in cyclically changing environments.
@@ -199,6 +201,7 @@ We find that the repeated selected sweeps in non-plastic populations drive the l
 This stabilization allows plastic populations to more easily retain novel adaptive traits than their non-plastic counterparts.
 In general, the evolution of adaptive phenotypic plasticity shifted evolutionary dynamics to be more similar to that of populations evolving in a static environment than to non-plastic populations evolving in an identical fluctuating environment.
 All natural environments subject populations to some form of change; our findings suggest that the stabilizing effect of phenotypic plasticity plays an important role in subsequent adaptive evolution.
+\end{quote}
 
 \hypertarget{data-availability}{%
 \chapter{Data availability}\label{data-availability}}
@@ -871,16 +874,21 @@ How many generations elapsed in each of of our treatments?
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"average generation"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"average-generation.png"}\NormalTok{))}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"average-generation.png"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## Saving 6.5 x 4.5 in image
 \end{verbatim}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-13-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1070,14 +1078,8 @@ The number of times the most recent common ancestor changes gives us the number 
     \DataTypeTok{manual=}\OtherTok{TRUE}\NormalTok{,}
     \DataTypeTok{inherit.aes=}\OtherTok{FALSE}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"selective-sweeps.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{5}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
@@ -1088,6 +1090,11 @@ The number of times the most recent common ancestor changes gives us the number 
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"selective-sweeps.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{5}
+\NormalTok{)}
 \NormalTok{coalescence_events_fig}
 \end{Highlighting}
 \end{Shaded}
@@ -1267,11 +1274,6 @@ The number of times the most recent common ancestor changes gives us the number 
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"generations-between-selective-sweeps.png"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{5}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
@@ -1282,6 +1284,11 @@ The number of times the most recent common ancestor changes gives us the number 
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"generations-between-selective-sweeps.png"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{5}
+\NormalTok{)}
 \NormalTok{coalescence_events_freq_fig}
 \end{Highlighting}
 \end{Shaded}
@@ -1459,11 +1466,6 @@ The number of times the most recent common ancestor changes gives us the number 
 \StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"phenotypic-volatility.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{5}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
@@ -1474,6 +1476,11 @@ The number of times the most recent common ancestor changes gives us the number 
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"phenotypic-volatility.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{5}
+\NormalTok{)}
 \NormalTok{phenotypic_volatility_fig}
 \end{Highlighting}
 \end{Shaded}
@@ -1609,7 +1616,6 @@ The number of times the most recent common ancestor changes gives us the number 
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
@@ -1794,11 +1800,6 @@ Frequency that an offspring's genotype is identical to a parent genotype (along 
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"phenotypic-fidelity.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{5}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
@@ -1809,6 +1810,11 @@ Frequency that an offspring's genotype is identical to a parent genotype (along 
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"phenotypic-fidelity.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{5}
+\NormalTok{)}
 \NormalTok{phenotypic_fidelity_fig}
 \end{Highlighting}
 \end{Shaded}
@@ -1971,7 +1977,6 @@ Frequency that an offspring's genotype is identical to a parent genotype (along 
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}
     \DataTypeTok{subtitle=}\KeywordTok{paste0}\NormalTok{(}
       \StringTok{"Kruskal-Wallis, "}\NormalTok{,}
@@ -1986,11 +1991,6 @@ Frequency that an offspring's genotype is identical to a parent genotype (along 
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"mutation-accumulation.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{4}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
@@ -2001,6 +2001,11 @@ Frequency that an offspring's genotype is identical to a parent genotype (along 
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"mutation-accumulation.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{4}
+\NormalTok{)}
 \NormalTok{mutation_count_fig}
 \end{Highlighting}
 \end{Shaded}
@@ -2137,7 +2142,6 @@ Frequency that an offspring's genotype is identical to a parent genotype (along 
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
@@ -2311,11 +2315,6 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"genotypic-fidelity.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{4}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
@@ -2326,6 +2325,11 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"genotypic-fidelity.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{5}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{4}
+\NormalTok{)}
 \NormalTok{genotypic_fidelity_fig}
 \end{Highlighting}
 \end{Shaded}
@@ -2491,8 +2495,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"frac_phenotype_changing_mutational_steps.png"}\NormalTok{))}
+\NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2500,11 +2503,17 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## Warning: Ignoring unknown aesthetics: xmin, xmax, annotations, y_position
 \end{verbatim}
 
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-32-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"frac_phenotype_changing_mutational_steps.png"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
 \begin{verbatim}
 ## Saving 6.5 x 4.5 in image
 \end{verbatim}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-32-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2841,7 +2850,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.8247126 -3.936782e-05   0.0405534
+## t1* 0.8247126 -0.0007856322  0.03986807
 \end{verbatim}
 
 \begin{Shaded}
@@ -2859,7 +2868,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.7414,  0.9023 )  
+## 95%   ( 0.7443,  0.8994 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -2946,7 +2955,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Bootstrap Statistics :
 ##      original        bias    std. error
-## t1* 0.5172414 -5.229885e-05  0.03954846
+## t1* 0.5172414 -0.0001421839  0.03979612
 \end{verbatim}
 
 \begin{Shaded}
@@ -2964,7 +2973,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4402,  0.5943 )  
+## 95%   ( 0.4402,  0.5954 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -3007,8 +3016,8 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## 
 ## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.4827586 0.0004188506  0.03981129
+##      original        bias    std. error
+## t1* 0.4827586 -0.0002229885  0.03961709
 \end{verbatim}
 
 \begin{Shaded}
@@ -3026,7 +3035,7 @@ The frequency that an offspring's genotype is the same as a parent's genotype.
 ## 
 ## Intervals : 
 ## Level     Percentile     
-## 95%   ( 0.4034,  0.5586 )  
+## 95%   ( 0.4046,  0.5609 )  
 ## Calculations and Intervals on Original Scale
 \end{verbatim}
 
@@ -3049,7 +3058,7 @@ This data is located in a separate .tar.gz file on OSF, so we need to load it an
 \NormalTok{df_mut}\OperatorTok{$}\NormalTok{treatment_factor =}\StringTok{ }\KeywordTok{factor}\NormalTok{(df_mut}\OperatorTok{$}\NormalTok{treatment, }\DataTypeTok{levels =} \KeywordTok{c}\NormalTok{(}\StringTok{'STATIC'}\NormalTok{, }\StringTok{'NON-PLASTIC'}\NormalTok{, }\StringTok{'PLASTIC'}\NormalTok{))}
 \CommentTok{# For compatibility with is_outlier above}
 \NormalTok{df_mut}\OperatorTok{$}\NormalTok{condition =}\StringTok{ }\NormalTok{df_mut}\OperatorTok{$}\NormalTok{treatment_factor}
-\CommentTok{# Calculate robustness (originally calculated as volatility) }
+\CommentTok{# Calculate robustness (originally calculated as volatility)}
 \NormalTok{df_mut}\OperatorTok{$}\NormalTok{mutational_robustness =}\StringTok{ }\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{df_mut}\OperatorTok{$}\NormalTok{one_step_diff_pheno_frac}
 \end{Highlighting}
 \end{Shaded}
@@ -3083,7 +3092,7 @@ Now we can plot mutational robustness:
 
 \CommentTok{# Plot!}
 \NormalTok{mut_robustness_fig <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(df_mut, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{treatment_factor, }\DataTypeTok{y=}\NormalTok{mutational_robustness, }\DataTypeTok{fill=}\NormalTok{treatment_factor)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{( }\DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(df_mut,is_outlier}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{), }
+\StringTok{  }\KeywordTok{geom_flat_violin}\NormalTok{( }\DataTypeTok{data=}\KeywordTok{filter}\NormalTok{(df_mut,is_outlier}\OperatorTok{==}\OtherTok{FALSE}\NormalTok{),}
     \DataTypeTok{scale=}\StringTok{"width"}\NormalTok{, }\DataTypeTok{position =} \KeywordTok{position_nudge}\NormalTok{(}\DataTypeTok{x =} \FloatTok{.2}\NormalTok{, }\DataTypeTok{y =} \DecValTok{0}\NormalTok{), }\DataTypeTok{alpha =} \FloatTok{.8}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{mapping=}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{treatment_factor), }\DataTypeTok{position =} \KeywordTok{position_jitter}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.15}\NormalTok{), }\DataTypeTok{size =} \FloatTok{.5}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.8}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}\DataTypeTok{width =} \FloatTok{.1}\NormalTok{, }\DataTypeTok{outlier.shape =} \OtherTok{NA}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
@@ -3186,7 +3195,7 @@ Figures styled for the paper.
   \DataTypeTok{ncol=}\DecValTok{1}\NormalTok{,}
   \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
   \DataTypeTok{labels=}\StringTok{""}
-\NormalTok{) }
+\NormalTok{)}
 \NormalTok{mut_robustness_grid}
 \end{Highlighting}
 \end{Shaded}
@@ -3218,10 +3227,10 @@ Figures styled for the paper.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{evolution-and-maintenance-of-novel-traits}{%
-\chapter{Evolution and maintenance of novel traits}\label{evolution-and-maintenance-of-novel-traits}}
+\hypertarget{evolution-and-maintenance-of-novel-functions}{%
+\chapter{Evolution and maintenance of novel functions}\label{evolution-and-maintenance-of-novel-functions}}
 
-The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel tasks.
+The effect of adaptive phenotypic plasticity on the evolution and maintenance of novel functions.
 
 \hypertarget{overview-2}{%
 \section{Overview}\label{overview-2}}
@@ -3500,10 +3509,10 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-49-1.pdf}
 
-\hypertarget{final-novel-task-count-dominant-genotype}{%
-\section{Final novel task count (dominant genotype)}\label{final-novel-task-count-dominant-genotype}}
+\hypertarget{final-novel-function-count-dominant-genotype}{%
+\section{Final novel function count (dominant genotype)}\label{final-novel-function-count-dominant-genotype}}
 
-How many novel tasks do final dominant genotypes perform?
+How many novel functions do final dominant genotypes perform?
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3551,7 +3560,7 @@ How many novel tasks do final dominant genotypes perform?
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Final novel task count"}
+    \DataTypeTok{name=}\StringTok{"Final novel function count"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
@@ -3688,10 +3697,10 @@ How many novel tasks do final dominant genotypes perform?
 ## [1] "PLASTIC<-->NON-PLASTIC: W=64"
 \end{verbatim}
 
-\hypertarget{novel-task-count-final-population}{%
-\section{Novel task count (final population)}\label{novel-task-count-final-population}}
+\hypertarget{novel-function-count-final-population}{%
+\section{Novel function count (final population)}\label{novel-function-count-final-population}}
 
-How many novel tasks are performed across the final population (1\% of organisms must perform to count)?
+How many novel functions are performed across the final population (1\% of organisms must perform to count)?
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3828,8 +3837,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## [1] "PLASTIC<-->NON-PLASTIC: W=225.5"
 \end{verbatim}
 
-\hypertarget{novel-task-discovery-lineage}{%
-\section{Novel task discovery (lineage)}\label{novel-task-discovery-lineage}}
+\hypertarget{novel-function-discovery-lineage}{%
+\section{Novel function discovery (lineage)}\label{novel-function-discovery-lineage}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -3877,7 +3886,7 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Novel task discovery"}
+    \DataTypeTok{name=}\StringTok{"Novel function discovery"}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
@@ -4014,8 +4023,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## [1] "PLASTIC<-->NON-PLASTIC: W=3110.5"
 \end{verbatim}
 
-\hypertarget{novel-task-discovery-population}{%
-\section{Novel task discovery (population)}\label{novel-task-discovery-population}}
+\hypertarget{novel-function-discovery-population}{%
+\section{Novel function discovery (population)}\label{novel-function-discovery-population}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4155,8 +4164,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## [1] "PLASTIC<-->NON-PLASTIC: W=3096"
 \end{verbatim}
 
-\hypertarget{novel-task-discovery-frequency-lineage}{%
-\section{Novel task discovery frequency (lineage)}\label{novel-task-discovery-frequency-lineage}}
+\hypertarget{novel-function-discovery-frequency-lineage}{%
+\section{Novel function discovery frequency (lineage)}\label{novel-function-discovery-frequency-lineage}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4211,7 +4220,7 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Novel task discovery frequency"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Novel function discovery frequency"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4347,8 +4356,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## [1] "PLASTIC<-->NON-PLASTIC: W=2584"
 \end{verbatim}
 
-\hypertarget{novel-tasks-gained-lineage}{%
-\section{Novel tasks gained (lineage)}\label{novel-tasks-gained-lineage}}
+\hypertarget{novel-functions-gained-lineage}{%
+\section{Novel functions gained (lineage)}\label{novel-functions-gained-lineage}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4375,7 +4384,7 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Novel tasks gains along lineage"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Novel function gains along lineage"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4389,19 +4398,24 @@ How many novel tasks are performed across the final population (1\% of organisms
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-extra-tasks-gained.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-60-1.pdf}
 
-\hypertarget{novel-task-loss-lineage}{%
-\section{Novel task loss (lineage)}\label{novel-task-loss-lineage}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-extra-tasks-gained.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{novel-function-loss-lineage}{%
+\section{Novel function loss (lineage)}\label{novel-function-loss-lineage}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4449,7 +4463,7 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Novel task loss (log scale)"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Novel function loss (log scale)"}\NormalTok{,}
     \DataTypeTok{trans=}\KeywordTok{pseudo_log_trans}\NormalTok{(}\DataTypeTok{sigma=}\DecValTok{1}\NormalTok{, }\DataTypeTok{base=}\DecValTok{10}\NormalTok{),}
     \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{1000}\NormalTok{),}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{5000}\NormalTok{)}
@@ -4589,8 +4603,8 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## [1] "PLASTIC<-->NON-PLASTIC: W=3959"
 \end{verbatim}
 
-\hypertarget{frequency-of-novel-task-loss-lineage}{%
-\section{Frequency of novel task loss (lineage)}\label{frequency-of-novel-task-loss-lineage}}
+\hypertarget{frequency-of-novel-function-loss-lineage}{%
+\section{Frequency of novel function loss (lineage)}\label{frequency-of-novel-function-loss-lineage}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4598,11 +4612,6 @@ How many novel tasks are performed across the final population (1\% of organisms
 \NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_generations_per_loss <-}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_generation_born }\OperatorTok{/}\StringTok{ }\NormalTok{summary_data}\OperatorTok{$}\NormalTok{dominant_lineage_extra_traits_lost}
 
 \CommentTok{# Compute manual labels for geom_signif}
-\CommentTok{# stat.test <- filter(summary_data, dominant_lineage_extra_traits_lost > 0) %>%}
-\CommentTok{#   wilcox_test(dominant_lineage_extra_traits_generations_per_loss ~ condition) %>%}
-\CommentTok{#   adjust_pvalue(method = "bonferroni") %>%}
-\CommentTok{#   add_significance() %>%}
-\CommentTok{#   add_xy_position(x="condition", step.increase=1)}
 \NormalTok{stat.test <-}\StringTok{ }\NormalTok{summary_data }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{wilcox_test}\NormalTok{(dominant_lineage_extra_traits_lost_per_generation }\OperatorTok{~}\StringTok{ }\NormalTok{condition) }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{adjust_pvalue}\NormalTok{(}\DataTypeTok{method =} \StringTok{"bonferroni"}\NormalTok{) }\OperatorTok{%>%}
@@ -4646,7 +4655,7 @@ How many novel tasks are performed across the final population (1\% of organisms
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Novel task loss frequency"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Novel function loss frequency"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
@@ -4781,10 +4790,10 @@ How many novel tasks are performed across the final population (1\% of organisms
 ## [1] "PLASTIC<-->NON-PLASTIC: W=3922"
 \end{verbatim}
 
-\hypertarget{how-many-instances-of-novel-trait-loss-co-occurred-with-changes-in-base-phenotype}{%
-\section{How many instances of novel trait loss co-occurred with changes in base phenotype?}\label{how-many-instances-of-novel-trait-loss-co-occurred-with-changes-in-base-phenotype}}
+\hypertarget{how-many-instances-of-novel-function-loss-co-occurred-with-changes-in-base-phenotype}{%
+\section{How many instances of novel function loss co-occurred with changes in base phenotype?}\label{how-many-instances-of-novel-function-loss-co-occurred-with-changes-in-base-phenotype}}
 
-Task loss linked with primary trait changes.
+Function loss linked with base function changes.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4821,7 +4830,6 @@ Task loss linked with primary trait changes.
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
@@ -5034,17 +5042,17 @@ Task loss linked with primary trait changes.
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final novel task count"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Final novel function count"}\NormalTok{),}
 \NormalTok{  lineage_novel_task_discovery_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel task discovery"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel function discovery"}\NormalTok{),}
 \NormalTok{  lineage_novel_task_loss_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel task loss"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel function loss"}\NormalTok{),}
   \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
   \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
   \DataTypeTok{labels=}\StringTok{"auto"}
@@ -5062,12 +5070,12 @@ Task loss linked with primary trait changes.
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel task discovery frequency"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel function discovery frequency"}\NormalTok{),}
 \NormalTok{  lineage_novel_task_loss_freq_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel task loss frequency"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Novel function loss frequency"}\NormalTok{),}
   \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
   \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
   \DataTypeTok{labels=}\StringTok{"auto"}
@@ -5099,7 +5107,7 @@ Task loss linked with primary trait changes.
 \hypertarget{accumulation-of-deleterious-instructions}{%
 \chapter{Accumulation of deleterious instructions}\label{accumulation-of-deleterious-instructions}}
 
-The effect of adaptive phenotypic plasticity on the accumulation of deleterious genes.
+The effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions.
 
 \hypertarget{overview-3}{%
 \section{Overview}\label{overview-3}}
@@ -5360,11 +5368,13 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-75-1.pdf}
 
-\hypertarget{poison-instruction-execution}{%
-\section{Poison instruction execution}\label{poison-instruction-execution}}
+\hypertarget{deleterious-instruction-execution}{%
+\section{Deleterious instruction execution}\label{deleterious-instruction-execution}}
 
-\hypertarget{number-of-replicates-where-final-dominant-genotype-executes-the-poison-instruction}{%
-\subsection{Number of replicates where final dominant genotype executes the poison instruction}\label{number-of-replicates-where-final-dominant-genotype-executes-the-poison-instruction}}
+Note that under the hood, the deleterious instruction is the \texttt{poison} instruction in Avida.
+
+\hypertarget{number-of-replicates-where-final-dominant-genotype-executes-the-deleterious-instruction}{%
+\subsection{Number of replicates where final dominant genotype executes the deleterious instruction}\label{number-of-replicates-where-final-dominant-genotype-executes-the-deleterious-instruction}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5508,8 +5518,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{poison-instruction-execution-final-population}{%
-\subsection{Poison instruction execution (final population)}\label{poison-instruction-execution-final-population}}
+\hypertarget{deleterious-instruction-execution-final-population}{%
+\subsection{Deleterious instruction execution (final population)}\label{deleterious-instruction-execution-final-population}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5534,7 +5544,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"poison instruction executions (final population)"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"deleterious instruction executions (final population)"}\NormalTok{,}
     \DataTypeTok{trans=}\KeywordTok{pseudo_log_trans}\NormalTok{(}\DataTypeTok{sigma=}\DecValTok{1}\NormalTok{,}\DataTypeTok{base=}\DecValTok{10}\NormalTok{),}
     \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{100}\NormalTok{,}\DecValTok{10000}\NormalTok{,}\DecValTok{1000000}\NormalTok{),}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{1000000}\NormalTok{)}
@@ -5552,16 +5562,21 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-population-poison-log.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-77-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-population-poison-log.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5652,8 +5667,8 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## Kruskal-Wallis chi-squared = 3.3994, df = 2, p-value = 0.1827
 \end{verbatim}
 
-\hypertarget{cummulative-poison-instruction-execution-along-final-dominant-lineages}{%
-\subsection{Cummulative poison instruction execution along final dominant lineages}\label{cummulative-poison-instruction-execution-along-final-dominant-lineages}}
+\hypertarget{cummulative-deleterious-instruction-execution-along-final-dominant-lineages}{%
+\subsection{Cummulative deleterious instruction execution along final dominant lineages}\label{cummulative-deleterious-instruction-execution-along-final-dominant-lineages}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5678,7 +5693,7 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"poison instruction executions (dominant lineage)"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"deleterious instruction executions (dominant lineage)"}\NormalTok{,}
     \DataTypeTok{trans=}\KeywordTok{pseudo_log_trans}\NormalTok{(}\DataTypeTok{sigma =} \DecValTok{1}\NormalTok{, }\DataTypeTok{base =} \DecValTok{10}\NormalTok{),}
     \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{1000}\NormalTok{,}\DecValTok{100000}\NormalTok{),}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\DecValTok{1}\NormalTok{,}\DecValTok{100000}\NormalTok{)}
@@ -5695,16 +5710,21 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-dominant-lineage-poison-log.pdf"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-79-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-dominant-lineage-poison-log.pdf"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5806,11 +5826,11 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\hypertarget{characterizing-mutations-that-increase-poison-instruction-execution}{%
-\section{Characterizing mutations that increase poison instruction execution}\label{characterizing-mutations-that-increase-poison-instruction-execution}}
+\hypertarget{characterizing-mutations-that-increase-deleterious-instruction-execution}{%
+\section{Characterizing mutations that increase deleterious instruction execution}\label{characterizing-mutations-that-increase-deleterious-instruction-execution}}
 
-\hypertarget{number-of-offspring-along-dominant-lineage-with-increase-in-poison-instruction-execution}{%
-\subsection{Number of offspring along dominant lineage with increase in poison instruction execution}\label{number-of-offspring-along-dominant-lineage-with-increase-in-poison-instruction-execution}}
+\hypertarget{number-of-offspring-along-dominant-lineage-with-increase-in-deleterious-instruction-execution}{%
+\subsection{Number of offspring along dominant lineage with increase in deleterious instruction execution}\label{number-of-offspring-along-dominant-lineage-with-increase-in-deleterious-instruction-execution}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -5952,14 +5972,6 @@ We can confirm our expectation that the dominant genotypes in non-plastic condit
 ## P value adjustment method: bonferroni
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)}
-\CommentTok{# sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)}
-\CommentTok{# sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)}
-\end{Highlighting}
-\end{Shaded}
-
 Focal figure for the manuscript:
 
 \begin{Shaded}
@@ -6000,7 +6012,7 @@ Focal figure for the manuscript:
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Poisonous task acquisition count"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Deleterious function acquisition count"}\NormalTok{,}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
@@ -6039,8 +6051,8 @@ Focal figure for the manuscript:
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-83-1.pdf}
 
-\hypertarget{frequency-of-increases-in-poison-instruction-execution-lineage}{%
-\subsection{Frequency of increases in poison instruction execution (lineage)}\label{frequency-of-increases-in-poison-instruction-execution-lineage}}
+\hypertarget{frequency-of-increases-in-deleterious-instruction-execution-lineage}{%
+\subsection{Frequency of increases in deleterious instruction execution (lineage)}\label{frequency-of-increases-in-deleterious-instruction-execution-lineage}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6078,16 +6090,21 @@ Focal figure for the manuscript:
 \StringTok{  }\CommentTok{# coord_flip() +}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-dominant-lineage-poison-increase-per-generation.png"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-84-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/final-dominant-lineage-poison-increase-per-generation.png"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6229,7 +6246,7 @@ Figure for the manuscript:
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Poisonous task acquisition frequency"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Deleterious function acquisition frequency"}\NormalTok{,}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_fill_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\NormalTok{cb_palette}
@@ -6268,8 +6285,8 @@ Figure for the manuscript:
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-86-1.pdf}
 
-\hypertarget{what-fraction-of-mutations-that-increase-poison-instruction-execution-co-occur-with-base-trait-changes}{%
-\subsection{What fraction of mutations that increase poison instruction execution co-occur with base trait changes?}\label{what-fraction-of-mutations-that-increase-poison-instruction-execution-co-occur-with-base-trait-changes}}
+\hypertarget{what-fraction-of-mutations-that-increase-deleterious-instruction-execution-co-occur-with-base-trait-changes}{%
+\subsection{What fraction of mutations that increase deleterious instruction execution co-occur with base trait changes?}\label{what-fraction-of-mutations-that-increase-deleterious-instruction-execution-co-occur-with-base-trait-changes}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6288,16 +6305,21 @@ Figure for the manuscript:
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ggsave}\NormalTok{(}
-    \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-frac_hitchhiking_linked_trait_change.png"}\NormalTok{),}
-    \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
-    \DataTypeTok{height=}\DecValTok{10}
 \NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-87-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}
+  \KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/dominant-lineage-frac_hitchhiking_linked_trait_change.png"}\NormalTok{),}
+  \DataTypeTok{width=}\DecValTok{15}\NormalTok{,}
+  \DataTypeTok{height=}\DecValTok{10}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6518,7 +6540,7 @@ Focal figure for the manuscript:
     \DataTypeTok{labels=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}
-    \DataTypeTok{name=}\StringTok{"Fraction of linked poisonous task acquisition"}\NormalTok{,}
+    \DataTypeTok{name=}\StringTok{"Fraction of linked deleterious function acquisition"}\NormalTok{,}
     \DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\OperatorTok{-}\FloatTok{0.01}\NormalTok{, }\FloatTok{1.2}\NormalTok{),}
     \DataTypeTok{breaks=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.50}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\FloatTok{1.0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}
@@ -6558,8 +6580,8 @@ Focal figure for the manuscript:
 
 \includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-90-1.pdf}
 
-\hypertarget{what-fraction-of-poison-execution-increases-occur-in-unexpressed-phenotype-as-cryptic-variation}{%
-\section{What fraction of poison execution increases occur in unexpressed phenotype (as cryptic variation)?}\label{what-fraction-of-poison-execution-increases-occur-in-unexpressed-phenotype-as-cryptic-variation}}
+\hypertarget{what-fraction-of-deleterious-execution-increases-occur-in-unexpressed-phenotype-as-cryptic-variation}{%
+\section{What fraction of deleterious execution increases occur in unexpressed phenotype (as cryptic variation)?}\label{what-fraction-of-deleterious-execution-increases-occur-in-unexpressed-phenotype-as-cryptic-variation}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -6600,17 +6622,17 @@ Focal figure for the manuscript:
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Poisonous task acquisition count"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Deleterious function acquisition count"}\NormalTok{),}
 \NormalTok{  poison_increases_per_gen_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Poisonous task acquisition frequency"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Deleterious function acquisition frequency"}\NormalTok{),}
 \NormalTok{  linked_trait_change_fig }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{axis.title.x=}\KeywordTok{element_blank}\NormalTok{()}
 \NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Linked poisonous task acquisition"}\NormalTok{),}
+\StringTok{    }\KeywordTok{ggtitle}\NormalTok{(}\StringTok{"Linked deleterious function acquisition"}\NormalTok{),}
   \DataTypeTok{nrow=}\DecValTok{1}\NormalTok{,}
   \DataTypeTok{align=}\StringTok{"v"}\NormalTok{,}
   \DataTypeTok{labels=}\StringTok{"auto"}
@@ -6773,16 +6795,21 @@ These analyses were conducted/knitted with the following computing environment:
 \NormalTok{    ) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"toggled-sites.png"}\NormalTok{))}
+\NormalTok{    )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-98-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"toggled-sites.png"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## Saving 6.5 x 4.5 in image
 \end{verbatim}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-98-1.pdf}
 
 \hypertarget{what-is-the-distrubution-of-toggled-sequence-sizes}{%
 \section{What is the distrubution of toggled sequence sizes?}\label{what-is-the-distrubution-of-toggled-sequence-sizes}}
@@ -6816,22 +6843,21 @@ These analyses were conducted/knitted with the following computing environment:
 \NormalTok{    ) }\OperatorTok{+}
 \StringTok{    }\KeywordTok{theme}\NormalTok{(}
       \DataTypeTok{legend.position=}\StringTok{"none"}
-\NormalTok{    ) }\OperatorTok{+}
-\StringTok{    }\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"toggled-chunk-sizes.png"}\NormalTok{))}
+\NormalTok{    )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-99-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggsave}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(working_directory, }\StringTok{"plots/"}\NormalTok{, }\StringTok{"toggled-chunk-sizes.png"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## Saving 6.5 x 4.5 in image
 \end{verbatim}
-
-\begin{verbatim}
-## Warning: Removed 2 rows containing missing values (geom_bar).
-
-## Warning: Removed 2 rows containing missing values (geom_bar).
-\end{verbatim}
-
-\includegraphics{supplemental-material_files/figure-latex/unnamed-chunk-99-1.pdf}
 
 \hypertarget{evolutionary-change-variable-length-genomes}{%
 \chapter{Evolutionary change (variable length genomes)}\label{evolutionary-change-variable-length-genomes}}
@@ -7066,7 +7092,6 @@ Single-instruction insertions and deletions were possible for this experiment, s
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Genome length"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
@@ -7177,7 +7202,6 @@ Single-instruction insertions and deletions were possible for this experiment, s
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"average generation"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
@@ -7263,12 +7287,11 @@ The number of times the most recent common ancestor changes gives us the number 
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_x_discrete}\NormalTok{(}
     \DataTypeTok{name=}\StringTok{"Condition"}\NormalTok{,}
     \DataTypeTok{limits=}\NormalTok{condition_order}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Number of selective sweeps"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Coalescence event count"}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
@@ -7389,7 +7412,6 @@ The number of times the most recent common ancestor changes gives us the number 
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
@@ -7514,7 +7536,6 @@ The number of times the most recent common ancestor changes gives us the number 
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
@@ -7634,7 +7655,6 @@ The number of times the most recent common ancestor changes gives us the number 
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}
     \DataTypeTok{palette=}\StringTok{"Paired"}
 \NormalTok{  ) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
 \StringTok{  }\KeywordTok{theme}\NormalTok{(}
     \DataTypeTok{legend.position=}\StringTok{"none"}
 \NormalTok{  )}
