@@ -1,6 +1,6 @@
 # Accumulation of deleterious instructions
 
-The effect of adaptive phenotypic plasticity on the accumulation of deleterious genes.
+The effect of adaptive phenotypic plasticity on the accumulation of deleterious instructions.
 
 ## Overview
 
@@ -214,9 +214,11 @@ ggplot(filter(summary_data_group_counts, is_plastic), aes(x=condition, y=n, fill
   )
 ```
 
-## Poison instruction execution
+## Deleterious instruction execution
 
-### Number of replicates where final dominant genotype executes the poison instruction
+Note that under the hood, the deleterious instruction is the `poison` instruction in Avida.
+
+### Number of replicates where final dominant genotype executes the deleterious instruction
 
 ```{r}
 for (penalty in poison_penalties) {
@@ -253,7 +255,7 @@ for (penalty in poison_penalties) {
 }
 ```
 
-### Poison instruction execution (final population)
+### Deleterious instruction execution (final population)
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=final_population_poison, fill=condition)) +
@@ -277,7 +279,7 @@ ggplot(summary_data, aes(x=condition, y=final_population_poison, fill=condition)
     limits=condition_order
   ) +
   scale_y_continuous(
-    name="poison instruction executions (final population)",
+    name="deleterious instruction executions (final population)",
     trans=pseudo_log_trans(sigma=1,base=10),
     breaks=c(0,100,10000,1000000),
     limits=c(-1,1000000)
@@ -295,12 +297,12 @@ ggplot(summary_data, aes(x=condition, y=final_population_poison, fill=condition)
   # coord_flip() +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/final-population-poison-log.pdf"),
-    width=15,
-    height=10
   )
+ggsave(
+  paste0(working_directory, "plots/final-population-poison-log.pdf"),
+  width=15,
+  height=10
+)
 ```
 
 ```{r}
@@ -330,7 +332,7 @@ for (penalty in poison_penalties) {
 }
 ```
 
-### Cummulative poison instruction execution along final dominant lineages
+### Cummulative deleterious instruction execution along final dominant lineages
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, fill=condition)) +
@@ -354,7 +356,7 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, 
     limits=condition_order
   ) +
   scale_y_continuous(
-    name="poison instruction executions (dominant lineage)",
+    name="deleterious instruction executions (dominant lineage)",
     trans=pseudo_log_trans(sigma = 1, base = 10),
     breaks=c(10,1000,100000),
     limits=c(-1,100000)
@@ -371,12 +373,12 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_times_poison_executed, 
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/final-dominant-lineage-poison-log.pdf"),
-    width=15,
-    height=10
   )
+ggsave(
+  paste0(working_directory, "plots/final-dominant-lineage-poison-log.pdf"),
+  width=15,
+  height=10
+)
 ```
 
 ```{r}
@@ -406,9 +408,9 @@ for (penalty in poison_penalties) {
 }
 ```
 
-## Characterizing mutations that increase poison instruction execution
+## Characterizing mutations that increase deleterious instruction execution
 
-### Number of offspring along dominant lineage with increase in poison instruction execution
+### Number of offspring along dominant lineage with increase in deleterious instruction execution
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases, fill=condition)) +
@@ -472,9 +474,6 @@ for (penalty in poison_penalties) {
   )
 }
 
-# sum(filter(summary_data, condition=="NON-PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
-# sum(filter(summary_data, condition=="PLASTIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
-# sum(filter(summary_data, condition=="STATIC" & POISON_PENALTY==0.1)$dominant_lineage_num_times_hitchhike_inst_exec_increases)
 ```
 
 Focal figure for the manuscript:
@@ -516,7 +515,7 @@ poison_increases_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="Poisonous task acquisition count",
+    name="Deleterious function acquisition count",
   ) +
   scale_fill_brewer(
     palette=cb_palette
@@ -543,7 +542,7 @@ poison_increases_fig <- ggplot(
 poison_increases_fig
 ```
 
-### Frequency of increases in poison instruction execution (lineage)
+### Frequency of increases in deleterious instruction execution (lineage)
 
 ```{r}
 ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_inst_exec_increases_per_generation, fill=condition)) +
@@ -580,12 +579,12 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_num_times_hitchhike_ins
   # coord_flip() +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/final-dominant-lineage-poison-increase-per-generation.png"),
-    width=15,
-    height=10
   )
+ggsave(
+  paste0(working_directory, "plots/final-dominant-lineage-poison-increase-per-generation.png"),
+  width=15,
+  height=10
+)
 ```
 
 ```{r}
@@ -654,7 +653,7 @@ poison_increases_per_gen_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="Poisonous task acquisition frequency",
+    name="Deleterious function acquisition frequency",
   ) +
   scale_fill_brewer(
     palette=cb_palette
@@ -681,7 +680,7 @@ poison_increases_per_gen_fig <- ggplot(
 poison_increases_per_gen_fig
 ```
 
-### What fraction of mutations that increase poison instruction execution co-occur with base trait changes?
+### What fraction of mutations that increase deleterious instruction execution co-occur with base trait changes?
 
 ```{r}
 ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0), aes(x=frac_hitchhiking_linked_trait_change, fill=condition)) +
@@ -699,12 +698,12 @@ ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_incre
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/dominant-lineage-frac_hitchhiking_linked_trait_change.png"),
-    width=15,
-    height=10
   )
+ggsave(
+  paste0(working_directory, "plots/dominant-lineage-frac_hitchhiking_linked_trait_change.png"),
+  width=15,
+  height=10
+)
 ```
 
 ```{r}
@@ -824,7 +823,7 @@ linked_trait_change_fig <- ggplot(
     labels=condition_order
   ) +
   scale_y_continuous(
-    name="Fraction of linked poisonous task acquisition",
+    name="Fraction of linked deleterious function acquisition",
     limits=c(-0.01, 1.2),
     breaks=c(0, 0.25, 0.50, 0.75, 1.0)
   ) +
@@ -852,7 +851,7 @@ linked_trait_change_fig <- ggplot(
 linked_trait_change_fig
 ```
 
-## What fraction of poison execution increases occur in unexpressed phenotype (as cryptic variation)?
+## What fraction of deleterious execution increases occur in unexpressed phenotype (as cryptic variation)?
 
 ```{r}
 ggplot(filter(summary_data, dominant_lineage_num_times_hitchhike_inst_exec_increases>0 & condition=="PLASTIC"), aes(x=frac_unexpressed_hitchhiker_inc)) +
@@ -881,17 +880,17 @@ grid <- plot_grid(
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Poisonous task acquisition count"),
+    ggtitle("Deleterious function acquisition count"),
   poison_increases_per_gen_fig +
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Poisonous task acquisition frequency"),
+    ggtitle("Deleterious function acquisition frequency"),
   linked_trait_change_fig +
     theme(
       axis.title.x=element_blank()
     ) +
-    ggtitle("Linked poisonous task acquisition"),
+    ggtitle("Linked deleterious function acquisition"),
   nrow=1,
   align="v",
   labels="auto"
