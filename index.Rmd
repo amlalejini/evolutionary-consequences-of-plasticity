@@ -46,6 +46,7 @@ Our supplemental material includes the following:
 ## Research overview
 
 Abstract:
+
 > Fluctuating environmental conditions are ubiquitous in natural systems, and populations have evolved various strategies to cope with such fluctuations.
 The particular mechanisms that evolve profoundly influence subsequent evolutionary dynamics.
 One such mechanism is phenotypic plasticity, which is the ability of a single genotype to produce alternate phenotypes in an environmentally dependent context.
