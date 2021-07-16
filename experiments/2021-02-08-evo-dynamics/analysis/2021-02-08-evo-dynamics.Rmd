@@ -225,8 +225,8 @@ ggplot(summary_data, aes(x=condition, y=time_average_generation, fill=condition)
   ylab("average generation") +
   theme(
     legend.position="none"
-  ) +
-  ggsave(paste0(working_directory, "plots/", "average-generation.png"))
+  )
+ggsave(paste0(working_directory, "plots/", "average-generation.png"))
 ```
 
 ```{r}
@@ -350,15 +350,14 @@ coalescence_events_fig <- ggplot(
     manual=TRUE,
     inherit.aes=FALSE
   ) +
-  # coord_flip() +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "selective-sweeps.pdf"),
-    width=5,
-    height=5
   )
+ggsave(
+  paste0(working_directory, "plots/", "selective-sweeps.pdf"),
+  width=5,
+  height=5
+)
 coalescence_events_fig
 ```
 
@@ -479,12 +478,12 @@ coalescence_events_freq_fig <- ggplot(
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "generations-between-selective-sweeps.png"),
-    width=5,
-    height=5
   )
+ggsave(
+  paste0(working_directory, "plots/", "generations-between-selective-sweeps.png"),
+  width=5,
+  height=5
+)
 coalescence_events_freq_fig
 ```
 
@@ -603,12 +602,12 @@ phenotypic_volatility_fig <- ggplot(
   # coord_flip() +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "phenotypic-volatility.pdf"),
-    width=5,
-    height=5
   )
+ggsave(
+  paste0(working_directory, "plots/", "phenotypic-volatility.pdf"),
+  width=5,
+  height=5
+)
 phenotypic_volatility_fig
 ```
 
@@ -685,7 +684,6 @@ ggplot(summary_data, aes(x=condition, y=dominant_lineage_trait_volatility_per_ge
   scale_color_brewer(
     palette=cb_palette
   ) +
-  # coord_flip() +
   theme(
     legend.position="none"
   )
@@ -811,12 +809,13 @@ phenotypic_fidelity_fig <- ggplot(
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "phenotypic-fidelity.pdf"),
-    width=5,
-    height=5
   )
+
+ggsave(
+  paste0(working_directory, "plots/", "phenotypic-fidelity.pdf"),
+  width=5,
+  height=5
+)
 phenotypic_fidelity_fig
 ```
 
@@ -921,7 +920,6 @@ mutation_count_fig <- ggplot(
   scale_color_brewer(
     palette=cb_palette
   ) +
-  # coord_flip() +
   labs(
     subtitle=paste0(
       "Kruskal-Wallis, ",
@@ -936,12 +934,12 @@ mutation_count_fig <- ggplot(
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "mutation-accumulation.pdf"),
-    width=5,
-    height=4
   )
+ggsave(
+  paste0(working_directory, "plots/", "mutation-accumulation.pdf"),
+  width=5,
+  height=4
+)
 mutation_count_fig
 ```
 
@@ -1019,7 +1017,6 @@ ggplot(summary_data, aes(x=condition, y=mutations_per_generation, fill=condition
   scale_color_brewer(
     palette=cb_palette
   ) +
-  # coord_flip() +
   theme(
     legend.position="none"
   )
@@ -1134,12 +1131,12 @@ genotypic_fidelity_fig <- ggplot(
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(
-    paste0(working_directory, "plots/", "genotypic-fidelity.pdf"),
-    width=5,
-    height=4
   )
+ggsave(
+  paste0(working_directory, "plots/", "genotypic-fidelity.pdf"),
+  width=5,
+  height=4
+)
 genotypic_fidelity_fig
 ```
 
@@ -1245,8 +1242,8 @@ ggplot(summary_data, aes(x=condition, y=frac_phenotype_changing_mut_steps, fill=
   ) +
   theme(
     legend.position="none"
-  ) +
-  ggsave(paste0(working_directory, "plots/", "frac_phenotype_changing_mutational_steps.png"))
+  )
+ggsave(paste0(working_directory, "plots/", "frac_phenotype_changing_mutational_steps.png"))
 ```
 
 ```{r}
@@ -1485,7 +1482,7 @@ print(boot.ci(bo, conf=0.95, type="perc"))
 
 ## Mutational robustness
 
-Mutational robustness measures the fraction of one-step mutations on a focal genotype that result in a phenotypic change. 
+Mutational robustness measures the fraction of one-step mutations on a focal genotype that result in a phenotypic change.
 Here, we calculate the mutational robustness of the representative genotype from each replicate (the most abundant genotype in the final population).
 
 This data is located in a separate .tar.gz file on OSF, so we need to load it and wrangle the data.
@@ -1499,11 +1496,11 @@ df_mut[df_mut$environment == 'chg-u100' & df_mut$sensors == F,]$treatment = 'NON
 df_mut$treatment_factor = factor(df_mut$treatment, levels = c('STATIC', 'NON-PLASTIC', 'PLASTIC'))
 # For compatibility with is_outlier above
 df_mut$condition = df_mut$treatment_factor
-# Calculate robustness (originally calculated as volatility) 
+# Calculate robustness (originally calculated as volatility)
 df_mut$mutational_robustness = 1 - df_mut$one_step_diff_pheno_frac
 ```
 
-Now we can plot mutational robustness: 
+Now we can plot mutational robustness:
 
 ```{r}
 # Compute manual labels for geom_signif
@@ -1531,7 +1528,7 @@ color_map = c(
 
 # Plot!
 mut_robustness_fig <- ggplot(df_mut, aes(x=treatment_factor, y=mutational_robustness, fill=treatment_factor)) +
-  geom_flat_violin( data=filter(df_mut,is_outlier==FALSE), 
+  geom_flat_violin( data=filter(df_mut,is_outlier==FALSE),
     scale="width", position = position_nudge(x = .2, y = 0), alpha = .8) +
   geom_point(mapping=aes(color=treatment_factor), position = position_jitter(width = .15), size = .5, alpha = 0.8) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.5) +
@@ -1608,7 +1605,7 @@ mut_robustness_grid = plot_grid(
   ncol=1,
   align="v",
   labels=""
-) 
+)
 mut_robustness_grid
 
 save_plot(
